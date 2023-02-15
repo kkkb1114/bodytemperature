@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Scroller;
@@ -20,31 +21,31 @@ import kkkb1114.sampleproject.bodytemperature.R;
 
 public class Thermometer extends View {
 
-    //thermometer circles paints
+    //온도계 원 페인트
     private Paint mInnerCirclePaint;
     private Paint mOuterCirclePaint;
     private Paint mFirstOuterCirclePaint;
 
-    //thermometer arc paint
+    //온도계 아크 페인트
     private Paint mFirstOuterArcPaint;
 
 
-    //thermometer lines paints
+    //온도계 라인 페인트
     private Paint mInnerLinePaint;
     private Paint mOuterLinePaint;
     private Paint mFirstOuterLinePaint;
 
 
-    //thermometer radii
+    //온도계 반지름
     private int mOuterRadius;
     private int mInnerRadius;
     private int mFirstOuterRadius;
 
 
-    //thermometer colors
+    //온도계 색상
     private int mThermometerColor = Color.rgb(200, 115, 205);
 
-    //circles and lines  variables
+    //원과 선 변수
     private float mLastCellWidth;
     private int mStageHeight;
     private float mCellWidth;
@@ -55,9 +56,9 @@ public class Thermometer extends View {
     private float mYOffset;
 
     // I   1st Cell     I  2nd Cell       I  3rd Cell  I
-    private static final int NUMBER_OF_CELLS = 3; //three cells in all  ie.stageHeight divided into 3 equal cells
+    private static final int NUMBER_OF_CELLS = 3; //모든 ie.stageHeight에서 3개의 셀을 3개의 동일한 셀로 나눕니다.
 
-    //animation variables
+    //애니메이션 변수
     private float mIncrementalTempValue;
     private boolean mIsAnimating;
     private Animator mAnimator;
@@ -136,23 +137,31 @@ public class Thermometer extends View {
         super.onSizeChanged(w, h, oldw, oldh);
 
         mStageCenterX = getWidth() / 2;
+        Log.e("mStageCenterX", String.valueOf(mStageCenterX));
 
         mStageHeight = getHeight();
 
+        Log.e("mStageHeight", String.valueOf(mStageHeight));
+
         mCellWidth = mStageHeight / NUMBER_OF_CELLS;
+        Log.e("mCellWidth", String.valueOf(mCellWidth));
 
-        //center of first cell
+        //첫 번째 셀의 중심
         mStartCenterY = mCellWidth / 2;
+        //float data = (float) ((35.6 / 45) * 100);
+        //mStartCenterY = (mStageHeight / 100) * data;
+        Log.e("mStartCenterY", String.valueOf(mStartCenterY));
 
-
-        //move to 3rd cell
+        //세 번째 셀로 이동
         mLastCellWidth = (NUMBER_OF_CELLS * mCellWidth);
+        Log.e("mLastCellWidth", String.valueOf(mLastCellWidth));
 
-        //center of last(3rd) cell
+        //마지막(세 번째) 셀 중심
         mEndCenterY = mLastCellWidth - (mCellWidth / 2);
+        Log.e("mEndCenterY", String.valueOf(mEndCenterY));
 
 
-        // mOuterRadius is 1/4 of mCellWidth
+        // mOuterRadius는 mCellWidth의 1/4입니다.
         mOuterRadius = (int) (0.25 * mCellWidth);
 
         mInnerRadius = (int) (0.656 * mOuterRadius);

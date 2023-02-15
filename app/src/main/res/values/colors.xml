@@ -9,4 +9,8 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="status_bar">#2196F3</color>
+    <color name="bottom_icon_text">#008D9F</color>
+    <color name="main_bottom_line">#1A000000</color>
+    <color name="main_bottom_bg">#C5C5C3</color>
+    <color name="main_bottom_icon_bg">#C5C5C3</color>
 </resources>
