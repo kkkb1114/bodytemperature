@@ -4,15 +4,14 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,7 +20,6 @@ import java.util.Stack;
 import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.ThermometerView;
 import kkkb1114.sampleproject.bodytemperature.thermometer.Generator;
-import kkkb1114.sampleproject.bodytemperature.thermometer.Thermometer;
 
 public class HomeFragment extends Fragment {
 

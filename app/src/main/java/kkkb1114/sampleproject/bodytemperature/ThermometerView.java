@@ -131,7 +131,7 @@ public class ThermometerView extends View {
 
     private void init(AttributeSet attrs) {
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.Thermometer);
-        viewBg = typedArray.getColor(R.styleable.Thermometer_viewBg, Color.parseColor("#F5F5F5"));
+        viewBg = typedArray.getColor(R.styleable.Thermometer_viewBg, Color.parseColor("#FFFFFFFF"));
         unitTextSize = typedArray.getDimension(R.styleable.Thermometer_unitTextSize, 36f);
         unitTextColor = typedArray.getColor(R.styleable.Thermometer_unitTextColor, Color.parseColor("#787878"));
         scaleTextSize = typedArray.getDimension(R.styleable.Thermometer_scaleTextSize, 18f);
@@ -495,29 +495,29 @@ public class ThermometerView extends View {
     public static class ThermometerBuilder {
 
         private Context context;
-        private int viewBg = Color.parseColor("#F5F5F5"); // 背景颜色
-        private float unitTextSize = 36f; // 单位文字大小
-        private int unitTextColor = Color.parseColor("#787878"); // 单位文字颜色
+        private int viewBg = Color.parseColor("#FFFFFFFF"); // 배경색
+        private float unitTextSize = 36f; // 단위 텍스트 크기
+        private int unitTextColor = Color.parseColor("#787878"); // 단위 텍스트 색상
         private float scaleTextSize = 18f; // 刻度值文字大小
-        private int scaleTextColor = Color.parseColor("#464646"); // 刻度值文字颜色
-        private int maxScaleLineColor = Color.parseColor("#787878"); // 长刻度颜色
-        private int midScaleLineColor = Color.parseColor("#A9A9A9"); // 中等刻度颜色
-        private int minScaleLineColor = Color.parseColor("#A9A9A9"); // 短刻度颜色
+        private int scaleTextColor = Color.parseColor("#464646"); // 틱 값 텍스트 색상
+        private int maxScaleLineColor = Color.parseColor("#787878"); // 롱 스케일 컬러
+        private int midScaleLineColor = Color.parseColor("#A9A9A9"); // 중간 규모 색상
+        private int minScaleLineColor = Color.parseColor("#A9A9A9"); // 쇼트 스케일 컬러
         private float scaleLineWidth = 1.5f; // 刻度线宽
         private float maxLineWidth = 70f; // 长刻度长
         private float midLineWidth = 50f; // 中等刻度长
         private float minLineWidth = 40f; // 短刻度长
         private float spaceScaleWidth = 30f; // 刻度离温度计距离、刻度离文字距离
-        private int thermometerBg = Color.WHITE; // 温度计颜色
-        private int thermometerShadowBg = Color.parseColor("#F0F0F0"); // 温度计阴影颜色
+        private int thermometerBg = Color.WHITE; // 온도계 색상
+        private int thermometerShadowBg = Color.parseColor("#F0F0F0"); // 온도계 그림자 색상
         private float maxThermometerRadius = 80f; // 温度计底部半径
         private float minThermometerRadius = 40f; // // 温度计顶部半径
         private float maxMercuryRadius = 60f; // 水银底部半径
         private float minMercuryRadius = 20f; // 水银顶部半径
-        private int leftMercuryBg = Color.parseColor("#FFE6E0"); // 左边水银背景颜色
-        private int rightMercuryBg = Color.parseColor("#FDE1DE"); // 右边水银背景颜色
-        private int leftMercuryColor = Color.parseColor("#FF8063"); // 左边水银颜色
-        private int rightMercuryColor = Color.parseColor("#F66A5C"); // 右边水银颜色
+        private int leftMercuryBg = Color.parseColor("#FFE6E0"); // 왼쪽 수은 배경색
+        private int rightMercuryBg = Color.parseColor("#FDE1DE"); // 오른쪽 수은 배경색
+        private int leftMercuryColor = Color.parseColor("#FF8063"); // 왼쪽 수은 색
+        private int rightMercuryColor = Color.parseColor("#F66A5C"); // 오른쪽 머큐리 컬러
         private float maxScaleValue = 42f; // 温度计最大值
         private float minScaleValue = 35f; // 温度计最小值
         private float curScaleValue = 35f; // 当前刻度值
