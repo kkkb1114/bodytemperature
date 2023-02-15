@@ -363,8 +363,6 @@ public class Thermometer extends View {
             } else {
                 stop();
             }
-
-
         }
 
         public void start() {
