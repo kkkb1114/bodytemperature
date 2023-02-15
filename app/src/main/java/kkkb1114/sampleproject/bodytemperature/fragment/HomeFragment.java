@@ -86,6 +86,7 @@ public class HomeFragment extends Fragment {
                 // 3초마다 난수 받아옴
                 String s = Generator.generate();
                 thermometer.setCurValue(Float.valueOf(s));
+                //thermometer.setValueAndStartAnim(Float.valueOf(s));
                 tv_temperature.setText(s);
                 handler.postDelayed(this, 3000);
                 tempStack.add(Double.valueOf(s));
