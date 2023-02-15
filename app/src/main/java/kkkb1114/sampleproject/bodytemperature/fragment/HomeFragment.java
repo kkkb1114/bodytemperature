@@ -19,13 +19,14 @@ import java.util.Date;
 import java.util.Stack;
 
 import kkkb1114.sampleproject.bodytemperature.R;
+import kkkb1114.sampleproject.bodytemperature.ThermometerView;
 import kkkb1114.sampleproject.bodytemperature.thermometer.Generator;
 import kkkb1114.sampleproject.bodytemperature.thermometer.Thermometer;
 
 public class HomeFragment extends Fragment {
 
     TextView tv_temperature;
-    Thermometer thermometer;
+    ThermometerView thermometer;
     private SharedPreferences preferences;
     Handler handler = new Handler();
     SharedPreferences.Editor editor;
@@ -86,9 +87,11 @@ public class HomeFragment extends Fragment {
 
                 // 3초마다 난수 받아옴
                 String s = Generator.generate();
+                thermometer.setCurValue(Float.valueOf(s));
                 tv_temperature.setText(s);
                 handler.postDelayed(this, 3000);
                 tempStack.add(Double.valueOf(s));
+
                 Log.d("------------", String.valueOf(tempStack.size()));
 
             }
