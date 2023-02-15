@@ -30,6 +30,7 @@
         <attr name="maxScaleValue" format="float" /> <!-- 温度计最大值 -->
         <attr name="minScaleValue" format="float" /> <!-- 温度计最小值 -->
         <attr name="curScaleValue" format="float" /> <!-- 当前刻度值 -->
+        <attr name="viewBg" format="color|reference" /> <!-- 背景颜色 -->
 
     </declare-styleable>
 

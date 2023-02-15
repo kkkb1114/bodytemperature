@@ -25,10 +25,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <kkkb1114.sampleproject.bodytemperature.thermometer.Thermometer
+                <kkkb1114.sampleproject.bodytemperature.ThermometerView
                     android:id="@+id/thermometer"
                     android:layout_width="200sp"
-                    android:layout_height="300sp" />
+                    android:layout_height="300sp"/>
 
                 <TextView
                     android:id="@+id/tv_temperature"
