@@ -44,7 +44,11 @@ public class HomeFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         context = getActivity();
-        preferences = context.getSharedPreferences("timeLineData", MODE_PRIVATE);
+        long now =System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String str = dateFormat.format(date) +"timelineData";
+        preferences = context.getSharedPreferences(str, MODE_PRIVATE);
         editor= preferences.edit();
 
         initView(view);
@@ -84,7 +88,7 @@ public class HomeFragment extends Fragment {
                                 String value = edt_pill.getText().toString();
                                 long now =System.currentTimeMillis();
                                 Date date = new Date(now);
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
 
                                 editor.putString(dateFormat.format(date),"pill:"+value);
                                 editor.commit();
