@@ -55,7 +55,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         context = this;
 
-        preferences = context.getSharedPreferences("tempData", MODE_PRIVATE);
+        //날짜 측정
+        long now =System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String str = dateFormat.format(date)+"tempData";
+        preferences = context.getSharedPreferences(str, MODE_PRIVATE);
         editor = preferences.edit();
 
         initView();
@@ -172,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
                     long now =System.currentTimeMillis();
                     Date date = new Date(now);
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("hhmm");
 
                     editor.putString(dateFormat.format(date),String.valueOf(max));
                     editor.commit();
@@ -193,4 +198,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
     }
+
+
 }
