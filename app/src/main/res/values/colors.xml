@@ -13,4 +13,6 @@
     <color name="main_bottom_line">#1A000000</color>
     <color name="main_bottom_bg">#C5C5C3</color>
     <color name="main_bottom_icon_bg">#C5C5C3</color>
+    <color name="editText_hint">#9E9E9E</color>
+    <color name="button_confirm_color">#2B8FB6</color>
 </resources>

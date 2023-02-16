@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     public void WriteTextFile(String foldername, String filename, String contents){
         try{
             File dir = new File (foldername);

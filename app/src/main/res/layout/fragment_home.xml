@@ -22,7 +22,7 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <kkkb1114.sampleproject.bodytemperature.ThermometerView
+            <kkkb1114.sampleproject.bodytemperature.thermometer.ThermometerView
                 android:id="@+id/thermometer"
                 android:layout_width="200sp"
                 android:layout_height="match_parent"

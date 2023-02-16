@@ -6,15 +6,27 @@
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable-v24/ic_home.xml" value="0.2115" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable-v24/ic_info.xml" value="0.2115" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable-v24/ic_settings.xml" value="0.2115" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable-v24/ic_settings_white.xml" value="0.2235" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/bottom_menu_selector_color.xml" value="0.159" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/dialog_button.xml" value="0.171" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/half_rounded_corners.xml" value="0.1305" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1235" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/left_half_rounded_corners.xml" value="0.171" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/right_half_rounded_corners.xml" value="0.1305" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/rounded_corners.xml" value="0.1305" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/rounded_corners_red.xml" value="0.171" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/rounded_corners_sky.xml" value="0.171" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/activity_alarm.xml" value="0.25364583333333335" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/activity_connect.xml" value="0.2390625" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/activity_my_profile.xml" value="0.264" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/ble_connect_list_item.xml" value="0.1125" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/dialog_significant.xml" value="0.25364583333333335" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/dialog_weight_picker.xml" value="0.2526041666666667" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/fragment_blank.xml" value="0.25364583333333335" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/fragment_body_temperature_graph.xml" value="0.1125" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/fragment_home.xml" value="0.25364583333333335" />
-        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/fragment_setting.xml" value="0.1125" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/fragment_setting.xml" value="0.4" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/main_toolbar.xml" value="0.25364583333333335" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/menu/bottom_menu.xml" value="0.2526041666666667" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/menu/main_toolbar.xml" value="0.25364583333333335" />

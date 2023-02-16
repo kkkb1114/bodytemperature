@@ -1,4 +1,4 @@
-package kkkb1114.sampleproject.bodytemperature;
+package kkkb1114.sampleproject.bodytemperature.thermometer;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -17,6 +17,8 @@ import android.view.View;
 import android.view.animation.LinearInterpolator;
 
 import androidx.annotation.Nullable;
+
+import kkkb1114.sampleproject.bodytemperature.R;
 
 public class ThermometerView extends View {
 
