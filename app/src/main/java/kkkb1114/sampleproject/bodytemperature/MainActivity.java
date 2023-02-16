@@ -1,44 +1,35 @@
 package kkkb1114.sampleproject.bodytemperature;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Canvas;
-import android.os.Build;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.util.Log;
-import android.widget.TextView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Stack;
 
-import kkkb1114.sampleproject.bodytemperature.thermometer.Generator;
-import kkkb1114.sampleproject.bodytemperature.thermometer.Thermometer;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-
-import com.google.android.material.navigation.NavigationBarView;
-
 import kkkb1114.sampleproject.bodytemperature.connect.ConnectActivity;
 import kkkb1114.sampleproject.bodytemperature.fragment.BodyTemperatureGraphFragment;
 import kkkb1114.sampleproject.bodytemperature.fragment.HomeFragment;
 import kkkb1114.sampleproject.bodytemperature.fragment.SettingFragment;
+import kkkb1114.sampleproject.bodytemperature.thermometer.Generator;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,17 +44,24 @@ public class MainActivity extends AppCompatActivity {
     // 바텀 네비게이션
     NavigationBarView navigationBarView;
 
+    private SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+    Handler handler = new Handler();
+    Stack<Double> tempStack = new Stack<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = this;
 
+        preferences = context.getSharedPreferences("tempData", MODE_PRIVATE);
+        editor = preferences.edit();
+
         initView();
         setToolbar();
         setFragment();
-
-
+        MeasurBodyTempreture();
     }
 
     public void initView(){
@@ -151,4 +149,48 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    /** 체온 측정 스레드 **/
+    public void MeasurBodyTempreture(){
+
+        // 체온측정 스레드 시작.
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                // 1분이 지나면 최대값 파일에 작성
+                if (tempStack.size() >= 20){
+                    Double max=tempStack.peek();
+
+                    while(!tempStack.isEmpty()) {
+
+                        Double cmp = tempStack.pop();
+                        if(cmp>max)
+                            max=cmp;
+
+                    }
+                    tempStack.clear();
+
+                    long now =System.currentTimeMillis();
+                    Date date = new Date(now);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+                    editor.putString(dateFormat.format(date),String.valueOf(max));
+                    editor.commit();
+
+                    Log.d("max", String.valueOf(max));
+                }
+
+                // 3초마다 난수 받아옴
+                String s = Generator.generate();
+                homeFragment.setTextThermometerView(Float.valueOf(s));
+                //thermometer.setValueAndStartAnim(Float.valueOf(s));
+                homeFragment.setTextTvTemperature(s);
+                handler.postDelayed(this, 3000);
+                tempStack.add(Double.valueOf(s));
+
+                Log.d("------------", String.valueOf(tempStack.size()));
+
+            }
+        }).start();
+    }
 }
