@@ -1,11 +1,13 @@
 package kkkb1114.sampleproject.bodytemperature.activity;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,6 +21,7 @@ import java.util.TimeZone;
 
 import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.dialog.WeightPickerDialog;
+import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
 
 public class MyProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -30,6 +33,13 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     Button bt_myProfile_cancle;
     Button bt_myProfile_confirm;
 
+    int gender = 1; // 1: 남성, 0: 여성
+    String name;
+    String birthDate;
+    String weight;
+
+    Context context;
+
     // 달력 전용
     MaterialDatePicker materialDatePicker;
 
@@ -37,8 +47,9 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_profile);
-
+        context = this;
         initView();
+        getMyProfile();
     }
 
     public void initView(){
@@ -77,7 +88,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
             @Override
             public void onPositiveButtonClick(Long selection) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy년 MM월 dd일");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 Date date = new Date();
                 date.setTime(selection);
 
@@ -86,18 +97,48 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
             }
         });
     }
-    
+
+    /** 성별 세팅 **/
+    public void setGender(int gender){
+        if (gender == 1){
+            tv_myProfile_man.setTextColor(Color.parseColor("#2B8FB6"));
+            tv_myProfile_woman.setTextColor(Color.parseColor("#9E9E9E"));
+        }else {
+            tv_myProfile_man.setTextColor(Color.parseColor("#9E9E9E"));
+            tv_myProfile_woman.setTextColor(Color.parseColor("#2B8FB6"));
+        }
+    }
+
+    /** 쉐어드에서 내 정보 꺼내옵니다. **/
+    public void getMyProfile(){
+        gender = PreferenceManager.getInt(context, "gender");
+        name = PreferenceManager.getString(context, "name");
+        birthDate = PreferenceManager.getString(context, "birthDate");
+        weight = PreferenceManager.getString(context, "weight");
+
+        setGender(gender);
+        if (name.length() >= 2){
+            et_myProfile_name.setText(name);
+        }
+        if (birthDate.length() >= 2){
+            tv_myProfile_birthDate.setText(birthDate);
+        }
+        if (weight.length() >= 2){
+            tv_myProfile_weight.setText(weight);
+        }
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.tv_myProfile_man:
-                tv_myProfile_man.setTextColor(Color.parseColor("#2B8FB6"));
-                tv_myProfile_woman.setTextColor(Color.parseColor("#9E9E9E"));
+            case R.id.tv_myProfile_woman:
+                gender = 0;
+                setGender(gender);
                 break;
 
-            case R.id.tv_myProfile_woman:
-                tv_myProfile_man.setTextColor(Color.parseColor("#9E9E9E"));
-                tv_myProfile_woman.setTextColor(Color.parseColor("#2B8FB6"));
+            case R.id.tv_myProfile_man:
+                gender = 1;
+                setGender(gender);
                 break;
 
             case R.id.tv_myProfile_birthDate:
@@ -115,6 +156,22 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 break;
 
             case R.id.bt_myProfile_confirm:
+                name = et_myProfile_name.getText().toString();
+                birthDate = tv_myProfile_birthDate.getText().toString();
+                weight = tv_myProfile_weight.getText().toString();
+                PreferenceManager.PREFERENCES_NAME = "myProfile";
+
+                if (name.trim().length() == 0 || birthDate.trim().length() == 0 || weight.trim().length() == 0
+                || name.equals("이름을 입력하세요")|| birthDate.equals("생년월일") || weight.equals("몸무게")){
+                    Toast.makeText(context, "정보를 모두 기입해 주세요.", Toast.LENGTH_SHORT).show();
+                }else {
+                    PreferenceManager.setString(context, "name", name);
+                    PreferenceManager.setInt(context, "gender", gender);
+                    PreferenceManager.setString(context, "birthDate", birthDate);
+                    PreferenceManager.setString(context, "weight", weight);
+
+                    finish();
+                }
                 break;
         }
     }

@@ -27,8 +27,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import kkkb1114.sampleproject.bodytemperature.R;
 
 public class BodyTemperatureGraphFragment extends Fragment {
 
@@ -63,7 +67,6 @@ public class BodyTemperatureGraphFragment extends Fragment {
 
 
         showChart();
-
         return view;
     }
 
@@ -73,12 +76,15 @@ public class BodyTemperatureGraphFragment extends Fragment {
 
     public void showChart() {
 
+        XAxis xAxis = lineChart.getXAxis();
+
+        LineData chartData = new LineData();
         Map<String,?> keys = preferences.getAll();
 
         if(keys.size()==0)
             return;
 
-        XAxis xAxis = lineChart.getXAxis();
+
         LineData lineData = new LineData();
 
 
