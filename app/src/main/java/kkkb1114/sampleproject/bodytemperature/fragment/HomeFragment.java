@@ -88,9 +88,9 @@ public class HomeFragment extends Fragment {
                                 String value = edt_pill.getText().toString();
                                 long now =System.currentTimeMillis();
                                 Date date = new Date(now);
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss");
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
 
-                                editor.putString(dateFormat.format(date),"pill:"+value);
+                                editor.putString(dateFormat.format(date),value);
                                 editor.commit();
                                 dialog.dismiss();
                             }
@@ -114,9 +114,9 @@ public class HomeFragment extends Fragment {
                                 String value = edt_significant.getText().toString();
                                 long now =System.currentTimeMillis();
                                 Date date = new Date(now);
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
 
-                                editor.putString(dateFormat.format(date),"significant:"+value);
+                                editor.putString(dateFormat.format(date),value);
                                 editor.commit();
                                 dialog.dismiss();
                             }
