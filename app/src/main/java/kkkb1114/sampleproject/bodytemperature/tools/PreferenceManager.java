@@ -6,9 +6,14 @@ import android.widget.TextView;
 
 import java.util.Map;
 
+/**
+ * <사용법>
+ *     1. 이용시 필요하면 'PREFERENCES_NAME' 수정해야합니다.
+ *     2. 모든 메소드가 static이라 바로 사용하면 됩니다.
+ *     **/
 // 데이터 저장 및 로드 클래스
 public class PreferenceManager {
-    public static final String PREFERENCES_NAME = "rebuild_preference";
+    public static String PREFERENCES_NAME = "memberProfile";
 
     private static final String DEFAULT_VALUE_STRING = " ";
     private static final boolean DEFAULT_VALUE_BOOLEAN = false;
