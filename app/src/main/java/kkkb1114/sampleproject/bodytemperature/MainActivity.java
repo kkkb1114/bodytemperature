@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
 
                     long now =System.currentTimeMillis();
                     Date date = new Date(now);
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("hhmm");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
 
                     editor.putString(dateFormat.format(date),String.valueOf(max));
                     editor.commit();
