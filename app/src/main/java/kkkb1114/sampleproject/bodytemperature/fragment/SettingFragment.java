@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import kkkb1114.sampleproject.bodytemperature.R;
+import kkkb1114.sampleproject.bodytemperature.activity.AlarmActivity;
 import kkkb1114.sampleproject.bodytemperature.activity.MyProfileActivity;
 import kkkb1114.sampleproject.bodytemperature.connect.ConnectActivity;
 
@@ -18,6 +19,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
 
     TextView tv_setting_connect;
     ImageView iv_setting_profile;
+    TextView tv_setting_alarm;
 
     public SettingFragment() {
 
@@ -38,6 +40,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         tv_setting_connect.setOnClickListener(this);
         iv_setting_profile = view.findViewById(R.id.iv_setting_profile);
         iv_setting_profile.setOnClickListener(this);
+        tv_setting_alarm = view.findViewById(R.id.tv_setting_alarm);
+        tv_setting_alarm.setOnClickListener(this);
     }
 
     /** 클릭 이벤트 모음 **/
@@ -53,6 +57,11 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 // 내 프로필로 이동
                 Intent profileIntent = new Intent(view.getContext(), MyProfileActivity.class);
                 startActivity(profileIntent);
+                break;
+            case R.id.tv_setting_alarm:
+                // 내 프로필로 이동
+                Intent alarmIntent = new Intent(view.getContext(), AlarmActivity.class);
+                startActivity(alarmIntent);
                 break;
         }
     }

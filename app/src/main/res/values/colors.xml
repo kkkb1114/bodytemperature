@@ -16,4 +16,7 @@
     <color name="editText_hint">#9E9E9E</color>
     <color name="button_confirm_color">#2B8FB6</color>
     <color name="myprofile_gender_select">#2B8FB6</color>
+    <color name="activity_bg">#1A000000</color>
+    <color name="alarm_high_temperature_text">#FF5722</color>
+    <color name="alarm_low_temperature_text">#2B8FB6</color>
 </resources>

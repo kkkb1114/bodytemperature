@@ -14,6 +14,8 @@ import kkkb1114.sampleproject.bodytemperature.R;
 
 public class BLEConnect_ListAdapter extends RecyclerView.Adapter<BLEConnect_ListAdapter.ViewHolder> {
 
+
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
