@@ -1,5 +1,6 @@
 package kkkb1114.sampleproject.bodytemperature.activity;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +20,7 @@ import java.util.TimeZone;
 
 import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.dialog.WeightPickerDialog;
+import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
 
 public class MyProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -30,6 +32,8 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     Button bt_myProfile_cancle;
     Button bt_myProfile_confirm;
 
+    Context context;
+
     // 달력 전용
     MaterialDatePicker materialDatePicker;
 
@@ -37,7 +41,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_profile);
-
+        context = this;
         initView();
     }
 
@@ -115,6 +119,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 break;
 
             case R.id.bt_myProfile_confirm:
+                PreferenceManager.setString(context, "", "");
                 break;
         }
     }
