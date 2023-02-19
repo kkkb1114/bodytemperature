@@ -31,6 +31,8 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
     Button bt_alarm_confirm;
     Button bt_alarm_cancle;
 
+    DecimalFormat decimalFormat = new DecimalFormat(".#");
+
     /*
      * 1. 최초 화면 띄울때 뷰 세팅 구분 값
      * 2. 저장소에 알람 데이터가 있으면 프로그래스바가 움직여서 프로그래스바 움직임 감지 메소드가 돌기때문에 처음에는 막기위해 만들었다.
@@ -40,6 +42,8 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
     // seekBar 최소, 최고 온도
     double max = 40.0;
     double min = 37.3;
+    double alarm_high_temperature_value = 0.0;
+    double alarm_low_temperature_value = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +56,6 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         initView();
         setSeekBar();
         setBodyTemperature();
-
-        Log.e("tv_high_temperature", tv_high_temperature.getText().toString());
-        Log.e("tv_low_temperature", tv_low_temperature.getText().toString());
     }
 
     public void initView(){
@@ -74,38 +75,48 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
     public void setBodyTemperature(){
         // 고체온
         boolean alarm_high_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_high_temperature_boolean");
-        double alarm_high_temperature_value = Double.parseDouble(PreferenceManager.getString(context, "alarm_high_temperature_value"));
+        String alarm_high_temperature_str = PreferenceManager.getString(context, "alarm_high_temperature_value");
+        int progress_high_temperature = 0;
+
+        if (alarm_high_temperature_str.trim().isEmpty()){
+            alarm_high_temperature_value = min;
+            progress_high_temperature = (int) min;
+        }else {
+            alarm_high_temperature_value = Double.parseDouble(decimalFormat.format(Double.parseDouble(alarm_high_temperature_str)));
+            progress_high_temperature = (int) ((alarm_high_temperature_value - min) * 100);
+        }
 
         if (alarm_high_temperature_boolean){
             sw_high_temperature.setChecked(true);
-            sb_high_temperature.setProgress((int) Math.round(alarm_high_temperature_value));
             tv_high_temperature.setText(String.valueOf(alarm_high_temperature_value));
         }else {
             sw_high_temperature.setChecked(false);
-            sb_high_temperature.setProgress((int) min);
             tv_high_temperature.setText(String.valueOf(min));
         }
+        setProgressThumb(sb_high_temperature, progress_high_temperature);
 
         // 저체온
         boolean alarm_low_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_low_temperature_boolean");
-        double alarm_low_temperature_value = Double.parseDouble(PreferenceManager.getString(context, "alarm_low_temperature_value"));
+        String alarm_low_temperature_str = PreferenceManager.getString(context, "alarm_low_temperature_value");
+        int progress_low_temperature = 0;
+
+        if (alarm_low_temperature_str.trim().isEmpty()){
+            alarm_low_temperature_value = min;
+            progress_low_temperature = (int) min;
+        }else {
+            alarm_low_temperature_value = Double.parseDouble(decimalFormat.format(Double.parseDouble(alarm_low_temperature_str)));
+            progress_low_temperature = (int) ((alarm_low_temperature_value - min) * 100);
+        }
+
         if (alarm_low_temperature_boolean){
             sw_low_temperature.setChecked(true);
-            sb_low_temperature.setProgress((int) Math.round(alarm_low_temperature_value));
             tv_low_temperature.setText(String.valueOf(alarm_low_temperature_value));
         }else {
             sw_low_temperature.setChecked(false);
-            sb_low_temperature.setProgress((int) min);
             tv_low_temperature.setText(String.valueOf(min));
         }
+        setProgressThumb(sb_low_temperature, progress_low_temperature);
 
-        // 이게 Progress 움직이는 해결법임
-        /*sb_low_temperature.post(new Runnable() {
-            @Override
-            public void run() {
-                sb_low_temperature.setProgress(40);
-            }
-        });*/
         firstSetView = true;
     }
 
@@ -115,24 +126,32 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         // seekbar 최대 값 설정
         sb_high_temperature.setMax((int) ((max-min) / step));
         sb_low_temperature.setMax((int) ((max-min) / step));
+
+        setSeekBarAnimation(sb_high_temperature, "progress_high_temperature",max, min);
+        setSeekBarAnimation(sb_low_temperature, "progress_low_temperature",max, min);
         setSeekBarChange_high(sb_high_temperature, min, step);
         setSeekBarChange_low(sb_low_temperature, min, step);
-        setSeekBarAnimation(sb_high_temperature, max, min);
-        setSeekBarAnimation(sb_low_temperature, max, min);
+    }
+
+    /** progress thumb 임의 위치로 배치 **/
+    public void setProgressThumb(SeekBar seekBar, int progress){
+        seekBar.post(new Runnable() {
+            @Override
+            public void run() {
+                seekBar.setProgress(progress);
+            }
+        });
     }
 
     /** 고온 seekBar 동작시 이벤트 **/
     public void setSeekBarChange_high(SeekBar seekBar, double min, double step){
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        sb_high_temperature.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
                 if (firstSetView){
                     double value = min + (progress * step);
-                    DecimalFormat decimalFormat = new DecimalFormat(".#");
                     String result = decimalFormat.format(value);
                     tv_high_temperature.setText(result);
-
-                    Log.e("tv_high_temperature", tv_high_temperature.getText().toString());
                 }
             }
 
@@ -146,22 +165,17 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
 
             }
         });
-
-        Log.e("tv_high_temperature", tv_high_temperature.getText().toString());
     }
 
     /** 저온 seekBar 동작시 이벤트 **/
     public void setSeekBarChange_low(SeekBar seekBar, double min, double step){
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        sb_low_temperature.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
                 if (firstSetView){
                     double value = min + (progress * step);
-                    DecimalFormat decimalFormat = new DecimalFormat(".#");
                     String result = decimalFormat.format(value);
                     tv_low_temperature.setText(result);
-
-                    Log.e("tv_low_temperature", tv_low_temperature.getText().toString());
                 }
             }
 
@@ -175,14 +189,12 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
 
             }
         });
-
-        Log.e("tv_low_temperature", tv_low_temperature.getText().toString());
     }
 
     /** seekBar 최초 위치 설정 **/
-    public void setSeekBarAnimation(SeekBar seekBar, double max, double min){
+    public void setSeekBarAnimation(SeekBar seekBar, String propertyName,double max, double min){
         int progress_half = (int) (((max / min) / 2 ) -1);
-        ObjectAnimator objectAnimator = ObjectAnimator.ofInt(seekBar, "progress", progress_half);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofInt(seekBar, propertyName, progress_half);
         objectAnimator.setDuration(100); // 0.5초
         objectAnimator.setInterpolator(new LinearInterpolator());
         objectAnimator.start();
