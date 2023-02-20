@@ -178,7 +178,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                     PreferenceManager.setString(context, "weight", weight);
 
                     // 수정 모드가 아니면 알람 설정 할때 저장할 데이터 미리 생성
-                    if (intentUserName.isEmpty()){
+                    if (intentUserName == null || intentUserName.isEmpty()){
                         PreferenceManager.setBoolean(context, "alarm_high_temperature_boolean", false);
                         PreferenceManager.setString(context, "alarm_high_temperature_value", String.valueOf(37.3));
                         PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean",false);
