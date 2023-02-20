@@ -9,8 +9,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,11 +17,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.navigation.NavigationBarView;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Stack;
@@ -32,7 +26,9 @@ import kkkb1114.sampleproject.bodytemperature.BleConnect.ConnectActivity;
 import kkkb1114.sampleproject.bodytemperature.fragment.BodyTemperatureGraphFragment;
 import kkkb1114.sampleproject.bodytemperature.fragment.HomeFragment;
 import kkkb1114.sampleproject.bodytemperature.fragment.SettingFragment;
+import kkkb1114.sampleproject.bodytemperature.notification.TemperatureNotification;
 import kkkb1114.sampleproject.bodytemperature.thermometer.Generator;
+import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
     Stack<Double> tempStack = new Stack<>();
 
    SharedPreferences select_user;
+
+   // 노티 변수
+    TemperatureNotification temperatureNotification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,6 +177,8 @@ public class MainActivity extends AppCompatActivity {
                 handler.postDelayed(this, 3000);
                 tempStack.add(Double.valueOf(s));
 
+                //todo 여기서 알람 체크 하기
+                setNotification(s);
                 Log.d("------------", String.valueOf(tempStack.size()));
 
             }
@@ -200,10 +201,56 @@ public class MainActivity extends AppCompatActivity {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String str = username+dateFormat.format(date)+"tempData";
 
-
         preferences = context.getSharedPreferences(str, MODE_PRIVATE);
         editor = preferences.edit();
     }
 
+    /** 노티피케이션 세팅 **/
+    public void setNotification(String s){
+        PreferenceManager.PREFERENCES_NAME = "user_list";
+        String select_user_name = PreferenceManager.getString(context, "select_user_name");
 
+        if (select_user_name != null){
+            PreferenceManager.PREFERENCES_NAME = select_user_name+"Profile";
+            boolean alarm_high_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_high_temperature_boolean");
+            boolean alarm_low_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_low_temperature_boolean");
+
+            // 고온 노티 체크
+            checkNotificationTemperature(alarm_high_temperature_boolean, s, "high");
+            // 저온 노티 체크
+            checkNotificationTemperature(alarm_low_temperature_boolean, s, "low");
+
+        }
+    }
+
+    /** 체온 노티 체크 **/
+    public void checkNotificationTemperature(boolean isAlarm, String s, String high_or_low){
+        if (isAlarm){
+            if (high_or_low.equals("high")){
+                String alarm_temperature_str = PreferenceManager.getString(context, "alarm_high_temperature_value");
+                double temperature_get = Double.parseDouble(alarm_temperature_str);
+                double temperature_s = Double.parseDouble(s);
+
+                if (temperature_get <= temperature_s){
+                    temperatureNotification = new TemperatureNotification(context);
+                    temperatureNotification.setNotification_HighTemperature(s);
+
+                    // 알람이 한번 울리면 알람 설정을 off 한다.
+                    PreferenceManager.setBoolean(context, "alarm_high_temperature_boolean", false);
+                }
+            }else {
+                String alarm_temperature_str = PreferenceManager.getString(context, "alarm_low_temperature_value");
+                double temperature_get = Double.parseDouble(alarm_temperature_str);
+                double temperature_s = Double.parseDouble(s);
+
+                if (temperature_get >= temperature_s){
+                    temperatureNotification = new TemperatureNotification(context);
+                    temperatureNotification.setNotification_LowTemperature(s);
+
+                    // 알람이 한번 울리면 알람 설정을 off 한다.
+                    PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean", false);
+                }
+            }
+        }
+    }
 }

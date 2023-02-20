@@ -42,7 +42,8 @@ dependencies {
     // 깃허브 라이브러리들
     // 캘린더
     implementation 'com.google.android.material:material:1.8.0'
-    //그래프
+    // 그래프
     implementation 'com.github.PhilJay:MpAndroidChart:v3.0.2'
-    //타임라인
+    // notification
+    implementation "androidx.core:core:1.7.0"
 }
