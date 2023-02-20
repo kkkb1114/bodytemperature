@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -33,6 +34,7 @@ public class HomeFragment extends Fragment {
     private SharedPreferences preferences;
     SharedPreferences.Editor editor;
     Context context;
+    SharedPreferences select_user;
     public HomeFragment() {
 
     }
@@ -44,16 +46,18 @@ public class HomeFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         context = getActivity();
-        long now =System.currentTimeMillis();
-        Date date = new Date(now);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String str = dateFormat.format(date) +"timelineData";
-        preferences = context.getSharedPreferences(str, MODE_PRIVATE);
-        editor= preferences.edit();
+
+        setUser();
 
         initView(view);
         this.setListner();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setUser();
     }
 
     public void initView(View view){
@@ -90,7 +94,7 @@ public class HomeFragment extends Fragment {
                                 Date date = new Date(now);
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
 
-                                editor.putString(dateFormat.format(date),value);
+                                editor.putString(dateFormat.format(date)+" 투약정보) ",value);
                                 editor.commit();
                                 dialog.dismiss();
                             }
@@ -116,7 +120,7 @@ public class HomeFragment extends Fragment {
                                 Date date = new Date(now);
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
 
-                                editor.putString(dateFormat.format(date),value);
+                                editor.putString(dateFormat.format(date)+" 특이사항)",value);
                                 editor.commit();
                                 dialog.dismiss();
                             }
@@ -128,6 +132,22 @@ public class HomeFragment extends Fragment {
                         }).show();
             }
         });
+    }
+
+    public void setUser()
+    {
+        select_user = context.getSharedPreferences("user_list",MODE_PRIVATE);
+        String username = select_user.getString("select_user_name","선택된 사용자 없음");
+
+
+        long now =System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String str = username+dateFormat.format(date)+"timelineData";
+
+
+        preferences = context.getSharedPreferences(str, MODE_PRIVATE);
+        editor = preferences.edit();
     }
 
 

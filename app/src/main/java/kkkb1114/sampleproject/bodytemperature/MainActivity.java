@@ -9,6 +9,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -49,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     Handler handler = new Handler();
     Stack<Double> tempStack = new Stack<>();
 
+   SharedPreferences select_user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,17 +61,17 @@ public class MainActivity extends AppCompatActivity {
         context = this;
 
         //날짜 측정
-        long now =System.currentTimeMillis();
-        Date date = new Date(now);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String str = dateFormat.format(date)+"tempData";
-        preferences = context.getSharedPreferences(str, MODE_PRIVATE);
-        editor = preferences.edit();
-
+        setUser();
         initView();
         setToolbar();
         setFragment();
         MeasurBodyTempreture();
+    }
+
+    protected void onResume() {
+
+        super.onResume();
+        setUser();
     }
 
     public void initView(){
@@ -75,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
         settingFragment = new SettingFragment();
         toolbar = findViewById(R.id.toolbar_main);
         navigationBarView = findViewById(R.id.bottomNavigation);
+
     }
 
     /** 툴바 세팅 **/
@@ -129,26 +135,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void WriteTextFile(String foldername, String filename, String contents){
-        try{
-            File dir = new File (foldername);
-            //디렉토리 폴더가 없으면 생성함
-            if(!dir.exists()){
-                dir.mkdir();
-            }
-            //파일 output stream 생성
-            FileOutputStream fos = new FileOutputStream(foldername+"/"+filename, true);
-            //파일쓰기
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));
-            writer.write(contents);
-            writer.flush();
-
-            writer.close();
-            fos.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
 
 
     protected void onDestroy(Bundle savedInstanceState) throws IOException {
@@ -182,8 +168,6 @@ public class MainActivity extends AppCompatActivity {
 
                     editor.putString(dateFormat.format(date),String.valueOf(max));
                     editor.commit();
-
-                    Log.d("max", String.valueOf(max));
                 }
 
                 // 3초마다 난수 받아옴
@@ -198,6 +182,27 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }).start();
+    }
+
+    public void setUser()
+    {
+        select_user = context.getSharedPreferences("user_list",MODE_PRIVATE);
+        String username = select_user.getString("select_user_name","선택된 사용자 없음");
+
+
+        if(username.equals("선택된 사용자 없음"))
+        {
+            Toast.makeText(getApplicationContext(), "사용자 등록을 완료해주세요.", Toast.LENGTH_SHORT).show();
+        }
+
+        long now =System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String str = username+dateFormat.format(date)+"tempData";
+
+
+        preferences = context.getSharedPreferences(str, MODE_PRIVATE);
+        editor = preferences.edit();
     }
 
 

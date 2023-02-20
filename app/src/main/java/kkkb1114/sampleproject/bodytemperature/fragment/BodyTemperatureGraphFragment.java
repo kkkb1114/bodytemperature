@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.timeline.TimelineAdapter;
@@ -55,6 +56,11 @@ public class BodyTemperatureGraphFragment extends Fragment {
     TextView tv_graphdate;
     MaterialDatePicker materialDatePicker;
 
+    View view;
+
+    SharedPreferences select_user;
+
+
 
 
 
@@ -70,25 +76,26 @@ public class BodyTemperatureGraphFragment extends Fragment {
         ArrayList<Entry> entry_chart = new ArrayList<>();
 
 
-        context = getActivity();
-        now =System.currentTimeMillis();
-        date = new Date(now);
-        dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        str=dateFormat.format(date)+"tempData";
 
 
-        preferences = context.getSharedPreferences(str, MODE_PRIVATE);
-        preferences2 = context.getSharedPreferences(dateFormat.format(date)+"timelineData",MODE_PRIVATE);
-
-
-
+        setUser();
         View view = inflater.inflate(R.layout.fragment_body_temperature_graph, container, false);
         initView(view);
         this.setListner();
+
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         tv_graphdate.setText(dateFormat.format(date));
 
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setUser();
     }
 
     public void initView(View view){
@@ -97,6 +104,7 @@ public class BodyTemperatureGraphFragment extends Fragment {
         rv_timeline=view.findViewById(R.id.rv_timeline_list);
         showChart(preferences,view);
         setRecyclerView(preferences2,view);
+
     }
 
     public void showChart(SharedPreferences preference,View view) {
@@ -234,16 +242,41 @@ public class BodyTemperatureGraphFragment extends Fragment {
                 String dateStr = simpleDateFormat.format(date);
                 tv_graphdate.setText(dateStr);
 
-                SharedPreferences pref = context.getSharedPreferences(dateStr+"tempData",MODE_PRIVATE);
-                SharedPreferences pref2 = context.getSharedPreferences(dateStr+"timelineData",MODE_PRIVATE);
+                select_user = context.getSharedPreferences("user_list",MODE_PRIVATE);
+                String username = select_user.getString("select_user_name","선택된 사용자 없음");
+
+                SharedPreferences pref = context.getSharedPreferences(username+dateStr+"tempData",MODE_PRIVATE);
+                SharedPreferences pref2 = context.getSharedPreferences(username+dateStr+"timelineData",MODE_PRIVATE);
 
 
 
                 showChart(pref,getView());
                 setRecyclerView(pref2,getView());
-                Log.d("pref",dateStr+"timelineData" );
             }
         });
+    }
+
+    public void setUser()
+    {
+        context = getContext();
+
+
+        select_user = context.getSharedPreferences("user_list",MODE_PRIVATE);
+        String username = select_user.getString("select_user_name","선택된 사용자 없음");
+
+
+        if(username.equals("선택된 사용자 없음"))
+        {
+            Toast.makeText(context, "사용자 등록을 완료해주세요.", Toast.LENGTH_SHORT).show();
+        }
+
+        long now =System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String str = username+dateFormat.format(date)+"tempData";
+
+        preferences = context.getSharedPreferences(str, MODE_PRIVATE);
+        preferences2 = context.getSharedPreferences(username+dateFormat.format(date)+"timelineData",MODE_PRIVATE);
     }
 
 }
