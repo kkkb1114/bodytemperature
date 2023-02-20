@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import kkkb1114.sampleproject.bodytemperature.BleConnect.ConnectActivity;
 import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.activity.AlarmActivity;
+import kkkb1114.sampleproject.bodytemperature.activity.MyProfileActivity;
 import kkkb1114.sampleproject.bodytemperature.activity.UserSettingActivity;
 import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
 
@@ -92,8 +93,9 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
             case R.id.tv_setting_select_user:
                 if (isSelectUser){
                     // 내 프로필로 이동
-                    Intent alarmIntent11 = new Intent(view.getContext(), AlarmActivity.class);
-                    startActivity(alarmIntent11);
+                    Intent myProfileIntent = new Intent(view.getContext(), MyProfileActivity.class);
+                    myProfileIntent.putExtra("userName", tv_setting_select_user.getText().toString());
+                    startActivity(myProfileIntent);
                 }else {
                     Toast.makeText(getContext(), "현재 선택하신 사용자 정보가 없습니다.", Toast.LENGTH_SHORT).show();
                 }

@@ -1,6 +1,7 @@
 package kkkb1114.sampleproject.bodytemperature.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -38,6 +39,8 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     String birthDate;
     String weight;
 
+    String intentUserName = ""; // 내 정보 보기, 수정으로 들어올 경우 getIntent를 통해 문자열을 담는다.
+
     Context context;
 
     // 달력 전용
@@ -48,6 +51,8 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_profile);
         context = this;
+        Intent intent = getIntent();
+        intentUserName = intent.getStringExtra("userName");
         initView();
         getMyProfile();
     }
@@ -111,6 +116,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
     /** 쉐어드에서 내 정보 꺼내옵니다. **/
     public void getMyProfile(){
+        PreferenceManager.PREFERENCES_NAME = intentUserName+"Profile";
         gender = PreferenceManager.getInt(context, "gender");
         name = PreferenceManager.getString(context, "name");
         birthDate = PreferenceManager.getString(context, "birthDate");
@@ -170,16 +176,18 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                     PreferenceManager.setInt(context, "gender", gender);
                     PreferenceManager.setString(context, "birthDate", birthDate);
                     PreferenceManager.setString(context, "weight", weight);
-                    // 나중에 알람 설정 할때 저장할 데이터 미리 생성
-                    PreferenceManager.setBoolean(context, "alarm_high_temperature_boolean", false);
-                    PreferenceManager.setString(context, "alarm_high_temperature_value", String.valueOf(37.3));
-                    PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean",false);
-                    PreferenceManager.setString(context, "alarm_low_temperature_value", String.valueOf(37.3));
+
+                    // 수정 모드가 아니면 알람 설정 할때 저장할 데이터 미리 생성
+                    if (intentUserName.isEmpty()){
+                        PreferenceManager.setBoolean(context, "alarm_high_temperature_boolean", false);
+                        PreferenceManager.setString(context, "alarm_high_temperature_value", String.valueOf(37.3));
+                        PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean",false);
+                        PreferenceManager.setString(context, "alarm_low_temperature_value", String.valueOf(37.3));
+                    }
 
                     // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
                     PreferenceManager.PREFERENCES_NAME = "user_list";
-                    // 유저당 '/'를 기준으로 선택 유무를 구분 지을 0, 1을 붙였다. (0: 미선택, 1:선택)
-                    PreferenceManager.setString(context, name+"isSelect", name+"/"+"1");
+                    PreferenceManager.setString(context, name+"isSelect", name);
                     PreferenceManager.setString(context, "select_user_name", name);
 
                     finish();

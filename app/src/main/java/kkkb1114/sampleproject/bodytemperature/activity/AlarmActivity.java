@@ -49,10 +49,10 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
         context = this;
-        //PreferenceManager.PREFERENCES_NAME = +"alarmSetting";
-        String user_name = PreferenceManager.getString(context, "name");
+        PreferenceManager.PREFERENCES_NAME = "user_list";
+        String select_user_name = PreferenceManager.getString(context, "select_user_name");
         // 해당 화면에서는 알람값만 컨트롤하기에 "PREFERENCES_NAME" 설정
-        PreferenceManager.PREFERENCES_NAME = "alarmSetting";
+        PreferenceManager.PREFERENCES_NAME = select_user_name+"Profile";
 
         initView();
         setSeekBar();

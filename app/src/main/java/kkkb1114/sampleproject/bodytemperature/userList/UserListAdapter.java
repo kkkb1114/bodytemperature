@@ -1,6 +1,8 @@
 package kkkb1114.sampleproject.bodytemperature.userList;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +15,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import kkkb1114.sampleproject.bodytemperature.R;
+import kkkb1114.sampleproject.bodytemperature.activity.MyProfileActivity;
 import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
 
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHolder> {
 
+    Context context;
     ArrayList<String> userList;
 
-    public UserListAdapter(ArrayList<String> userList){
+    public UserListAdapter(Context context, ArrayList<String> userList){
+        this.context = context;
         this.userList = userList;
     }
 
@@ -33,15 +38,33 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        // user 데이터는 각 선택 유무가 '/'를 기준으로 나뉘어 있어 '/'를 기준으로 한번 나눠서 setText() 한다.
-        String name = userList.get(position).split("/")[0];
+        String name = userList.get(position);
         holder.tv_user_name.setText(name);
+        setUserNameClick(holder, name);
+        setModifyClick(holder);
+    }
+
+    /** 사용자 이름 클릭 이벤트 **/
+    public void setUserNameClick(ViewHolder holder, String name){
         holder.tv_user_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
                 PreferenceManager.PREFERENCES_NAME = "user_list";
                 PreferenceManager.setString(holder.itemView.getContext(), "select_user_name", name);
+                ((Activity)context).finish();
+            }
+        });
+    }
+
+    /** 수정 버튼 클릭 이벤트 **/
+    public void setModifyClick(ViewHolder holder){
+        holder.tv_user_modify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myProfileIntent = new Intent(context, MyProfileActivity.class);
+                myProfileIntent.putExtra("userName", holder.tv_user_name.getText().toString());
+                context.startActivity(myProfileIntent);
             }
         });
     }
