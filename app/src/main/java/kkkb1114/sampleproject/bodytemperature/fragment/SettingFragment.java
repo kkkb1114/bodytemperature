@@ -5,21 +5,25 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import kkkb1114.sampleproject.bodytemperature.BleConnect.ConnectActivity;
 import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.activity.AlarmActivity;
-import kkkb1114.sampleproject.bodytemperature.activity.MyProfileActivity;
-import kkkb1114.sampleproject.bodytemperature.connect.ConnectActivity;
+import kkkb1114.sampleproject.bodytemperature.activity.UserSettingActivity;
+import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
 
 public class SettingFragment extends Fragment implements View.OnClickListener {
 
     TextView tv_setting_connect;
-    ImageView iv_setting_profile;
+    TextView tv_setting_profile;
     TextView tv_setting_alarm;
+    TextView tv_setting_select_user;
+
+    boolean isSelectUser = false;
 
     public SettingFragment() {
 
@@ -31,17 +35,39 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
 
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
         initView(view);
+        isSelectUserCheck();
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // 설정화면에서 사용자 변경후 다시 바뀌어야하기에 onResume()에 추가
+        isSelectUserCheck();
     }
 
     public void initView(View view){
         tv_setting_connect = view.findViewById(R.id.tv_setting_connect);
         tv_setting_connect.setOnClickListener(this);
-        iv_setting_profile = view.findViewById(R.id.iv_setting_profile);
-        iv_setting_profile.setOnClickListener(this);
+        tv_setting_profile = view.findViewById(R.id.tv_setting_profile);
+        tv_setting_profile.setOnClickListener(this);
         tv_setting_alarm = view.findViewById(R.id.tv_setting_alarm);
         tv_setting_alarm.setOnClickListener(this);
+        tv_setting_select_user = view.findViewById(R.id.tv_setting_select_user);
+        tv_setting_select_user.setOnClickListener(this);
+    }
+
+    /** 선택된 사용자 있는지 확인 **/
+    public void isSelectUserCheck(){
+        PreferenceManager.PREFERENCES_NAME = "user_list";
+        String selectUser = PreferenceManager.getString(getContext(), "select_user_name");
+        if (selectUser.trim().length() <= 0){
+            isSelectUser = false;
+        }else {
+            isSelectUser = true;
+            tv_setting_select_user.setText(selectUser);
+        }
     }
 
     /** 클릭 이벤트 모음 **/
@@ -53,15 +79,24 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 Intent connectIntent = new Intent(view.getContext(), ConnectActivity.class);
                 startActivity(connectIntent);
                 break;
-            case R.id.iv_setting_profile:
-                // 내 프로필로 이동
-                Intent profileIntent = new Intent(view.getContext(), MyProfileActivity.class);
-                startActivity(profileIntent);
+            case R.id.tv_setting_profile:
+                // 내 유저 리스트로 이동
+                Intent userListIntent = new Intent(view.getContext(), UserSettingActivity.class);
+                startActivity(userListIntent);
                 break;
             case R.id.tv_setting_alarm:
                 // 내 프로필로 이동
                 Intent alarmIntent = new Intent(view.getContext(), AlarmActivity.class);
                 startActivity(alarmIntent);
+                break;
+            case R.id.tv_setting_select_user:
+                if (isSelectUser){
+                    // 내 프로필로 이동
+                    Intent alarmIntent11 = new Intent(view.getContext(), AlarmActivity.class);
+                    startActivity(alarmIntent11);
+                }else {
+                    Toast.makeText(getContext(), "현재 선택하신 사용자 정보가 없습니다.", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }

@@ -11,14 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.datepicker.MaterialDatePicker;
-
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.TimeZone;
 
 import kkkb1114.sampleproject.bodytemperature.R;
-import kkkb1114.sampleproject.bodytemperature.connect.BLEConnect_ListAdapter;
 
 public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHolder> {
 
@@ -32,7 +27,7 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = layoutInflater.inflate(R.layout.timeline_item, parent, false);
+        View view = layoutInflater.inflate(R.layout.item_timeline, parent, false);
         return new ViewHolder(view);
     }
 

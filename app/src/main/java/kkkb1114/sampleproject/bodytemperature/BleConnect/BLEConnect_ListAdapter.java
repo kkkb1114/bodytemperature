@@ -1,4 +1,4 @@
-package kkkb1114.sampleproject.bodytemperature.connect;
+package kkkb1114.sampleproject.bodytemperature.BleConnect;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -20,7 +20,7 @@ public class BLEConnect_ListAdapter extends RecyclerView.Adapter<BLEConnect_List
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = layoutInflater.inflate(R.layout.ble_connect_list_item, parent, false);
+        View view = layoutInflater.inflate(R.layout.item_ble_connect_list, parent, false);
         return new ViewHolder(view);
     }
 

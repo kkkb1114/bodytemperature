@@ -1,12 +1,12 @@
-package kkkb1114.sampleproject.bodytemperature.connect;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+package kkkb1114.sampleproject.bodytemperature.BleConnect;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import kkkb1114.sampleproject.bodytemperature.R;
 

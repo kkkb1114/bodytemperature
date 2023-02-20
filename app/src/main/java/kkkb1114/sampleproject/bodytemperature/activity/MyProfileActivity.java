@@ -159,16 +159,28 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 name = et_myProfile_name.getText().toString();
                 birthDate = tv_myProfile_birthDate.getText().toString();
                 weight = tv_myProfile_weight.getText().toString();
-                PreferenceManager.PREFERENCES_NAME = "myProfile";
 
                 if (name.trim().length() == 0 || birthDate.trim().length() == 0 || weight.trim().length() == 0
                 || name.equals("이름을 입력하세요")|| birthDate.equals("생년월일") || weight.equals("몸무게")){
                     Toast.makeText(context, "정보를 모두 기입해 주세요.", Toast.LENGTH_SHORT).show();
                 }else {
+                    // 사용자별로 저장을 해야하기에 이름을 붙여 저장한다.
+                    PreferenceManager.PREFERENCES_NAME = name+"Profile";
                     PreferenceManager.setString(context, "name", name);
                     PreferenceManager.setInt(context, "gender", gender);
                     PreferenceManager.setString(context, "birthDate", birthDate);
                     PreferenceManager.setString(context, "weight", weight);
+                    // 나중에 알람 설정 할때 저장할 데이터 미리 생성
+                    PreferenceManager.setBoolean(context, "alarm_high_temperature_boolean", false);
+                    PreferenceManager.setString(context, "alarm_high_temperature_value", String.valueOf(37.3));
+                    PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean",false);
+                    PreferenceManager.setString(context, "alarm_low_temperature_value", String.valueOf(37.3));
+
+                    // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
+                    PreferenceManager.PREFERENCES_NAME = "user_list";
+                    // 유저당 '/'를 기준으로 선택 유무를 구분 지을 0, 1을 붙였다. (0: 미선택, 1:선택)
+                    PreferenceManager.setString(context, name+"isSelect", name+"/"+"1");
+                    PreferenceManager.setString(context, "select_user_name", name);
 
                     finish();
                 }

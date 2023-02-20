@@ -10,7 +10,7 @@
 
     <include
         android:id="@+id/toolbar_main"
-        layout="@layout/main_toolbar" />
+        layout="@layout/toolbar_main" />
 
     <FrameLayout
         android:id="@+id/fl_main"

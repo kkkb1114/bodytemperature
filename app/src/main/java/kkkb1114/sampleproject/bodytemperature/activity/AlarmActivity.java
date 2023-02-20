@@ -3,7 +3,6 @@ package kkkb1114.sampleproject.bodytemperature.activity;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
@@ -50,8 +49,10 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
         context = this;
+        //PreferenceManager.PREFERENCES_NAME = +"alarmSetting";
+        String user_name = PreferenceManager.getString(context, "name");
         // 해당 화면에서는 알람값만 컨트롤하기에 "PREFERENCES_NAME" 설정
-        PreferenceManager.PREFERENCES_NAME = "alarm_setting";
+        PreferenceManager.PREFERENCES_NAME = "alarmSetting";
 
         initView();
         setSeekBar();
@@ -76,14 +77,14 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         // 고체온
         boolean alarm_high_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_high_temperature_boolean");
         String alarm_high_temperature_str = PreferenceManager.getString(context, "alarm_high_temperature_value");
-        int progress_high_temperature = 0;
+        int high_temperature_progress = 0;
 
         if (alarm_high_temperature_str.trim().isEmpty()){
             alarm_high_temperature_value = min;
-            progress_high_temperature = (int) min;
+            high_temperature_progress = (int) min;
         }else {
             alarm_high_temperature_value = Double.parseDouble(decimalFormat.format(Double.parseDouble(alarm_high_temperature_str)));
-            progress_high_temperature = (int) ((alarm_high_temperature_value - min) * 100);
+            high_temperature_progress = (int) ((alarm_high_temperature_value - min) * 100);
         }
 
         if (alarm_high_temperature_boolean){
@@ -93,19 +94,19 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
             sw_high_temperature.setChecked(false);
             tv_high_temperature.setText(String.valueOf(min));
         }
-        setProgressThumb(sb_high_temperature, progress_high_temperature);
+        setProgressThumb(sb_high_temperature, high_temperature_progress);
 
         // 저체온
         boolean alarm_low_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_low_temperature_boolean");
         String alarm_low_temperature_str = PreferenceManager.getString(context, "alarm_low_temperature_value");
-        int progress_low_temperature = 0;
+        int low_temperature_progress = 0;
 
         if (alarm_low_temperature_str.trim().isEmpty()){
             alarm_low_temperature_value = min;
-            progress_low_temperature = (int) min;
+            low_temperature_progress = (int) min;
         }else {
             alarm_low_temperature_value = Double.parseDouble(decimalFormat.format(Double.parseDouble(alarm_low_temperature_str)));
-            progress_low_temperature = (int) ((alarm_low_temperature_value - min) * 100);
+            low_temperature_progress = (int) ((alarm_low_temperature_value - min) * 100);
         }
 
         if (alarm_low_temperature_boolean){
@@ -115,7 +116,7 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
             sw_low_temperature.setChecked(false);
             tv_low_temperature.setText(String.valueOf(min));
         }
-        setProgressThumb(sb_low_temperature, progress_low_temperature);
+        setProgressThumb(sb_low_temperature, low_temperature_progress);
 
         firstSetView = true;
     }
@@ -127,8 +128,8 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         sb_high_temperature.setMax((int) ((max-min) / step));
         sb_low_temperature.setMax((int) ((max-min) / step));
 
-        setSeekBarAnimation(sb_high_temperature, "progress_high_temperature",max, min);
-        setSeekBarAnimation(sb_low_temperature, "progress_low_temperature",max, min);
+        setSeekBarAnimation(sb_high_temperature, "high_temperature_progress",max, min);
+        setSeekBarAnimation(sb_low_temperature, "low_temperature_progress",max, min);
         setSeekBarChange_high(sb_high_temperature, min, step);
         setSeekBarChange_low(sb_low_temperature, min, step);
     }

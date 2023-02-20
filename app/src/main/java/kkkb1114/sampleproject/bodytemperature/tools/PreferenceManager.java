@@ -16,7 +16,7 @@ import java.util.Map;
  *     **/
 // 데이터 저장 및 로드 클래스
 public class PreferenceManager {
-    public static String PREFERENCES_NAME = "myProfile";
+    public static String PREFERENCES_NAME = "Profile";
 
     private static final String DEFAULT_VALUE_STRING = " ";
     private static final boolean DEFAULT_VALUE_BOOLEAN = false;
@@ -173,6 +173,17 @@ public class PreferenceManager {
         SharedPreferences.Editor editor = prefs.edit();
         editor.clear();
         editor.commit();
+    }
+
+    /* 모든 데이터 값 로드
+      param context
+      param key
+      return
+    */
+    public static Map<String, ?> getAllDataList(Context context){
+        SharedPreferences prefs = getPreferences(context);
+        Map<String, ?> dataMap = prefs.getAll();
+        return dataMap;
     }
 
     public static void listData(Context context, String datalist, TextView tvlist) {

@@ -25,7 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Stack;
 
-import kkkb1114.sampleproject.bodytemperature.connect.ConnectActivity;
+import kkkb1114.sampleproject.bodytemperature.BleConnect.ConnectActivity;
 import kkkb1114.sampleproject.bodytemperature.fragment.BodyTemperatureGraphFragment;
 import kkkb1114.sampleproject.bodytemperature.fragment.HomeFragment;
 import kkkb1114.sampleproject.bodytemperature.fragment.SettingFragment;
