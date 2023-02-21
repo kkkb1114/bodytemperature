@@ -16,7 +16,7 @@ import java.util.Map;
  *     **/
 // 데이터 저장 및 로드 클래스
 public class PreferenceManager {
-    public static String PREFERENCES_NAME = "Profile";
+    public static String PREFERENCES_NAME = "login_user";
 
     private static final String DEFAULT_VALUE_STRING = " ";
     private static final boolean DEFAULT_VALUE_BOOLEAN = false;

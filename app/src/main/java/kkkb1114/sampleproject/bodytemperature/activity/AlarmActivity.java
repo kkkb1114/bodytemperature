@@ -49,10 +49,6 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
         context = this;
-        PreferenceManager.PREFERENCES_NAME = "user_list";
-        String select_user_name = PreferenceManager.getString(context, "select_user_name");
-        // 해당 화면에서는 알람값만 컨트롤하기에 "PREFERENCES_NAME" 설정
-        PreferenceManager.PREFERENCES_NAME = select_user_name+"Profile";
 
         initView();
         setSeekBar();
@@ -72,8 +68,19 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         bt_alarm_cancle.setOnClickListener(this);
     }
 
+    /** Preference NAME 설정 **/
+    public void setPREFERENCES_NAME(){
+        PreferenceManager.PREFERENCES_NAME = "login_user";
+        String select_user_name = PreferenceManager.getString(context, "userName");
+        // 해당 화면에서는 알람값만 컨트롤하기에 "PREFERENCES_NAME" 설정
+        PreferenceManager.PREFERENCES_NAME = select_user_name+"Setting";
+    }
+
     /** 체온 처음 값 세팅 **/
     public void setBodyTemperature(){
+
+        setPREFERENCES_NAME();
+
         // 고체온
         boolean alarm_high_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_high_temperature_boolean");
         String alarm_high_temperature_str = PreferenceManager.getString(context, "alarm_high_temperature_value");
@@ -203,6 +210,7 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
 
     /** 알람 설정 데이터 저장 **/
     public void saveAlarmData(){
+        setPREFERENCES_NAME();
         /*
          * 1. (고,저)체온 알람 스위치 on 되어 있는지 확인
          * 2.  on: (고,저)체온 알람 on 이라는 boolean 값 저장
@@ -217,6 +225,7 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
             PreferenceManager.setBoolean(context, "alarm_high_temperature_boolean",false);
             PreferenceManager.setString(context, "alarm_high_temperature_value", String.valueOf(min));
         }
+
         if (sw_low_temperature.isChecked()){
             PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean",true);
             PreferenceManager.setString(context, "alarm_low_temperature_value", tv_low_temperature.getText().toString());

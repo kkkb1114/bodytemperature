@@ -15,16 +15,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import kkkb1114.sampleproject.bodytemperature.MainActivity;
 import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.thermometer.ThermometerView;
 
@@ -146,8 +142,8 @@ public class HomeFragment extends Fragment {
 
     public void setUser()
     {
-        select_user = context.getSharedPreferences("user_list",MODE_PRIVATE);
-        username = select_user.getString("select_user_name","선택된 사용자 없음");
+        select_user = context.getSharedPreferences("login_user",MODE_PRIVATE);
+        String username = select_user.getString("userName","선택된 사용자 없음");
 
         /*
         long now =System.currentTimeMillis();

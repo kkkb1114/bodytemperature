@@ -15,18 +15,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
 
 import kkkb1114.sampleproject.bodytemperature.R;
-import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
+import kkkb1114.sampleproject.bodytemperature.database.MyProfile.MyProfile;
+import kkkb1114.sampleproject.bodytemperature.database.MyProfile.MyProfile_DBHelper;
 import kkkb1114.sampleproject.bodytemperature.userList.UserListAdapter;
 
 public class UserSettingActivity extends AppCompatActivity implements View.OnClickListener {
 
+    MyProfile_DBHelper myProfile_dbHelper;
+
     Toolbar toolbar_user_setting;
     Context context;
-    ArrayList<String> userList;
+    ArrayList<MyProfile> userList;
     TextView tv_close;
 
     RecyclerView rv_user_list;
@@ -37,6 +38,7 @@ public class UserSettingActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_setting);
         context = this;
+        myProfile_dbHelper = new MyProfile_DBHelper();
         initView();
         setToolbar();
     }
@@ -56,15 +58,9 @@ public class UserSettingActivity extends AppCompatActivity implements View.OnCli
         tv_close.setOnClickListener(this);
     }
 
-    /** 쉐어드에서 유저 데이터 가져와 ArrayList로 변환 **/
+    /** DB에서 유저 데이터 ArrayList 가져온다. **/
     public void getUserData(){
-        PreferenceManager.PREFERENCES_NAME = "user_list";
-        Map<String, ?> dataMap = PreferenceManager.getAllDataList(context);
-        // 현재 선택한 유저 데이터는 뺴기
-        dataMap.remove("select_user_name");
-        // Map -> ArrayList 변환
-        Collection<String> values = (Collection<String>) dataMap.values();
-        userList = new ArrayList<>(values);
+        userList = myProfile_dbHelper.DBselectAll();
     }
 
     /** 리사이클러뷰 세팅 **/

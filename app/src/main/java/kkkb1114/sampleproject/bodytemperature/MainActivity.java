@@ -66,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         context = this;
 
-        bodytemp_dbHelper = new Bodytemp_DBHelper(context, "Bodytemperature.db", null, 1);
+        // DB 생성
+        bodytemp_dbHelper = Bodytemp_DBHelper.getInstance(context, "Bodytemperature.db", null, 1);
 
         //날짜 측정
         setUser();
@@ -76,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
         MeasurBodyTempreture();
     }
 
+    @Override
     protected void onResume() {
-
         super.onResume();
         setUser();
     }
@@ -199,9 +200,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void setUser()
     {
-
-        select_user = context.getSharedPreferences("user_list",MODE_PRIVATE);
-        username = select_user.getString("select_user_name","선택된 사용자 없음");
+        select_user = context.getSharedPreferences("login_user",MODE_PRIVATE);
+        String username = select_user.getString("userName","선택된 사용자 없음");
 
 
         if(username.equals("선택된 사용자 없음"))
@@ -222,11 +222,11 @@ public class MainActivity extends AppCompatActivity {
 
     /** 노티피케이션 세팅 **/
     public void setNotification(String s){
-        PreferenceManager.PREFERENCES_NAME = "user_list";
-        String select_user_name = PreferenceManager.getString(context, "select_user_name");
+        PreferenceManager.PREFERENCES_NAME = "login_user";
+        String select_user_name = PreferenceManager.getString(context, "userName");
 
         if (select_user_name != null){
-            PreferenceManager.PREFERENCES_NAME = select_user_name+"Profile";
+            PreferenceManager.PREFERENCES_NAME = select_user_name+"Setting";
             boolean alarm_high_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_high_temperature_boolean");
             boolean alarm_low_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_low_temperature_boolean");
 
@@ -267,5 +267,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // 메인 엑티비티가 onDestroy()될때 DB도 모두 닫아준다.
+        bodytemp_dbHelper.closeDBHelper();
     }
 }

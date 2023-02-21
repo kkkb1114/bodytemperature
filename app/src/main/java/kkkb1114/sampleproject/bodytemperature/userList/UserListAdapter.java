@@ -19,17 +19,17 @@ import java.util.ArrayList;
 
 import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.activity.MyProfileActivity;
+import kkkb1114.sampleproject.bodytemperature.database.MyProfile.MyProfile;
 import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
 
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHolder> {
 
     Context context;
-    ArrayList<String> userList;
+    ArrayList<MyProfile> userList;
 
-    public UserListAdapter(Context context, ArrayList<String> userList){
+    public UserListAdapter(Context context, ArrayList<MyProfile> userList){
         this.context = context;
         this.userList = userList;
-        PreferenceManager.PREFERENCES_NAME = "user_list";
     }
 
     @NonNull
@@ -42,7 +42,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String name = userList.get(position);
+        String name = userList.get(position).name;
         holder.tv_user_name.setText(name);
 
         setUserNameClick(holder, name);
@@ -53,26 +53,27 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
     /** 현재 사용자 구분 **/
     public void setSelectUser(ViewHolder holder, String name){
-        String select_user_name = PreferenceManager.getString(context, "select_user_name");
+        PreferenceManager.PREFERENCES_NAME = "login_user";
+        String select_user_name = PreferenceManager.getString(context, "userName");
         if (select_user_name != null && select_user_name.equals(name)){
             holder.ln_user.setBackgroundColor(context.getResources().getColor(R.color.user_list_select_user,null));
         }
     }
 
-    /** 사용자 부모뷰 클릭 이벤트 **/
+    /** 사용자 선택 **/
     public void setUserNameClick(ViewHolder holder, String name){
         holder.ln_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                PreferenceManager.PREFERENCES_NAME = "login_user";
                 // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
-                PreferenceManager.PREFERENCES_NAME = "user_list";
-                PreferenceManager.setString(holder.itemView.getContext(), "select_user_name", name);
+                PreferenceManager.setString(holder.itemView.getContext(), "userName", name);
                 ((Activity)context).finish();
             }
         });
     }
 
-    /** 수정 버튼 클릭 이벤트 **/
+    /** 사용자 수정 **/
     public void setModifyClick(ViewHolder holder){
         holder.tv_user_modify.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,8 +90,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         holder.ln_user.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                PreferenceManager.PREFERENCES_NAME = "user_list";
-                String select_user_name = PreferenceManager.getString(context, "select_user_name");
+                PreferenceManager.PREFERENCES_NAME = "login_user";
+                String select_user_name = PreferenceManager.getString(context, "userName");
                 if (name.equals(select_user_name)){
                     cannotUserDeletedDialog();
                 }else {

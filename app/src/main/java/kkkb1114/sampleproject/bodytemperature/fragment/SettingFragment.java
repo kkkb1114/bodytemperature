@@ -61,8 +61,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
 
     /** 선택된 사용자 있는지 확인 **/
     public void isSelectUserCheck(){
-        PreferenceManager.PREFERENCES_NAME = "user_list";
-        String selectUser = PreferenceManager.getString(getContext(), "select_user_name");
+        PreferenceManager.PREFERENCES_NAME = "login_user";
+        String selectUser = PreferenceManager.getString(getContext(), "userName");
         if (selectUser.trim().length() <= 0){
             isSelectUser = false;
         }else {

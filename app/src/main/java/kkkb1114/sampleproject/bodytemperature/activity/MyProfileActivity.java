@@ -2,11 +2,8 @@ package kkkb1114.sampleproject.bodytemperature.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,15 +20,15 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import kkkb1114.sampleproject.bodytemperature.MainActivity;
 import kkkb1114.sampleproject.bodytemperature.R;
-import kkkb1114.sampleproject.bodytemperature.database.Bodytemp_DBHelper;
+import kkkb1114.sampleproject.bodytemperature.database.MyProfile.MyProfile;
+import kkkb1114.sampleproject.bodytemperature.database.MyProfile.MyProfile_DBHelper;
 import kkkb1114.sampleproject.bodytemperature.dialog.WeightPickerDialog;
+import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
 
 public class MyProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
-    //todo
-    SQLiteDatabase sqlDB;
+    MyProfile_DBHelper myProfile_dbHelper;
 
     EditText et_myProfile_name;
     TextView tv_myProfile_man;
@@ -58,6 +55,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_profile);
         context = this;
+        myProfile_dbHelper = new MyProfile_DBHelper();
         Intent intent = getIntent();
         intentUserName = intent.getStringExtra("userName");
         initView();
@@ -124,44 +122,22 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    /** 쉐어드에서 내 정보 꺼내옵니다. **/
+    /** DB에서 내 정보 꺼내옵니다. **/
     public void getMyProfile(){
-        /*PreferenceManager.PREFERENCES_NAME = intentUserName+"Profile";
-        gender = PreferenceManager.getInt(context, "gender");
-        name = PreferenceManager.getString(context, "name");
-        birthDate = PreferenceManager.getString(context, "birthDate");
-        weight = PreferenceManager.getString(context, "weight");
-
-        setGender(gender);
-        if (name.length() >= 2){
-            et_myProfile_name.setText(name);
-        }
-        if (birthDate.length() >= 2){
-            tv_myProfile_birthDate.setText(birthDate);
-        }
-        if (weight.length() >= 2){
-            tv_myProfile_weight.setText(weight);
-        }*/
-
+        MyProfile myProfile;
         if (intentUserName != null && !intentUserName.isEmpty()){
-
-            //todo
-            sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
-            Cursor cursor = sqlDB.rawQuery("SELECT * FROM USER_PROFILE;", null);
-            while(cursor.moveToNext()){
-
-                Log.e("et_myProfile_name", cursor.getString(0));
-                Log.e("setGender", String.valueOf(cursor.getInt(1)));
-                Log.e("tv_myProfile_birthDate", cursor.getString(2));
-                Log.e("tv_myProfile_weight", cursor.getString(3));
-
-                et_myProfile_name.setText(cursor.getString(0));
-                setGender(cursor.getInt(1));
-                tv_myProfile_birthDate.setText(cursor.getString(2));
-                tv_myProfile_weight.setText(cursor.getString(3));
+            myProfile = myProfile_dbHelper.DBselect(intentUserName);
+            if (myProfile != null){
+                et_myProfile_name.setText(myProfile.name);
+                setGender(myProfile.gender);
+                tv_myProfile_birthDate.setText(myProfile.birthDate);
+                tv_myProfile_weight.setText(myProfile.weight);
+            }else {
+                et_myProfile_name.setText("user");
+                setGender(0);
+                tv_myProfile_birthDate.setText("2023-01-01");
+                tv_myProfile_weight.setText("0");
             }
-            sqlDB.close();
-            cursor.close();
         }
     }
 
@@ -201,15 +177,9 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 || name.equals("이름을 입력하세요")|| birthDate.equals("생년월일") || weight.equals("몸무게")){
                     Toast.makeText(context, "정보를 모두 기입해 주세요.", Toast.LENGTH_SHORT).show();
                 }else {
-                    /*// 사용자별로 저장을 해야하기에 이름을 붙여 저장한다.
-                    PreferenceManager.PREFERENCES_NAME = name+"Profile";
-                    PreferenceManager.setString(context, "name", name);
-                    PreferenceManager.setInt(context, "gender", gender);
-                    PreferenceManager.setString(context, "birthDate", birthDate);
-                    PreferenceManager.setString(context, "weight", weight);
-
                     // 수정 모드가 아니면 알람 설정 할때 저장할 데이터 미리 생성
                     if (intentUserName == null || intentUserName.isEmpty()){
+                        PreferenceManager.PREFERENCES_NAME = name+"Setting";
                         PreferenceManager.setBoolean(context, "alarm_high_temperature_boolean", false);
                         PreferenceManager.setString(context, "alarm_high_temperature_value", String.valueOf(37.3));
                         PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean",false);
@@ -217,14 +187,11 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                     }
 
                     // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
-                    PreferenceManager.PREFERENCES_NAME = "user_list";
-                    PreferenceManager.setString(context, name+"isSelect", name);
-                    PreferenceManager.setString(context, "select_user_name", name);*/
+                    PreferenceManager.PREFERENCES_NAME = "login_user";
+                    PreferenceManager.setString(context, "userName", name);
 
-                    //todo
-                    sqlDB = MainActivity.bodytemp_dbHelper.getWritableDatabase();
-                    sqlDB.execSQL("INSERT INTO USER_PROFILE VALUES ('"+name+"', "+gender+", '"+birthDate+"', '"+ weight +"');");
-                    sqlDB.close();
+                    MyProfile myProfile = new MyProfile(name, gender, birthDate, weight);
+                    myProfile_dbHelper.DBinsert(myProfile);
                     finish();
                 }
                 break;

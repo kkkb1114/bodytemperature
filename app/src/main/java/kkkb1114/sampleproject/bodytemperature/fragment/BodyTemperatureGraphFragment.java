@@ -8,24 +8,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import kkkb1114.sampleproject.bodytemperature.MainActivity;
-import kkkb1114.sampleproject.bodytemperature.R;
-import kkkb1114.sampleproject.bodytemperature.timeline.TimelineAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -39,14 +30,16 @@ import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClic
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeMap;
+
+import kkkb1114.sampleproject.bodytemperature.MainActivity;
+import kkkb1114.sampleproject.bodytemperature.R;
+import kkkb1114.sampleproject.bodytemperature.timeline.TimelineAdapter;
 
 
 public class BodyTemperatureGraphFragment extends Fragment {
@@ -270,8 +263,8 @@ public class BodyTemperatureGraphFragment extends Fragment {
                 String dateStr = simpleDateFormat.format(date);
                 tv_graphdate.setText(dateStr);
 
-                select_user = context.getSharedPreferences("user_list",MODE_PRIVATE);
-                String username = select_user.getString("select_user_name","선택된 사용자 없음");
+                select_user = context.getSharedPreferences("login_user",MODE_PRIVATE);
+                String username = select_user.getString("userName","선택된 사용자 없음");
 
 
                 showChart(getView(),dateStr);
@@ -285,8 +278,8 @@ public class BodyTemperatureGraphFragment extends Fragment {
         context = getContext();
 
 
-        select_user = context.getSharedPreferences("user_list",MODE_PRIVATE);
-        String username = select_user.getString("select_user_name","선택된 사용자 없음");
+        select_user = context.getSharedPreferences("login_user",MODE_PRIVATE);
+        String username = select_user.getString("userName","선택된 사용자 없음");
 
 
         if(username.equals("선택된 사용자 없음"))
