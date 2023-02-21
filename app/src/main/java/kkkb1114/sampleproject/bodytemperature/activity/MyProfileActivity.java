@@ -2,8 +2,11 @@ package kkkb1114.sampleproject.bodytemperature.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,10 +24,14 @@ import java.util.Date;
 import java.util.TimeZone;
 
 import kkkb1114.sampleproject.bodytemperature.R;
+import kkkb1114.sampleproject.bodytemperature.database.Bodytemp_DBHelper;
 import kkkb1114.sampleproject.bodytemperature.dialog.WeightPickerDialog;
-import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
 
 public class MyProfileActivity extends AppCompatActivity implements View.OnClickListener {
+
+    //todo
+    Bodytemp_DBHelper bodytemp_dbHelper;
+    SQLiteDatabase sqlDB;
 
     EditText et_myProfile_name;
     TextView tv_myProfile_man;
@@ -54,6 +61,9 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         Intent intent = getIntent();
         intentUserName = intent.getStringExtra("userName");
         initView();
+
+        //todo
+        bodytemp_dbHelper = new Bodytemp_DBHelper(context, "Bodytemperature.db", null, 1);
         getMyProfile();
     }
 
@@ -116,7 +126,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
     /** 쉐어드에서 내 정보 꺼내옵니다. **/
     public void getMyProfile(){
-        PreferenceManager.PREFERENCES_NAME = intentUserName+"Profile";
+        /*PreferenceManager.PREFERENCES_NAME = intentUserName+"Profile";
         gender = PreferenceManager.getInt(context, "gender");
         name = PreferenceManager.getString(context, "name");
         birthDate = PreferenceManager.getString(context, "birthDate");
@@ -131,6 +141,27 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         }
         if (weight.length() >= 2){
             tv_myProfile_weight.setText(weight);
+        }*/
+
+        if (intentUserName != null && !intentUserName.isEmpty()){
+
+            //todo
+            sqlDB = bodytemp_dbHelper.getReadableDatabase();
+            Cursor cursor = sqlDB.rawQuery("SELECT * FROM USER_PROFILE;", null);
+            while(cursor.moveToNext()){
+
+                Log.e("et_myProfile_name", cursor.getString(0));
+                Log.e("setGender", String.valueOf(cursor.getInt(1)));
+                Log.e("tv_myProfile_birthDate", cursor.getString(2));
+                Log.e("tv_myProfile_weight", cursor.getString(3));
+
+                et_myProfile_name.setText(cursor.getString(0));
+                setGender(cursor.getInt(1));
+                tv_myProfile_birthDate.setText(cursor.getString(2));
+                tv_myProfile_weight.setText(cursor.getString(3));
+            }
+            sqlDB.close();
+            cursor.close();
         }
     }
 
@@ -170,7 +201,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 || name.equals("이름을 입력하세요")|| birthDate.equals("생년월일") || weight.equals("몸무게")){
                     Toast.makeText(context, "정보를 모두 기입해 주세요.", Toast.LENGTH_SHORT).show();
                 }else {
-                    // 사용자별로 저장을 해야하기에 이름을 붙여 저장한다.
+                    /*// 사용자별로 저장을 해야하기에 이름을 붙여 저장한다.
                     PreferenceManager.PREFERENCES_NAME = name+"Profile";
                     PreferenceManager.setString(context, "name", name);
                     PreferenceManager.setInt(context, "gender", gender);
@@ -188,8 +219,12 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                     // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
                     PreferenceManager.PREFERENCES_NAME = "user_list";
                     PreferenceManager.setString(context, name+"isSelect", name);
-                    PreferenceManager.setString(context, "select_user_name", name);
+                    PreferenceManager.setString(context, "select_user_name", name);*/
 
+                    //todo
+                    sqlDB = bodytemp_dbHelper.getWritableDatabase();
+                    sqlDB.execSQL("INSERT INTO USER_PROFILE VALUES ('"+name+"', "+gender+", '"+birthDate+"', '"+ weight +"');");
+                    sqlDB.close();
                     finish();
                 }
                 break;

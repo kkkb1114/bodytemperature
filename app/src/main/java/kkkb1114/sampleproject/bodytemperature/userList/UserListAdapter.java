@@ -128,6 +128,8 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                         PreferenceManager.PREFERENCES_NAME = "user_list";
                         PreferenceManager.removeKey(context, name+"isSelect");
                         dialogInterface.dismiss();
+                        // 유저 삭제했으니 새로고침
+                        notifyDataSetChanged();
                     }
                 })
                 .setNegativeButton("취소", new DialogInterface.OnClickListener(){
