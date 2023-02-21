@@ -58,9 +58,9 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         }
     }
 
-    /** 사용자 이름 클릭 이벤트 **/
+    /** 사용자 부모뷰 클릭 이벤트 **/
     public void setUserNameClick(ViewHolder holder, String name){
-        holder.tv_user_name.setOnClickListener(new View.OnClickListener() {
+        holder.ln_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
@@ -88,43 +88,57 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
         holder.ln_user.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-                builder.setTitle("사용자 삭제")
-                        .setMessage("사용자를 삭제하시겠습니까?")
-                        .setPositiveButton("예", new DialogInterface.OnClickListener(){
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                PreferenceManager.PREFERENCES_NAME = "user_list";
-                                String select_user_name = PreferenceManager.getString(context, "select_user_name");
-
-                                PreferenceManager.PREFERENCES_NAME = name+"Profile";
-                                PreferenceManager.clear(context);
-                                dialogInterface.dismiss();
-                            }
-                        })
-                        .setNegativeButton("취소", new DialogInterface.OnClickListener(){
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        });
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                PreferenceManager.PREFERENCES_NAME = "user_list";
+                String select_user_name = PreferenceManager.getString(context, "select_user_name");
+                if (name.equals(select_user_name)){
+                    cannotUserDeletedDialog();
+                }else {
+                    userDeleteDialog(name);
+                }
                 return false;
             }
         });
     }
 
     /** 현재 선택된 사용자는 삭제 할수 없다는 창 **/
-    /*public void asd(){
+    public void cannotUserDeletedDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-        if (name.equals(select_user_name)){
+        builder.setTitle("사용자 삭제")
+                .setMessage("현재 선택된 사용자는 삭제할 수 없습니다.")
+                .setPositiveButton("확인", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
-        }else {
+    /** 사용자 삭제 창 **/
+    public void userDeleteDialog(String name){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-        }
-    }*/
+        builder.setTitle("사용자 삭제")
+                .setMessage("사용자를 삭제하시겠습니까?")
+                .setPositiveButton("예", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        PreferenceManager.PREFERENCES_NAME = "user_list";
+                        PreferenceManager.removeKey(context, name+"isSelect");
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setNegativeButton("취소", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
     @Override
     public int getItemCount() {
