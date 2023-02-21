@@ -137,7 +137,6 @@ public class BodyTemperatureGraphFragment extends Fragment {
 
         LineData lineData = new LineData();
 
-
         ArrayList<Entry> entry_chart_Y = new ArrayList<>();
         ArrayList<String> entry_chart_X = new ArrayList<>();
         Comparator<String> comparator = (s1, s2) -> s1.compareTo(s2);
