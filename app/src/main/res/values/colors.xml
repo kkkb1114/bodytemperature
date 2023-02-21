@@ -20,4 +20,5 @@
     <color name="activity_bg">#1A000000</color>
     <color name="alarm_high_temperature_text">#FF5722</color>
     <color name="alarm_low_temperature_text">#2B8FB6</color>
+    <color name="user_list_select_user">#BDD5D5</color>
 </resources>
