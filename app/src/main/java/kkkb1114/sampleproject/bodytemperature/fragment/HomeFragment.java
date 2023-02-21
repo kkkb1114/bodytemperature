@@ -99,9 +99,11 @@ public class HomeFragment extends Fragment {
                                 String value = edt_pill.getText().toString();
                                 long now =System.currentTimeMillis();
                                 Date date = new Date(now);
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-
+                                sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
+                                sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('"+username+"', '"+value+"', '"+ dateFormat.format(date) +"');");
+                                sqlDB.close();
 
                                 dialog.dismiss();
                             }
@@ -125,10 +127,11 @@ public class HomeFragment extends Fragment {
                                 String value = edt_significant.getText().toString();
                                 long now =System.currentTimeMillis();
                                 Date date = new Date(now);
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
-                                editor.putString(dateFormat.format(date)+" 특이사항)",value);
-                                editor.commit();
+                                sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
+                                sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('"+username+"', '"+value+"', '"+ dateFormat.format(date) +"');");
+                                sqlDB.close();
                                 dialog.dismiss();
                             }
                         })

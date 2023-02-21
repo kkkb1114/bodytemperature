@@ -116,7 +116,7 @@ public class BodyTemperatureGraphFragment extends Fragment {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String str = dateFormat.format(date);
         showChart(view,str);
-        //setRecyclerView(preferences2,view);
+        setRecyclerView(view,str);
 
     }
 
@@ -187,13 +187,21 @@ public class BodyTemperatureGraphFragment extends Fragment {
 
     }
 
-    public void setRecyclerView(SharedPreferences preference, View view){
-
+    public void setRecyclerView(View view,String date){
+        sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
         ArrayList<String> ad = new ArrayList<>();
-        Map<String,?> keys = preference.getAll();
+        HashMap<String,String> keys = new HashMap<String, String>();
         ArrayList<Entry> entry_arr = new ArrayList<>();
         rv_timeline=view.findViewById(R.id.rv_timeline_list);
         rv_timeline.setVisibility(View.VISIBLE);
+
+
+        cursor = sqlDB.rawQuery("SELECT * FROM TIMELINEDATA WHERE TimelineDateTime LIKE '"+date+"%'; ", null);
+
+
+        while(cursor.moveToNext()) {
+            keys.put(cursor.getString(2).substring(11), cursor.getString(1));
+        }
 
         if(keys.size()==0) {
             rv_timeline.setVisibility(View.INVISIBLE);
@@ -267,7 +275,7 @@ public class BodyTemperatureGraphFragment extends Fragment {
 
 
                 showChart(getView(),dateStr);
-                //setRecyclerView(pref2,getView());
+                setRecyclerView(getView(),dateStr);
             }
         });
     }

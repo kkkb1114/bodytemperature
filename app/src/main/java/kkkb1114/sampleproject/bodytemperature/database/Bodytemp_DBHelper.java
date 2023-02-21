@@ -25,6 +25,11 @@ public class Bodytemp_DBHelper extends SQLiteOpenHelper {
                 "name TEXT, " +
                 "tempValue DOUBLE, " +
                 "tempDateTime DATETIME PRIMARY KEY);");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS TIMELINEDATA (" +
+                "name TEXT, " +
+                "Value TEXT, " +
+                "TimelineDateTime DATETIME PRIMARY KEY);");
     }
 
     @Override
