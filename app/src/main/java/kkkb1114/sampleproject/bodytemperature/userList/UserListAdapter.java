@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import kkkb1114.sampleproject.bodytemperature.R;
@@ -127,6 +128,11 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                     public void onClick(DialogInterface dialogInterface, int i) {
                         PreferenceManager.PREFERENCES_NAME = "user_list";
                         PreferenceManager.removeKey(context, name+"isSelect");
+
+                        String str = name+"Profile";
+                        File file = new File("/data/data/kkkb1114.sampleproject.bodytemperature/shared_prefs/"+str+".xml");
+                        file.delete();
+
                         dialogInterface.dismiss();
                         // 유저 삭제했으니 새로고침
                         notifyDataSetChanged();

@@ -4,9 +4,13 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import kkkb1114.sampleproject.bodytemperature.MainActivity;
 import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.timeline.TimelineAdapter;
 
@@ -34,9 +39,12 @@ import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClic
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeMap;
 
@@ -60,6 +68,10 @@ public class BodyTemperatureGraphFragment extends Fragment {
 
     SharedPreferences select_user;
 
+    SQLiteDatabase sqlDB;
+
+    Cursor cursor;
+
 
 
 
@@ -74,9 +86,6 @@ public class BodyTemperatureGraphFragment extends Fragment {
 
 
         ArrayList<Entry> entry_chart = new ArrayList<>();
-
-
-
 
         setUser();
         View view = inflater.inflate(R.layout.fragment_body_temperature_graph, container, false);
@@ -102,19 +111,30 @@ public class BodyTemperatureGraphFragment extends Fragment {
         tv_graphdate=view.findViewById(R.id.tv_graphdate);
         lineChart = view.findViewById(R.id.chart);
         rv_timeline=view.findViewById(R.id.rv_timeline_list);
-        showChart(preferences,view);
-        setRecyclerView(preferences2,view);
+        long now =System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String str = dateFormat.format(date);
+        showChart(view,str);
+        //setRecyclerView(preferences2,view);
 
     }
 
-    public void showChart(SharedPreferences preference,View view) {
+    public void showChart(View view , String date) {
 
+        sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
+        HashMap<String,Double> keys = new HashMap<String, Double>();
         lineChart = new LineChart(getActivity());
         lineChart = view.findViewById(R.id.chart);
         XAxis xAxis = lineChart.getXAxis();
 
-        LineData chartData = new LineData();
-        Map<String,?> keys = preference.getAll();
+
+        cursor = sqlDB.rawQuery("SELECT * FROM TEMPDATA WHERE tempDateTime LIKE '"+date+"%'; ", null);
+
+
+        while(cursor.moveToNext()) {
+            keys.put(cursor.getString(2).substring(11), cursor.getDouble(1));
+        }
 
         if(keys.size()==0) {
             lineChart.setData(null);
@@ -245,13 +265,9 @@ public class BodyTemperatureGraphFragment extends Fragment {
                 select_user = context.getSharedPreferences("user_list",MODE_PRIVATE);
                 String username = select_user.getString("select_user_name","선택된 사용자 없음");
 
-                SharedPreferences pref = context.getSharedPreferences(username+dateStr+"tempData",MODE_PRIVATE);
-                SharedPreferences pref2 = context.getSharedPreferences(username+dateStr+"timelineData",MODE_PRIVATE);
 
-
-
-                showChart(pref,getView());
-                setRecyclerView(pref2,getView());
+                showChart(getView(),dateStr);
+                //setRecyclerView(pref2,getView());
             }
         });
     }
@@ -269,7 +285,7 @@ public class BodyTemperatureGraphFragment extends Fragment {
         {
             Toast.makeText(context, "사용자 등록을 완료해주세요.", Toast.LENGTH_SHORT).show();
         }
-
+        /*
         long now =System.currentTimeMillis();
         Date date = new Date(now);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -277,6 +293,8 @@ public class BodyTemperatureGraphFragment extends Fragment {
 
         preferences = context.getSharedPreferences(str, MODE_PRIVATE);
         preferences2 = context.getSharedPreferences(username+dateFormat.format(date)+"timelineData",MODE_PRIVATE);
+        */
+
     }
 
 }

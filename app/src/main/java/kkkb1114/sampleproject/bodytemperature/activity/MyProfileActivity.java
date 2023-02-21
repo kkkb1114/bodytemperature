@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import kkkb1114.sampleproject.bodytemperature.MainActivity;
 import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.database.Bodytemp_DBHelper;
 import kkkb1114.sampleproject.bodytemperature.dialog.WeightPickerDialog;
@@ -30,7 +31,6 @@ import kkkb1114.sampleproject.bodytemperature.dialog.WeightPickerDialog;
 public class MyProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     //todo
-    Bodytemp_DBHelper bodytemp_dbHelper;
     SQLiteDatabase sqlDB;
 
     EditText et_myProfile_name;
@@ -63,7 +63,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         initView();
 
         //todo
-        bodytemp_dbHelper = new Bodytemp_DBHelper(context, "Bodytemperature.db", null, 1);
+
         getMyProfile();
     }
 
@@ -146,7 +146,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         if (intentUserName != null && !intentUserName.isEmpty()){
 
             //todo
-            sqlDB = bodytemp_dbHelper.getReadableDatabase();
+            sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
             Cursor cursor = sqlDB.rawQuery("SELECT * FROM USER_PROFILE;", null);
             while(cursor.moveToNext()){
 
@@ -222,7 +222,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                     PreferenceManager.setString(context, "select_user_name", name);*/
 
                     //todo
-                    sqlDB = bodytemp_dbHelper.getWritableDatabase();
+                    sqlDB = MainActivity.bodytemp_dbHelper.getWritableDatabase();
                     sqlDB.execSQL("INSERT INTO USER_PROFILE VALUES ('"+name+"', "+gender+", '"+birthDate+"', '"+ weight +"');");
                     sqlDB.close();
                     finish();

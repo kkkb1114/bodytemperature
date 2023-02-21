@@ -20,6 +20,11 @@ public class Bodytemp_DBHelper extends SQLiteOpenHelper {
                 "gender INTEGER, " +
                 "birthDate TEXT," +
                 "weight TEXT);");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS TEMPDATA (" +
+                "name TEXT, " +
+                "tempValue DOUBLE, " +
+                "tempDateTime DATETIME PRIMARY KEY);");
     }
 
     @Override

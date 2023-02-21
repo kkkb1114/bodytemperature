@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +20,11 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import kkkb1114.sampleproject.bodytemperature.MainActivity;
 import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.thermometer.ThermometerView;
 
@@ -35,6 +38,10 @@ public class HomeFragment extends Fragment {
     SharedPreferences.Editor editor;
     Context context;
     SharedPreferences select_user;
+
+    SQLiteDatabase sqlDB;
+
+    String username;
     public HomeFragment() {
 
     }
@@ -92,10 +99,10 @@ public class HomeFragment extends Fragment {
                                 String value = edt_pill.getText().toString();
                                 long now =System.currentTimeMillis();
                                 Date date = new Date(now);
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
-                                editor.putString(dateFormat.format(date)+" 투약정보) ",value);
-                                editor.commit();
+
+
                                 dialog.dismiss();
                             }
                         })
@@ -137,9 +144,9 @@ public class HomeFragment extends Fragment {
     public void setUser()
     {
         select_user = context.getSharedPreferences("user_list",MODE_PRIVATE);
-        String username = select_user.getString("select_user_name","선택된 사용자 없음");
+        username = select_user.getString("select_user_name","선택된 사용자 없음");
 
-
+        /*
         long now =System.currentTimeMillis();
         Date date = new Date(now);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -148,6 +155,9 @@ public class HomeFragment extends Fragment {
 
         preferences = context.getSharedPreferences(str, MODE_PRIVATE);
         editor = preferences.edit();
+        */
+
+
     }
 
 

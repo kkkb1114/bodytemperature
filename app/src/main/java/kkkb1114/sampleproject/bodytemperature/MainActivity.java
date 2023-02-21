@@ -3,6 +3,7 @@ package kkkb1114.sampleproject.bodytemperature;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -23,6 +24,7 @@ import java.util.Date;
 import java.util.Stack;
 
 import kkkb1114.sampleproject.bodytemperature.BleConnect.ConnectActivity;
+import kkkb1114.sampleproject.bodytemperature.database.Bodytemp_DBHelper;
 import kkkb1114.sampleproject.bodytemperature.fragment.BodyTemperatureGraphFragment;
 import kkkb1114.sampleproject.bodytemperature.fragment.HomeFragment;
 import kkkb1114.sampleproject.bodytemperature.fragment.SettingFragment;
@@ -52,12 +54,19 @@ public class MainActivity extends AppCompatActivity {
 
    // 노티 변수
     TemperatureNotification temperatureNotification;
+    //db
+    public static Bodytemp_DBHelper bodytemp_dbHelper;
+
+    SQLiteDatabase sqlDB;
+    String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = this;
+
+        bodytemp_dbHelper = new Bodytemp_DBHelper(context, "Bodytemperature.db", null, 1);
 
         //날짜 측정
         setUser();
@@ -150,23 +159,26 @@ public class MainActivity extends AppCompatActivity {
 
                 // 1분이 지나면 최대값 파일에 작성
                 if (tempStack.size() >= 20){
-                    Double max=tempStack.peek();
-
+                    Double avg=tempStack.peek();
+                    Double cmp = 0.0;
                     while(!tempStack.isEmpty()) {
-
-                        Double cmp = tempStack.pop();
-                        if(cmp>max)
-                            max=cmp;
-
+                        cmp += tempStack.pop();
                     }
+                    avg=cmp/20;
+                    cmp=0.0;
                     tempStack.clear();
 
                     long now =System.currentTimeMillis();
                     Date date = new Date(now);
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
+                    SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
-                    editor.putString(dateFormat.format(date),String.valueOf(max));
-                    editor.commit();
+
+                    sqlDB = MainActivity.bodytemp_dbHelper.getWritableDatabase();
+                    sqlDB.execSQL("INSERT INTO TEMPDATA VALUES ('"+username+"', '"+avg+"', '"+ dateFormat1.format(date) +"');");
+                    sqlDB.close();
+                    finish();
+
+
                 }
 
                 // 3초마다 난수 받아옴
@@ -187,15 +199,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void setUser()
     {
+
         select_user = context.getSharedPreferences("user_list",MODE_PRIVATE);
-        String username = select_user.getString("select_user_name","선택된 사용자 없음");
+        username = select_user.getString("select_user_name","선택된 사용자 없음");
 
 
         if(username.equals("선택된 사용자 없음"))
         {
             Toast.makeText(getApplicationContext(), "사용자 등록을 완료해주세요.", Toast.LENGTH_SHORT).show();
         }
-
+        /*
         long now =System.currentTimeMillis();
         Date date = new Date(now);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -203,6 +216,8 @@ public class MainActivity extends AppCompatActivity {
 
         preferences = context.getSharedPreferences(str, MODE_PRIVATE);
         editor = preferences.edit();
+        */
+
     }
 
     /** 노티피케이션 세팅 **/
