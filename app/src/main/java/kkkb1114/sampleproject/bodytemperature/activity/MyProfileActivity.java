@@ -15,9 +15,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import kkkb1114.sampleproject.bodytemperature.R;
@@ -84,14 +86,36 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     }
 
     /** 달력 띄우기 **/
-    public void showMaterialDatePicker(){
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        // 오늘 날짜
-        Long today = MaterialDatePicker.todayInUtcMilliseconds();
+    public void showMaterialDatePicker(String day){
+        // 아래 3개 설정시 앱 내의 시간을 'UTC' 기준으로 인식 되도록 설정
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+        Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Locale.setDefault(Locale.KOREA);
+        Long today = null;
+
+        try {
+            if (tv_myProfile_birthDate.getText().toString().equals("생년월일")){
+                // 오늘 날짜
+                today = MaterialDatePicker.todayInUtcMilliseconds();
+            }else {
+                /*
+                 * MaterialDatePicker의 이슈중 하나가 날짜 계산이 무조건 UTC 기준으로 계산되어 Asia/Seoul로 지정하면 하루 전으로 표시가 된다.
+                 * 그래서 일단 임시 방편으로 시간 기준을 UTC로 지정하였다.
+                 * */
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = simpleDateFormat.parse(day);
+                today = date.getTime();
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         materialDatePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText("Date Picker")
-                .setSelection(today).build();
+                .setTheme(R.style.DatePickerTheme)
+                .setTitleText("생년월일")
+                .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
+                .setSelection(today)
+                .build();
 
         materialDatePicker.show(getSupportFragmentManager(), "DatePicker");
     }
@@ -155,7 +179,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 break;
 
             case R.id.tv_myProfile_birthDate:
-                showMaterialDatePicker();
+                showMaterialDatePicker(tv_myProfile_birthDate.getText().toString());
                 MaterialDatePickerClick();
                 break;
 
@@ -177,21 +201,30 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 || name.equals("이름을 입력하세요")|| birthDate.equals("생년월일") || weight.equals("몸무게")){
                     Toast.makeText(context, "정보를 모두 기입해 주세요.", Toast.LENGTH_SHORT).show();
                 }else {
-                    // 수정 모드가 아니면 알람 설정 할때 저장할 데이터 미리 생성
+                    // TODO DB로 중복 확인 하나 만들어야함.
+                    // 수정모드면 DB UPDATE만 하고 신규 정보면 INSERT한다.
                     if (intentUserName == null || intentUserName.isEmpty()){
+                        // 알람 설정 할때 저장할 데이터 미리 생성
                         PreferenceManager.PREFERENCES_NAME = name+"Setting";
                         PreferenceManager.setBoolean(context, "alarm_high_temperature_boolean", false);
                         PreferenceManager.setString(context, "alarm_high_temperature_value", String.valueOf(37.3));
                         PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean",false);
                         PreferenceManager.setString(context, "alarm_low_temperature_value", String.valueOf(37.3));
+
+                        // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
+                        PreferenceManager.PREFERENCES_NAME = "login_user";
+                        PreferenceManager.setString(context, "userName", name);
+
+                        MyProfile myProfile = new MyProfile(name, gender, birthDate, weight);
+                        myProfile_dbHelper.DBinsert(myProfile);
+                    }else {
+                        // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
+                        PreferenceManager.PREFERENCES_NAME = "login_user";
+                        PreferenceManager.setString(context, "userName", name);
+
+                        MyProfile myProfile = new MyProfile(name, gender, birthDate, weight);
+                        myProfile_dbHelper.DBupdate(myProfile);
                     }
-
-                    // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
-                    PreferenceManager.PREFERENCES_NAME = "login_user";
-                    PreferenceManager.setString(context, "userName", name);
-
-                    MyProfile myProfile = new MyProfile(name, gender, birthDate, weight);
-                    myProfile_dbHelper.DBinsert(myProfile);
                     finish();
                 }
                 break;

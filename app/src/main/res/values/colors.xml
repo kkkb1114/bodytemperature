@@ -12,12 +12,13 @@
     <color name="bottom_icon_text">#008D9F</color>
     <color name="main_bottom_line">#1A000000</color>
     <color name="black_transparency_30">#4D000000</color>
+    <color name="black_transparency_60">#99000000</color>
     <color name="main_bottom_bg">#C5C5C3</color>
     <color name="main_bottom_icon_bg">#C5C5C3</color>
     <color name="editText_hint">#9E9E9E</color>
     <color name="button_confirm_color">#2B8FB6</color>
     <color name="myprofile_gender_select">#2B8FB6</color>
-    <color name="activity_bg">#1A000000</color>
+    <color name="black_transparency_10">#1A000000</color>
     <color name="alarm_high_temperature_text">#FF5722</color>
     <color name="alarm_low_temperature_text">#2B8FB6</color>
     <color name="user_list_select_user">#BDD5D5</color>

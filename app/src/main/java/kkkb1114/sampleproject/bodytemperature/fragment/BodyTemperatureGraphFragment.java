@@ -120,10 +120,9 @@ public class BodyTemperatureGraphFragment extends Fragment {
         lineChart = new LineChart(getActivity());
         lineChart = view.findViewById(R.id.chart);
         XAxis xAxis = lineChart.getXAxis();
+        String username = select_user.getString("userName","선택된 사용자 없음");
 
-
-        cursor = sqlDB.rawQuery("SELECT * FROM TEMPDATA WHERE tempDateTime LIKE '"+date+"%'; ", null);
-
+        cursor = sqlDB.rawQuery("SELECT * FROM TEMPDATA WHERE tempDateTime LIKE '"+date+"%' AND name = '"+username+"'; ", null);
 
         while(cursor.moveToNext()) {
             keys.put(cursor.getString(2).substring(11), cursor.getDouble(1));
@@ -187,9 +186,8 @@ public class BodyTemperatureGraphFragment extends Fragment {
         rv_timeline=view.findViewById(R.id.rv_timeline_list);
         rv_timeline.setVisibility(View.VISIBLE);
 
-
-        cursor = sqlDB.rawQuery("SELECT * FROM TIMELINEDATA WHERE TimelineDateTime LIKE '"+date+"%'; ", null);
-
+        String username = select_user.getString("userName","선택된 사용자 없음");
+        cursor = sqlDB.rawQuery("SELECT * FROM TIMELINEDATA WHERE TimelineDateTime LIKE '"+date+"%' AND name = '"+username+"'; ", null);
 
         while(cursor.moveToNext()) {
             keys.put(cursor.getString(2).substring(11), cursor.getString(1));

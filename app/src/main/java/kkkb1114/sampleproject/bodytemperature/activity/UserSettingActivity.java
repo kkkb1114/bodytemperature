@@ -80,7 +80,7 @@ public class UserSettingActivity extends AppCompatActivity implements View.OnCli
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.user_setting_toolbar, menu);
+        menuInflater.inflate(R.menu.toolbar_user_setting, menu);
         return true;
     }
 

@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import kkkb1114.sampleproject.bodytemperature.MainActivity;
 import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.thermometer.ThermometerView;
 
@@ -99,7 +100,6 @@ public class HomeFragment extends Fragment {
 
                                 sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
                                 sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('"+username+"', '"+value+"', '"+ dateFormat.format(date) +"');");
-                                sqlDB.close();
 
                                 dialog.dismiss();
                             }
@@ -127,7 +127,7 @@ public class HomeFragment extends Fragment {
 
                                 sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
                                 sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('"+username+"', '"+value+"', '"+ dateFormat.format(date) +"');");
-                                sqlDB.close();
+
                                 dialog.dismiss();
                             }
                         })
@@ -143,7 +143,7 @@ public class HomeFragment extends Fragment {
     public void setUser()
     {
         select_user = context.getSharedPreferences("login_user",MODE_PRIVATE);
-        String username = select_user.getString("userName","선택된 사용자 없음");
+        username = select_user.getString("userName","선택된 사용자 없음");
 
         /*
         long now =System.currentTimeMillis();

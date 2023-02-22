@@ -16,11 +16,23 @@ public class Bodytemp_DBHelper extends SQLiteOpenHelper {
         super(context, name, factory, version);
 
         SQLiteDatabase db = getWritableDatabase();
+
         db.execSQL("CREATE TABLE IF NOT EXISTS USER_PROFILE (" +
                 "name TEXT PRIMARY KEY, " +
                 "gender INTEGER, " +
                 "birthDate TEXT," +
                 "weight TEXT);");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS TEMPDATA (" +
+                "name TEXT, " +
+                "tempValue DOUBLE, " +
+                "tempDateTime DATETIME PRIMARY KEY);");
+
+        db.execSQL("CREATE TABLE IF NOT EXISTS TIMELINEDATA (" +
+                "name TEXT, " +
+                "Value TEXT, " +
+                "TimelineDateTime DATETIME PRIMARY KEY);");
+
         db.close();
     }
 
@@ -40,11 +52,6 @@ public class Bodytemp_DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-
-        db.execSQL("CREATE TABLE IF NOT EXISTS TIMELINEDATA (" +
-                "name TEXT, " +
-                "Value TEXT, " +
-                "TimelineDateTime DATETIME PRIMARY KEY);");
     }
 
     @Override

@@ -18,7 +18,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.navigation.NavigationBarView;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Stack;
@@ -101,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main_toolbar, menu);
+        menuInflater.inflate(R.menu.toolbar_main, menu);
         return true;
     }
 
@@ -144,12 +143,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-
-    protected void onDestroy(Bundle savedInstanceState) throws IOException {
-        super.onDestroy();
-    }
-
     /** 체온 측정 스레드 **/
     public void MeasurBodyTempreture(){
 
@@ -175,11 +168,8 @@ public class MainActivity extends AppCompatActivity {
 
 
                     sqlDB = MainActivity.bodytemp_dbHelper.getWritableDatabase();
+                    // todo 제한 조건이 맞지 않는다며 에러가 뜨는데 일단 PRIMARY KEY 중복을 의심해보기로 함 (테스트 필요)
                     sqlDB.execSQL("INSERT INTO TEMPDATA VALUES ('"+username+"', '"+avg+"', '"+ dateFormat1.format(date) +"');");
-                    sqlDB.close();
-                    finish();
-
-
                 }
 
                 // 3초마다 난수 받아옴
@@ -201,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
     public void setUser()
     {
         select_user = context.getSharedPreferences("login_user",MODE_PRIVATE);
-        String username = select_user.getString("userName","선택된 사용자 없음");
+        username = select_user.getString("userName","선택된 사용자 없음");
 
 
         if(username.equals("선택된 사용자 없음"))
