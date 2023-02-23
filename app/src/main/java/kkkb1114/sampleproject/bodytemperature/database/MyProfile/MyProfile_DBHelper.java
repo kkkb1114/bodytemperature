@@ -25,10 +25,11 @@ public class MyProfile_DBHelper {
         SQLiteDatabase db = Bodytemp_DBHelper.writableDatabase;
         db.beginTransaction();
         db.execSQL("UPDATE USER_PROFILE SET " +
-                "name = '"+myProfile.name+"'," +
                 "gender = "+myProfile.gender+"," +
                 "birthDate = '"+myProfile.birthDate+"'," +
-                "weight = '"+myProfile.weight+"'");
+                "weight = '"+myProfile.weight+"'" +
+                        "WHERE name = '"+myProfile.name+"'"
+                );
         db.setTransactionSuccessful();
         db.endTransaction();
     }

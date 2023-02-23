@@ -204,19 +204,26 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                     // TODO DB로 중복 확인 하나 만들어야함.
                     // 수정모드면 DB UPDATE만 하고 신규 정보면 INSERT한다.
                     if (intentUserName == null || intentUserName.isEmpty()){
-                        // 알람 설정 할때 저장할 데이터 미리 생성
-                        PreferenceManager.PREFERENCES_NAME = name+"Setting";
-                        PreferenceManager.setBoolean(context, "alarm_high_temperature_boolean", false);
-                        PreferenceManager.setString(context, "alarm_high_temperature_value", String.valueOf(37.3));
-                        PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean",false);
-                        PreferenceManager.setString(context, "alarm_low_temperature_value", String.valueOf(37.3));
 
-                        // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
-                        PreferenceManager.PREFERENCES_NAME = "login_user";
-                        PreferenceManager.setString(context, "userName", name);
+                        if(myProfile_dbHelper.DBselect(name)!=null)
+                            Toast.makeText(context, "중복된 사용자명입니다.", Toast.LENGTH_SHORT).show();
 
-                        MyProfile myProfile = new MyProfile(name, gender, birthDate, weight);
-                        myProfile_dbHelper.DBinsert(myProfile);
+                        else {
+                            // 알람 설정 할때 저장할 데이터 미리 생성
+                            PreferenceManager.PREFERENCES_NAME = name + "Setting";
+                            PreferenceManager.setBoolean(context, "alarm_high_temperature_boolean", false);
+                            PreferenceManager.setString(context, "alarm_high_temperature_value", String.valueOf(37.3));
+                            PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean", false);
+                            PreferenceManager.setString(context, "alarm_low_temperature_value", String.valueOf(37.3));
+
+                            // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
+                            PreferenceManager.PREFERENCES_NAME = "login_user";
+                            PreferenceManager.setString(context, "userName", name);
+
+                            MyProfile myProfile = new MyProfile(name, gender, birthDate, weight);
+                            myProfile_dbHelper.DBinsert(myProfile);
+                            finish();
+                        }
                     }else {
                         // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
                         PreferenceManager.PREFERENCES_NAME = "login_user";
@@ -224,8 +231,9 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
                         MyProfile myProfile = new MyProfile(name, gender, birthDate, weight);
                         myProfile_dbHelper.DBupdate(myProfile);
+                        finish();
                     }
-                    finish();
+
                 }
                 break;
         }
