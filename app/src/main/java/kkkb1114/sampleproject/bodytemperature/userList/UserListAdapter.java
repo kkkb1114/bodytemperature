@@ -10,22 +10,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.activity.MyProfileActivity;
+import kkkb1114.sampleproject.bodytemperature.database.Bodytemp_DBHelper;
 import kkkb1114.sampleproject.bodytemperature.database.MyProfile.MyProfile;
+import kkkb1114.sampleproject.bodytemperature.database.MyProfile.MyProfile_DBHelper;
 import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
 
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHolder> {
 
     Context context;
     ArrayList<MyProfile> userList;
+
+    MyProfile_DBHelper myProfile_dbHelper;
+    Bodytemp_DBHelper bodytemp_dbHelper;
 
     public UserListAdapter(Context context, ArrayList<MyProfile> userList){
         this.context = context;
@@ -127,12 +132,26 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                 .setPositiveButton("예", new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        PreferenceManager.PREFERENCES_NAME = "user_list";
-                        PreferenceManager.removeKey(context, name+"isSelect");
+                        PreferenceManager.PREFERENCES_NAME = "login_user";
+                        if(PreferenceManager.getString(context,"userName")==name)
+                            Toast.makeText(context, "로그인 중인 사용자는 삭제할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                        else{
+                            bodytemp_dbHelper = Bodytemp_DBHelper.getInstance(context, "Bodytemperature.db", null, 1);
+                            bodytemp_dbHelper.ProfileDelete(name);
+                            bodytemp_dbHelper.TempDelete(name);
+                            bodytemp_dbHelper.TimeLineDelete(name);
 
-                        String str = name+"Profile";
-                        File file = new File("/data/data/kkkb1114.sampleproject.bodytemperature/shared_prefs/"+str+".xml");
-                        file.delete();
+                            for(int j=0; j<userList.size(); j++)
+                            {
+                                if(userList.get(j).name.equals(name))
+                                {
+                                    userList.remove(j);
+                                }
+                            }
+                        }
+
+
+
 
                         dialogInterface.dismiss();
                         // 유저 삭제했으니 새로고침

@@ -1,10 +1,13 @@
 package kkkb1114.sampleproject.bodytemperature.database;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
+
+import kkkb1114.sampleproject.bodytemperature.database.MyProfile.MyProfile;
 
 public class Bodytemp_DBHelper extends SQLiteOpenHelper {
 
@@ -58,6 +61,49 @@ public class Bodytemp_DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
 
     }
+
+    public void ProfileDelete(String name){
+        SQLiteDatabase db = Bodytemp_DBHelper.writableDatabase;
+        db.beginTransaction();
+        db.execSQL("DELETE FROM USER_PROFILE WHERE name = '"+name+"'");
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+    public void TempDelete(String name){
+        SQLiteDatabase db = Bodytemp_DBHelper.writableDatabase;
+        db.beginTransaction();
+        db.execSQL("DELETE FROM TEMPDATA WHERE name = '"+name+"'");
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public void TimeLineDelete(String name){
+        SQLiteDatabase db = Bodytemp_DBHelper.writableDatabase;
+        db.beginTransaction();
+        db.execSQL("DELETE FROM TIMELINEDATA WHERE name = '"+name+"'");
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public MyProfile DBselect(String name){
+        SQLiteDatabase db = Bodytemp_DBHelper.readableDataBase;
+        db.beginTransaction();
+        Cursor cursor = db.rawQuery("SELECT * FROM USER_PROFILE WHERE name = '"+name+"'", null);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+
+        MyProfile myProfile = null;
+        while (cursor.moveToNext()){
+            myProfile = new MyProfile(
+                    cursor.getString(0),
+                    cursor.getInt(1),
+                    cursor.getString(2),
+                    cursor.getString(3));
+        }
+
+        return myProfile;
+    }
+
 
     public void closeDBHelper(){
         mInstance.close();
