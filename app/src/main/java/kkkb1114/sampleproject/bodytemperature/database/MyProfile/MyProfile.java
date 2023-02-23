@@ -12,4 +12,14 @@ public class MyProfile {
         this.birthDate = birthDate;
         this.weight = weight;
     }
+
+    @Override
+    public String toString() {
+        return "MyProfile{" +
+                "name='" + name + '\'' +
+                ", gender=" + gender +
+                ", birthDate='" + birthDate + '\'' +
+                ", weight='" + weight + '\'' +
+                '}';
+    }
 }

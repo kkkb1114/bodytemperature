@@ -21,15 +21,28 @@ import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
 
 public class BLEConnect_ListAdapter extends RecyclerView.Adapter<BLEConnect_ListAdapter.ViewHolder> {
 
+    // 부모뷰의 내 기기 TextView
+    TextView tv_name;
+    TextView tv_address;
+    TextView tv_connectState;
+    // 스캔된 ble 기기 목록
     ArrayList<BluetoothDevice> scanBleDeviceList;
     Context context;
     // 권한 체크
     private PermissionManager permissionManager;
+    private String sharedDeviceAddress_1 = "";
+    private String sharedDeviceAddress_2 = "";
 
-    public BLEConnect_ListAdapter(Context context, ArrayList<BluetoothDevice> scanBleDeviceList){
+    public BLEConnect_ListAdapter(Context context, ArrayList<BluetoothDevice> scanBleDeviceList, TextView tv_name,
+                                  TextView tv_address, TextView tv_connectState){
         this.context = context;
         this.scanBleDeviceList = scanBleDeviceList;
+        this.tv_name = tv_name;
+        this.tv_address = tv_address;
+        this.tv_connectState = tv_connectState;
         permissionManager = new PermissionManager();
+        PreferenceManager.PREFERENCES_NAME = "login_user";
+        sharedDeviceAddress_1 = PreferenceManager.getString(context, "deviceAddress");
     }
 
     @NonNull
@@ -43,9 +56,21 @@ public class BLEConnect_ListAdapter extends RecyclerView.Adapter<BLEConnect_List
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         checkBlePermission();
+
         holder.tv_name.setText(scanBleDeviceList.get(position).getName());
         holder.tv_address.setText(scanBleDeviceList.get(position).getAddress());
-        holder.tv_connectState.setText("미연결");
+        // 마지막으로 연결한 디바이스와 같은 주소면 최근 연결로 setText
+        if (sharedDeviceAddress_2.equals(scanBleDeviceList.get(position).getAddress())){
+            holder.tv_connectState.setText("연결");
+            holder.tv_connectState.setTextColor(context.getResources().getColor(R.color.ble_connect_state_text, null));
+        }else if (sharedDeviceAddress_1.equals(scanBleDeviceList.get(position).getAddress())){
+            holder.tv_connectState.setText("최근 연결");
+            holder.tv_connectState.setTextColor(context.getResources().getColor(R.color.black_transparency_30, null));
+        }else {
+            holder.tv_connectState.setTextColor(context.getResources().getColor(R.color.black_transparency_30, null));
+            holder.tv_connectState.setText("미연결");
+        }
+
         setLnItemClick(holder, scanBleDeviceList.get(position).getName(), scanBleDeviceList.get(position).getAddress());
     }
 
@@ -57,6 +82,14 @@ public class BLEConnect_ListAdapter extends RecyclerView.Adapter<BLEConnect_List
                 PreferenceManager.PREFERENCES_NAME = "login_user";
                 PreferenceManager.setString(context, "deviceName", deviceName);
                 PreferenceManager.setString(context, "deviceAddress", deviceAddress);
+
+                tv_name.setText(deviceName);
+                tv_address.setText(deviceAddress);
+                tv_connectState.setText("연결");
+                tv_connectState.setTextColor(context.getResources().getColor(R.color.ble_connect_state_text, null));
+                PreferenceManager.PREFERENCES_NAME = "login_user";
+                sharedDeviceAddress_2 = PreferenceManager.getString(context, "deviceAddress");
+                notifyDataSetChanged();
             }
         });
     }

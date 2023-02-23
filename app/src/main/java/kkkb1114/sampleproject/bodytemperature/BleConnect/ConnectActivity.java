@@ -88,7 +88,7 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
 
     /** 연결한 BLE 기기 있는지 확인 (아직 작업중) **/
     public void checkMyBLE(){
-        tv_name.setText("연결한 기록이 없습니다.");
+        tv_name.setText("연결 되어있는 기기가 없습니다.");
     }
 
     /** 블루투스 세팅 **/
@@ -166,7 +166,7 @@ public class ConnectActivity extends AppCompatActivity implements View.OnClickLi
 
     /** RecyclerView 세팅 **/
     public void setRecyclerView(){
-        bleConnect_listAdapter = new BLEConnect_ListAdapter(context, scanBleDeviceList);
+        bleConnect_listAdapter = new BLEConnect_ListAdapter(context, scanBleDeviceList, tv_name, tv_address, tv_connectState);
         rv_ble_list.setLayoutManager(new LinearLayoutManager(context));
         rv_ble_list.setAdapter(bleConnect_listAdapter);
         bleConnect_listAdapter.notifyDataSetChanged();
