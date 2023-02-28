@@ -27,6 +27,7 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
     SeekBar sb_low_temperature;
     Switch sw_high_temperature;
     Switch sw_low_temperature;
+    Switch sw_alarm_add_sound;
     Button bt_alarm_confirm;
     Button bt_alarm_cancle;
 
@@ -62,6 +63,7 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         sb_low_temperature = findViewById(R.id.sb_low_temperature);
         sw_high_temperature = findViewById(R.id.sw_high_temperature);
         sw_low_temperature = findViewById(R.id.sw_low_temperature);
+        sw_alarm_add_sound = findViewById(R.id.sw_alarm_add_sound);
         bt_alarm_confirm = findViewById(R.id.bt_alarm_confirm);
         bt_alarm_confirm.setOnClickListener(this);
         bt_alarm_cancle = findViewById(R.id.bt_alarm_cancle);
@@ -124,6 +126,15 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
             tv_low_temperature.setText(String.valueOf(min));
         }
         setProgressThumb(sb_low_temperature, low_temperature_progress);
+
+        // 사운드
+        boolean alarm_sound_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_sound_temperature_boolean");
+        if (alarm_sound_temperature_boolean){
+            sw_alarm_add_sound.setChecked(true);
+        }else {
+            sw_alarm_add_sound.setChecked(false);
+        }
+
 
         firstSetView = true;
     }
@@ -217,7 +228,9 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
          * 3.      (고,저)체온 기준 String 값 저장
          * 4. off: (고,저)체온 알람 off 이라는 boolean 값 저장
          *         이때는 값을 초기 값으로 저장한다.
+         * 5. 사운드 추가 여부: on이면 알람 울릴때 음악이 흐르며 앱을 켜야 음악이 꺼진다.
          */
+        // 고온 알람
         if (sw_high_temperature.isChecked()){
             PreferenceManager.setBoolean(context, "alarm_high_temperature_boolean",true);
             PreferenceManager.setString(context, "alarm_high_temperature_value", tv_high_temperature.getText().toString());
@@ -226,12 +239,20 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
             PreferenceManager.setString(context, "alarm_high_temperature_value", String.valueOf(min));
         }
 
+        // 저온 알람
         if (sw_low_temperature.isChecked()){
             PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean",true);
             PreferenceManager.setString(context, "alarm_low_temperature_value", tv_low_temperature.getText().toString());
         }else {
             PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean",false);
             PreferenceManager.setString(context, "alarm_low_temperature_value", String.valueOf(min));
+        }
+
+        // 사운드 추가 여부
+        if (sw_alarm_add_sound.isChecked()){
+            PreferenceManager.setBoolean(context, "alarm_sound_temperature_boolean",true);
+        }else {
+            PreferenceManager.setBoolean(context, "alarm_sound_temperature_boolean",false);
         }
     }
 

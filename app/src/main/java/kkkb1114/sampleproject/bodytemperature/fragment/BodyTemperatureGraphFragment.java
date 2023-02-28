@@ -281,6 +281,7 @@ public class BodyTemperatureGraphFragment extends Fragment {
                     username = select_user.getString("userName","선택된 사용자 없음");
 
                     sqlDB = MainActivity.bodytemp_dbHelper.getWritableDatabase();
+
                     String str = np_periodDate.getYear() + "-" +np_periodDate.getMonth() + "-"+np_periodDate.getDayOfMonth();
                     cursor = sqlDB.rawQuery("SELECT * FROM OVULDATA WHERE name = '"+username+"'; ", null);
                     String s=null;
