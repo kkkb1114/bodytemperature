@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (temperature_get <= temperature_s){
                     temperatureNotification = new TemperatureNotification(context);
-                    temperatureNotification.setNotification_HighTemperature(s);
+                    temperatureNotification.setNotification_HighTemperature(s, alarm_temperature_str);
 
                     // 알람이 한번 울리면 알람 설정을 off 한다.
                     PreferenceManager.setBoolean(context, "alarm_high_temperature_boolean", false);
@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (temperature_get >= temperature_s){
                     temperatureNotification = new TemperatureNotification(context);
-                    temperatureNotification.setNotification_LowTemperature(s);
+                    temperatureNotification.setNotification_LowTemperature(s, alarm_temperature_str);
 
                     // 알람이 한번 울리면 알람 설정을 off 한다.
                     PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean", false);

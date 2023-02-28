@@ -24,7 +24,7 @@ public class TemperatureNotification {
     }
 
     // 고온 Notification 설정
-    public void setNotification_HighTemperature(String high_temperature){
+    public void setNotification_HighTemperature(String now_temperature, String high_temperature){
 
         // 채널을 생성 및 전달해 줄수 있는 NotificationManager 생성
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -38,7 +38,8 @@ public class TemperatureNotification {
         NotificationCompat.Builder builder_high_temperature = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_TEMPERATURE_HIGH)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.pill))
                 .setContentTitle("고온 알림")
-                .setContentText("현재 체온이"+ high_temperature +"°C 를 넘었습니다.")
+                .setContentText("현재 체온이"+ high_temperature +"°C 를 넘었습니다.\n" +
+                        "(현재 체온: "+now_temperature+"°C)")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent) // 노티 클릭시 위에 생성한 PendingIntent 실행 (설정한 데이터 담고 MainActivity로 이동)
                 .setAutoCancel(true); // 눌러야 꺼짐
@@ -68,7 +69,7 @@ public class TemperatureNotification {
     }
 
     // 저온 Notification 설정
-    public void setNotification_LowTemperature(String low_temperature){
+    public void setNotification_LowTemperature(String now_temperature, String low_temperature){
 
         // 채널을 생성 및 전달해 줄수 있는 NotificationManager 생성
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -82,7 +83,8 @@ public class TemperatureNotification {
         NotificationCompat.Builder builder_low_temperature = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_TEMPERATURE_LOW)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.pill))
                 .setContentTitle("저온 알림")
-                .setContentText("현재 체온이"+ low_temperature +"°C 이하로 떨어졌습니다.")
+                .setContentText("현재 체온이"+ low_temperature +"°C 이하로 떨어졌습니다.\n" +
+                        "(현재 체온: "+now_temperature+"°C)")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent) // 노티 클릭시 위에 생성한 PendingIntent 실행 (설정한 데이터 담고 MainActivity로 이동)
                 .setAutoCancel(true); // 눌러야 꺼짐
