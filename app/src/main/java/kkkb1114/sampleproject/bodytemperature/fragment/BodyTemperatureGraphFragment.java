@@ -11,6 +11,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,17 +49,21 @@ import kkkb1114.sampleproject.bodytemperature.timeline.TimelineAdapter;
 public class BodyTemperatureGraphFragment extends Fragment {
 
     public LineChart lineChart;
-    private SharedPreferences preferences;
-    private SharedPreferences preferences2;
+    public LineChart lineChart2;
     Context context;
-    long now;
-    Date date;
-    SimpleDateFormat dateFormat;
-    String str;
     RecyclerView rv_timeline;
     TimelineAdapter timelineAdapter;
     TextView tv_graphdate;
+    TextView tv_period;
+
+    NumberPicker np_period_integer;
+    DatePicker np_periodDate;
+    Button bt_periodCal;
+
+
+    LinearLayout period_layout;
     MaterialDatePicker materialDatePicker;
+    String username;
 
     View view;
 
@@ -90,7 +98,6 @@ public class BodyTemperatureGraphFragment extends Fragment {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         tv_graphdate.setText(dateFormat.format(date));
 
-
         return view;
     }
 
@@ -102,14 +109,46 @@ public class BodyTemperatureGraphFragment extends Fragment {
 
     public void initView(View view){
         tv_graphdate=view.findViewById(R.id.tv_graphdate);
+        tv_period=view.findViewById(R.id.tv_period);
         lineChart = view.findViewById(R.id.chart);
+        lineChart2 = view.findViewById(R.id.Pchart);
         rv_timeline=view.findViewById(R.id.rv_timeline_list);
+        period_layout=view.findViewById(R.id.period_layout);
+        np_period_integer=view.findViewById(R.id.np_period_integer);
+        bt_periodCal=view.findViewById(R.id.bt_periodCal);
+        np_periodDate=view.findViewById(R.id.np_periodDate);
+        setPicker();
+
         long now =System.currentTimeMillis();
         Date date = new Date(now);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String str = dateFormat.format(date);
-        showChart(view,str);
-        setRecyclerView(view,str);
+
+
+        String userpurpose = select_user.getString("userPurpose"," ");
+        if(userpurpose.equals("감염"))
+        {
+            tv_graphdate.setVisibility(View.VISIBLE);
+            rv_timeline.setVisibility(View.VISIBLE);
+            lineChart.setVisibility(View.VISIBLE);
+            lineChart2.setVisibility(View.INVISIBLE);
+            tv_period.setVisibility(View.INVISIBLE);
+            period_layout.setVisibility(View.INVISIBLE);
+            showChart(view,str);
+            setRecyclerView(view,str);
+
+        }
+        else if(userpurpose.equals("배란"))
+        {
+            tv_graphdate.setVisibility(View.INVISIBLE);
+            rv_timeline.setVisibility(View.INVISIBLE);
+            lineChart.setVisibility(View.INVISIBLE);
+            lineChart2.setVisibility(View.VISIBLE);
+            tv_period.setVisibility(View.VISIBLE);
+            period_layout.setVisibility(View.VISIBLE);
+            showPchart(view);
+
+        }
 
     }
 
@@ -235,6 +274,33 @@ public class BodyTemperatureGraphFragment extends Fragment {
             }
         });
 
+        bt_periodCal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    select_user = context.getSharedPreferences("login_user",MODE_PRIVATE);
+                    username = select_user.getString("userName","선택된 사용자 없음");
+
+                    sqlDB = MainActivity.bodytemp_dbHelper.getWritableDatabase();
+                    String str = np_periodDate.getYear() + "-" +np_periodDate.getMonth() + "-"+np_periodDate.getDayOfMonth();
+                    cursor = sqlDB.rawQuery("SELECT * FROM OVULDATA WHERE name = '"+username+"'; ", null);
+                    String s=null;
+                    while(cursor.moveToNext()) {
+                        s = cursor.getString(0);
+                    }
+                    if(s==null)
+                        sqlDB.execSQL("INSERT INTO OVULDATA VALUES ('"+username+"', '"+np_period_integer.getValue()+"', '"+ str +"');");
+                    else
+                        sqlDB.execSQL(
+                                "UPDATE OVULDATA SET " +
+                                        "period = '" + np_period_integer.getValue() + "'," +
+                                        "ovulDateTime = '" + str + "'" +
+                                        " WHERE name = '" + username + "'"
+                        );
+
+                    showPchart(getView());
+            }
+        });
+
     }
 
     public void showMaterialDatePicker(){
@@ -283,16 +349,114 @@ public class BodyTemperatureGraphFragment extends Fragment {
         {
             Toast.makeText(context, "사용자 등록을 완료해주세요.", Toast.LENGTH_SHORT).show();
         }
-        /*
-        long now =System.currentTimeMillis();
-        Date date = new Date(now);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String str = username+dateFormat.format(date)+"tempData";
-
-        preferences = context.getSharedPreferences(str, MODE_PRIVATE);
-        preferences2 = context.getSharedPreferences(username+dateFormat.format(date)+"timelineData",MODE_PRIVATE);
-        */
 
     }
+
+    public void setPicker() {
+        np_period_integer.setMinValue(14);
+        np_period_integer.setMaxValue(40);
+
+    }
+
+    public void showPchart(View view)
+    {
+
+        sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
+        lineChart2 = new LineChart(getActivity());
+        lineChart2 = view.findViewById(R.id.Pchart);
+        XAxis xAxis = lineChart2.getXAxis();
+        String username = select_user.getString("userName","선택된 사용자 없음");
+
+        String day = null;
+        String month = null;
+        
+        cursor = sqlDB.rawQuery("SELECT * FROM OVULDATA WHERE name = '"+username+"'; ", null);
+        while(cursor.moveToNext()) {
+           day = cursor.getString(2).substring(7);
+           month=cursor.getString(2).substring(7);
+        }
+
+        if(day==null)
+        {
+            lineChart2.setData(null);
+            lineChart2.invalidate();
+            return;
+        }
+
+        LineData lineData = new LineData();
+
+        ArrayList<Entry> entry_chart_Y = new ArrayList<>();
+        ArrayList<String> entry_chart_X = new ArrayList<>();
+
+
+        int i=0;
+        int num= Integer.parseInt(day);
+
+
+        while(i<45)
+        {
+            if(month.startsWith("1")||month.startsWith("3")||month.startsWith("5")||month.startsWith("7")||month.startsWith("8")||month.startsWith("10")||month.startsWith("12"))
+            {
+                if(num==31)
+                {
+                    entry_chart_X.add(String.valueOf(num));
+                    num=1;
+                }
+                entry_chart_X.add(String.valueOf(num));
+                num++;
+                i++;
+            }
+            else if(month.startsWith("2"))
+            {
+                if(num==28)
+                {
+                    entry_chart_X.add(String.valueOf(num));
+                    num=1;
+                }
+                entry_chart_X.add(String.valueOf(num));
+                num++;
+                i++;
+            }
+            else{
+                if(num==30)
+                {
+                    entry_chart_X.add(String.valueOf(num));
+                    num=1;
+                }
+                entry_chart_X.add(String.valueOf(num));
+                num++;
+                i++;
+            }
+
+        }
+
+
+        float [] temp = {36.7f,36.66f,36.6f,36.55f,36.6f,36.55f,36.55f,36.65f,36.6f,36.65f,36.6f,36.55f,36.6f,36.5f,36.7f,36.75f,36.85f,36.95f,36.95f,36.85f,36.8f,36.85f,36.95f,36.95f,36.9f,36.95f,37.0f,37.0f,36.95f,37.0f,37.05f,37.1f,37.0f,37.0f,37.05f,36.95f,36.9f,36.95f,37.0f,37.05f,36.95f,37.0f,37.05f,37.05f,37.1f};
+
+        for(int j=0; j<temp.length; j++) {
+            entry_chart_Y.add(new Entry(j, temp[j]));
+        }
+
+
+        LineDataSet lineDataSet = new LineDataSet(entry_chart_Y, "표준"); // 데이터가 담긴 Arraylist 를 LineDataSet 으로 변환한다.
+        lineDataSet.setColor(Color.BLUE); // 해당 LineDataSet의 색 설정 :: 각 Line 과 관련된 세팅은 여기서 설정한다.
+        lineDataSet.setLineWidth(3);
+
+
+        XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
+        xAxis.setPosition(position);// x 축 설정
+        xAxis.setGranularity(1f);
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(entry_chart_X));
+
+
+        lineData.addDataSet(lineDataSet); // 해당 LineDataSet 을 적용될 차트에 들어갈 DataSet 에 넣는다.
+        lineChart2.setData(lineData); // 차트에 위의 DataSet을 넣는다.
+        lineChart2.getDescription().setEnabled(false);
+        lineChart2.invalidate(); // 차트 업데이트
+        lineChart2.setTouchEnabled(false);
+
+
+    }
+
 
 }

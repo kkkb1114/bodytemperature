@@ -35,7 +35,7 @@ public class MyProfile_DBHelper {
                 "birthDate = '"+myProfile.birthDate+"'," +
                 "weight = '"+myProfile.weight+"'," +
                         "purpose = '"+myProfile.purpose+"'" +
-                        "WHERE name = '"+myProfile.name+"'"
+                        " WHERE name = '"+myProfile.name+"'"
                 );
         db.setTransactionSuccessful();
         db.endTransaction();

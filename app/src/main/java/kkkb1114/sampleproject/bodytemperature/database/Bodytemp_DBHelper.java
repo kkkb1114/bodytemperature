@@ -37,6 +37,11 @@ public class Bodytemp_DBHelper extends SQLiteOpenHelper {
                 "Value TEXT, " +
                 "TimelineDateTime DATETIME PRIMARY KEY);");
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS OVULDATA (" +
+                "name TEXT PRIMARY KEY, " +
+                "period INT, " +
+                "ovulDateTime DATETIME );");
+
         db.close();
     }
 

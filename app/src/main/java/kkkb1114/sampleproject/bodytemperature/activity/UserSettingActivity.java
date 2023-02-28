@@ -71,6 +71,7 @@ public class UserSettingActivity extends AppCompatActivity implements View.OnCli
         userListAdapter.notifyDataSetChanged();
     }
 
+
     /** 툴바 세팅 **/
     public void setToolbar(){
         setSupportActionBar(toolbar_user_setting);
