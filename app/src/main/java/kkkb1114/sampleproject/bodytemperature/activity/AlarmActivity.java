@@ -235,6 +235,8 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    /** 알람 세팅 **/
+
     @Override
     public void onClick(View view) {
         switch (view.getId()){

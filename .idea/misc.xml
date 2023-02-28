@@ -9,6 +9,7 @@
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable-v24/ic_settings.xml" value="0.2115" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable-v24/ic_settings_white.xml" value="0.2235" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/bottom_menu_selector_color.xml" value="0.159" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/convert_spinner_arrow.xml" value="0.171" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/dialog_button.xml" value="0.171" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/dialog_button_bg.xml" value="0.171" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/half_rounded_corners.xml" value="0.1305" />
@@ -23,6 +24,7 @@
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/seekbar_high_temperature.xml" value="0.171" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/seekbar_low_temperature.xml" value="0.171" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/seekbar_thumb.xml" value="0.171" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/spinner_inner_view.xml" value="0.171" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/switch_thumb_off_high_temperature.xml" value="0.171" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/switch_thumb_off_low_temperature.xml" value="0.171" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/switch_thumb_off_temperature.xml" value="0.171" />
@@ -52,6 +54,7 @@
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/activity_user_setting.xml" value="0.25364583333333335" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/ble_connect_list_item.xml" value="0.1125" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/dialog_pill.xml" value="0.25364583333333335" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/dialog_purpose.xml" value="0.25364583333333335" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/dialog_significant.xml" value="0.25364583333333335" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/dialog_weight_picker.xml" value="0.2526041666666667" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/fragment_blank.xml" value="0.25364583333333335" />
@@ -62,6 +65,7 @@
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/item_timeline.xml" value="0.25364583333333335" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/item_user_list.xml" value="0.25364583333333335" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/main_toolbar.xml" value="0.25364583333333335" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/spinner_purpose_view.xml" value="0.25364583333333335" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/timeline_item.xml" value="0.25364583333333335" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/toolbar_ble_connect.xml" value="0.25364583333333335" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/layout/toolbar_main.xml" value="0.25364583333333335" />

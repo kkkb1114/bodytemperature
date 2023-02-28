@@ -82,13 +82,14 @@
             android:textColor="@color/editText_hint"
             android:background="@drawable/rounded_corners_white"/>
 
-        <Spinner
-            android:id="@+id/sn_"
+        <TextView
+            android:id="@+id/tv_purpose"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_margin="20dp"
             android:padding="20dp"
+            android:text="이용 목적 선택"
             android:textSize="20sp"
             android:textColor="@color/editText_hint"
             android:background="@drawable/rounded_corners_white"/>

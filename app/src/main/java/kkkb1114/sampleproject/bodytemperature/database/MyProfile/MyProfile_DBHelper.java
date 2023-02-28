@@ -16,7 +16,12 @@ public class MyProfile_DBHelper {
     public void DBinsert(MyProfile myProfile){
         SQLiteDatabase db = Bodytemp_DBHelper.writableDatabase;
         db.beginTransaction();
-        db.execSQL("INSERT INTO USER_PROFILE VALUES ('"+myProfile.name+"', "+myProfile.gender+", '"+myProfile.birthDate+"', '"+ myProfile.weight +"');");
+        db.execSQL("INSERT INTO USER_PROFILE VALUES (" +
+                "'"+myProfile.name+"'," +
+                ""+myProfile.gender+"," +
+                "'"+myProfile.birthDate+"'," +
+                "'"+ myProfile.weight +"'," +
+                "'"+ myProfile.purpose +"');");
         db.setTransactionSuccessful();
         db.endTransaction();
     }
@@ -24,10 +29,12 @@ public class MyProfile_DBHelper {
     public void DBupdate(MyProfile myProfile){
         SQLiteDatabase db = Bodytemp_DBHelper.writableDatabase;
         db.beginTransaction();
-        db.execSQL("UPDATE USER_PROFILE SET " +
+        db.execSQL(
+                "UPDATE USER_PROFILE SET " +
                 "gender = "+myProfile.gender+"," +
                 "birthDate = '"+myProfile.birthDate+"'," +
-                "weight = '"+myProfile.weight+"'" +
+                "weight = '"+myProfile.weight+"'," +
+                        "purpose = '"+myProfile.purpose+"'" +
                         "WHERE name = '"+myProfile.name+"'"
                 );
         db.setTransactionSuccessful();
@@ -66,7 +73,8 @@ public class MyProfile_DBHelper {
                     cursor.getString(0),
                     cursor.getInt(1),
                     cursor.getString(2),
-                    cursor.getString(3));
+                    cursor.getString(3),
+                    cursor.getString(4));
         }
 
         return myProfile;
@@ -78,7 +86,8 @@ public class MyProfile_DBHelper {
                     cursor.getString(0),
                     cursor.getInt(1),
                     cursor.getString(2),
-                    cursor.getString(3));
+                    cursor.getString(3),
+                    cursor.getString(4));
             myProfiles.add(myProfile);
         }
         cursor.close();

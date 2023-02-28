@@ -1,6 +1,8 @@
 package kkkb1114.sampleproject.bodytemperature.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -26,6 +28,7 @@ import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.database.MyProfile.MyProfile;
 import kkkb1114.sampleproject.bodytemperature.database.MyProfile.MyProfile_DBHelper;
 import kkkb1114.sampleproject.bodytemperature.dialog.WeightPickerDialog;
+import kkkb1114.sampleproject.bodytemperature.notification.AlarmReceiver;
 import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
 
 public class MyProfileActivity extends AppCompatActivity implements View.OnClickListener {
@@ -37,6 +40,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     TextView tv_myProfile_woman;
     TextView tv_myProfile_birthDate;
     TextView tv_myProfile_weight;
+    TextView tv_myProfile_purpose;
     Button bt_myProfile_cancle;
     Button bt_myProfile_confirm;
 
@@ -44,6 +48,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     String name;
     String birthDate;
     String weight;
+    String purpose;
 
     String intentUserName = ""; // 내 정보 보기, 수정으로 들어올 경우 getIntent를 통해 문자열을 담는다.
 
@@ -62,8 +67,6 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         intentUserName = intent.getStringExtra("userName");
         initView();
 
-        //todo
-
         getMyProfile();
     }
 
@@ -73,6 +76,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         tv_myProfile_woman = findViewById(R.id.tv_myProfile_woman);
         tv_myProfile_birthDate = findViewById(R.id.tv_myProfile_birthDate);
         tv_myProfile_weight = findViewById(R.id.tv_myProfile_weight);
+        tv_myProfile_purpose = findViewById(R.id.tv_purpose);
         bt_myProfile_cancle = findViewById(R.id.bt_myProfile_cancle);
         bt_myProfile_confirm = findViewById(R.id.bt_myProfile_confirm);
 
@@ -81,6 +85,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         tv_myProfile_woman.setOnClickListener(this);
         tv_myProfile_birthDate.setOnClickListener(this);
         tv_myProfile_weight.setOnClickListener(this);
+        tv_myProfile_purpose.setOnClickListener(this);
         bt_myProfile_cancle.setOnClickListener(this);
         bt_myProfile_confirm.setOnClickListener(this);
     }
@@ -156,6 +161,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 setGender(myProfile.gender);
                 tv_myProfile_birthDate.setText(myProfile.birthDate);
                 tv_myProfile_weight.setText(myProfile.weight);
+                tv_myProfile_purpose.setText(myProfile.purpose);
             }else {
                 et_myProfile_name.setText("user");
                 setGender(0);
@@ -188,6 +194,19 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 weightPickerDialog.show(getSupportFragmentManager(), "WeightPickerDialog");
                 break;
 
+            case R.id.tv_purpose:
+                String[] items = {"감염", "염증", "배란"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("목적 선택");
+                builder.setItems(items, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int position) {
+                        String selectedItem = items[position];
+                        tv_myProfile_purpose.setText(selectedItem);
+                    }
+                });
+                builder.show();
+                break;
+
             case R.id.bt_myProfile_cancle:
                 finish();
                 break;
@@ -196,6 +215,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 name = et_myProfile_name.getText().toString();
                 birthDate = tv_myProfile_birthDate.getText().toString();
                 weight = tv_myProfile_weight.getText().toString();
+                purpose = tv_myProfile_purpose.getText().toString();
 
                 if (name.trim().length() == 0 || birthDate.trim().length() == 0 || weight.trim().length() == 0
                 || name.equals("이름을 입력하세요")|| birthDate.equals("생년월일") || weight.equals("몸무게")){
@@ -219,8 +239,9 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                             // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
                             PreferenceManager.PREFERENCES_NAME = "login_user";
                             PreferenceManager.setString(context, "userName", name);
+                            PreferenceManager.setString(context, "userPurpose", purpose);
 
-                            MyProfile myProfile = new MyProfile(name, gender, birthDate, weight);
+                            MyProfile myProfile = new MyProfile(name, gender, birthDate, weight, purpose);
                             myProfile_dbHelper.DBinsert(myProfile);
                             finish();
                         }
@@ -228,8 +249,9 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                         // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
                         PreferenceManager.PREFERENCES_NAME = "login_user";
                         PreferenceManager.setString(context, "userName", name);
+                        PreferenceManager.setString(context, "userPurpose", purpose);
 
-                        MyProfile myProfile = new MyProfile(name, gender, birthDate, weight);
+                        MyProfile myProfile = new MyProfile(name, gender, birthDate, weight, purpose);
                         myProfile_dbHelper.DBupdate(myProfile);
                         finish();
                     }

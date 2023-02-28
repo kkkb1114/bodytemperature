@@ -5,12 +5,14 @@ public class MyProfile {
     public int gender;
     public String birthDate;
     public String weight;
+    public String purpose;
 
-    public MyProfile(String name, int gender, String birthDate, String weight){
+    public MyProfile(String name, int gender, String birthDate, String weight, String purpose){
         this.name = name;
         this.gender = gender;
         this.birthDate = birthDate;
         this.weight = weight;
+        this.purpose = purpose;
     }
 
     @Override
@@ -20,6 +22,7 @@ public class MyProfile {
                 ", gender=" + gender +
                 ", birthDate='" + birthDate + '\'' +
                 ", weight='" + weight + '\'' +
+                ", purpose='" + purpose + '\'' +
                 '}';
     }
 }

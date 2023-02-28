@@ -110,4 +110,9 @@ public class TemperatureNotification {
             notificationManager.notify(12345, builder_low_temperature.build());
         }
     }
+
+    /** 큰알람 세팅 **/
+    public void setBigAlarm(){
+
+    }
 }

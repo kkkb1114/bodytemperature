@@ -24,7 +24,8 @@ public class Bodytemp_DBHelper extends SQLiteOpenHelper {
                 "name TEXT PRIMARY KEY, " +
                 "gender INTEGER, " +
                 "birthDate TEXT," +
-                "weight TEXT);");
+                "weight TEXT," +
+                "purpose TEXT);");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS TEMPDATA (" +
                 "name TEXT, " +
@@ -98,7 +99,8 @@ public class Bodytemp_DBHelper extends SQLiteOpenHelper {
                     cursor.getString(0),
                     cursor.getInt(1),
                     cursor.getString(2),
-                    cursor.getString(3));
+                    cursor.getString(3),
+                    cursor.getString(4));
         }
 
         return myProfile;
