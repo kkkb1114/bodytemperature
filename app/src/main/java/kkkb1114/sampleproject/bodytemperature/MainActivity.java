@@ -1,5 +1,7 @@
 package kkkb1114.sampleproject.bodytemperature;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,6 +29,7 @@ import kkkb1114.sampleproject.bodytemperature.database.Bodytemp_DBHelper;
 import kkkb1114.sampleproject.bodytemperature.fragment.BodyTemperatureGraphFragment;
 import kkkb1114.sampleproject.bodytemperature.fragment.HomeFragment;
 import kkkb1114.sampleproject.bodytemperature.fragment.SettingFragment;
+import kkkb1114.sampleproject.bodytemperature.notification.AlarmReceiver;
 import kkkb1114.sampleproject.bodytemperature.notification.TemperatureNotification;
 import kkkb1114.sampleproject.bodytemperature.thermometer.Generator;
 import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
@@ -55,9 +58,12 @@ public class MainActivity extends AppCompatActivity {
     TemperatureNotification temperatureNotification;
     //db
     public static Bodytemp_DBHelper bodytemp_dbHelper;
-
     SQLiteDatabase sqlDB;
     String username;
+
+    // 알람 관련
+    AlarmManager alarmManager;
+    PendingIntent pendingIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
 
         // DB 생성
         bodytemp_dbHelper = Bodytemp_DBHelper.getInstance(context, "Bodytemperature.db", null, 1);
+        // 알람매니저 설정
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         //날짜 측정
         setUser();
@@ -77,9 +85,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         setUser();
+        setAlarmCancle(); // 어차피 알람은 설정된 체온이 되면 울리기에 알람이 울렸을때 메인이 켜질때마다 끌 예정 (음악 알람일때를 대비해서 설정함)
     }
 
     public void initView(){
@@ -231,31 +245,48 @@ public class MainActivity extends AppCompatActivity {
     /** 체온 노티 체크 **/
     public void checkNotificationTemperature(boolean isAlarm, String s, String high_or_low){
         if (isAlarm){
-            if (high_or_low.equals("high")){
+
+            if (high_or_low.equals("high")){ // 고온 알람
                 String alarm_temperature_str = PreferenceManager.getString(context, "alarm_high_temperature_value");
                 double temperature_get = Double.parseDouble(alarm_temperature_str);
                 double temperature_s = Double.parseDouble(s);
 
                 if (temperature_get <= temperature_s){
-                    temperatureNotification = new TemperatureNotification(context);
-                    temperatureNotification.setNotification_HighTemperature(s, alarm_temperature_str);
+                    Intent intent = new Intent(this, AlarmReceiver.class);
+                    intent.putExtra("now_temperature", s);
+                    intent.putExtra("alarm_temperature", alarm_temperature_str);
+                    intent.putExtra("alarm_mode", 0); // 0: 고온, 1: 저온
 
-                    // 알람이 한번 울리면 알람 설정을 off 한다.
-                    PreferenceManager.setBoolean(context, "alarm_high_temperature_boolean", false);
+                    pendingIntent = PendingIntent.getBroadcast(context, 0, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
                 }
-            }else {
+            }else { // 저온 알람
                 String alarm_temperature_str = PreferenceManager.getString(context, "alarm_low_temperature_value");
                 double temperature_get = Double.parseDouble(alarm_temperature_str);
                 double temperature_s = Double.parseDouble(s);
 
                 if (temperature_get >= temperature_s){
-                    temperatureNotification = new TemperatureNotification(context);
-                    temperatureNotification.setNotification_LowTemperature(s, alarm_temperature_str);
+                    Intent intent = new Intent(this, AlarmReceiver.class);
+                    intent.putExtra("now_temperature", s);
+                    intent.putExtra("alarm_temperature", alarm_temperature_str);
+                    intent.putExtra("alarm_mode", 1); // 0: 고온, 1: 저온
 
-                    // 알람이 한번 울리면 알람 설정을 off 한다.
-                    PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean", false);
+                    pendingIntent = PendingIntent.getBroadcast(context, 0, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
                 }
             }
+        }
+    }
+
+    /** 알람 종료 **/
+    // todo mediaPlayer, wakeLock도 꺼야함.
+    public void setAlarmCancle(){
+        if (alarmManager != null && pendingIntent != null){
+            alarmManager.cancel(pendingIntent);
         }
     }
 
@@ -264,5 +295,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         // 메인 엑티비티가 onDestroy()될때 DB도 모두 닫아준다.
         bodytemp_dbHelper.closeDBHelper();
+        setAlarmCancle();
     }
 }

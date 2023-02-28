@@ -28,7 +28,6 @@ import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.database.MyProfile.MyProfile;
 import kkkb1114.sampleproject.bodytemperature.database.MyProfile.MyProfile_DBHelper;
 import kkkb1114.sampleproject.bodytemperature.dialog.WeightPickerDialog;
-import kkkb1114.sampleproject.bodytemperature.notification.AlarmReceiver;
 import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
 
 public class MyProfileActivity extends AppCompatActivity implements View.OnClickListener {

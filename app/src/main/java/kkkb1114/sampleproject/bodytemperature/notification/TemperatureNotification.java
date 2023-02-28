@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
@@ -37,9 +38,8 @@ public class TemperatureNotification {
         // 고온 노티
         NotificationCompat.Builder builder_high_temperature = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_TEMPERATURE_HIGH)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.pill))
-                .setContentTitle("고온 알림")
-                .setContentText("현재 체온이"+ high_temperature +"°C 를 넘었습니다.\n" +
-                        "(현재 체온: "+now_temperature+"°C)")
+                .setContentTitle("고온 알림 (현재 체온: "+now_temperature+"°C)")
+                .setContentText("현재 체온이 "+ high_temperature +"°C 를 넘었습니다.")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent) // 노티 클릭시 위에 생성한 PendingIntent 실행 (설정한 데이터 담고 MainActivity로 이동)
                 .setAutoCancel(true); // 눌러야 꺼짐
@@ -65,6 +65,7 @@ public class TemperatureNotification {
 
         if (notificationManager != null){
             notificationManager.notify(1234, builder_high_temperature.build());
+            Log.e("노티 확인", "2");
         }
     }
 
@@ -82,9 +83,8 @@ public class TemperatureNotification {
         // 저온 노티
         NotificationCompat.Builder builder_low_temperature = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_TEMPERATURE_LOW)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.pill))
-                .setContentTitle("저온 알림")
-                .setContentText("현재 체온이"+ low_temperature +"°C 이하로 떨어졌습니다.\n" +
-                        "(현재 체온: "+now_temperature+"°C)")
+                .setContentTitle("저온 알림 (현재 체온: "+now_temperature+"°C)")
+                .setContentText("현재 체온이 "+ low_temperature +"°C 이하로 떨어졌습니다.")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent) // 노티 클릭시 위에 생성한 PendingIntent 실행 (설정한 데이터 담고 MainActivity로 이동)
                 .setAutoCancel(true); // 눌러야 꺼짐
@@ -110,6 +110,7 @@ public class TemperatureNotification {
 
         if (notificationManager != null){
             notificationManager.notify(12345, builder_low_temperature.build());
+            Log.e("노티 확인", "3");
         }
     }
 
