@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -305,7 +304,6 @@ public class BodyTemperatureGraphFragment extends Fragment {
                     SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
                     String strDate = dateFormatter.format(d);
 
-                    Log.d("year", strDate);
                     cursor = sqlDB.rawQuery("SELECT * FROM OVULDATA WHERE name = '"+username+"'; ", null);
                     String s=null;
                     while(cursor.moveToNext()) {

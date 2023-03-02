@@ -47,7 +47,7 @@ public class TemperatureNotification {
         // OREO API 26 이상부터 채널 필요
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             builder_high_temperature.setSmallIcon(R.drawable.pill);
-            CharSequence channelName = "노티피케이션 채널";
+            CharSequence channelName = "channel_notification_high_temperature";
             String description = "오레오 이상";
             int importance = NotificationManager.IMPORTANCE_HIGH; // 우선순위 설정
 
@@ -92,7 +92,7 @@ public class TemperatureNotification {
         // OREO API 26 이상부터 채널 필요
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             builder_low_temperature.setSmallIcon(R.drawable.pill);
-            CharSequence channelName = "노티피케이션 채널";
+            CharSequence channelName = "channel_notification_low_temperature";
             String description = "오레오 이상";
             int importance = NotificationManager.IMPORTANCE_HIGH; // 우선순위 설정
 

@@ -211,31 +211,15 @@
             android:layout_marginTop="20dp">
 
             <Switch
-                android:id="@+id/bt_alarm_small"
+                android:id="@+id/sw_alarm_add_sound"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_margin="20dp"
-                android:track="@drawable/switch_track_selector_high_temperature"
-                android:thumb="@drawable/switch_thumb_selector_high_temperature"
+                android:track="@drawable/switch_track_selector_low_temperature"
+                android:thumb="@drawable/switch_thumb_selector_sound_temperature"
                 android:padding="15dp"
-                android:text="작은 알람"
-                android:textSize="20sp"
-                android:textColor="@color/white"
-                android:background="@drawable/rounded_corners_sky"
-                app:backgroundTint="@null"/>
-
-
-            <Switch
-                android:id="@+id/bt_alarm_big"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="20dp"
-                android:track="@drawable/switch_track_selector_high_temperature"
-                android:thumb="@drawable/switch_thumb_selector_high_temperature"
-                android:padding="15dp"
-                android:text="큰 알람"
+                android:text="사운드 추가"
                 android:textSize="20sp"
                 android:textColor="@color/white"
                 android:background="@drawable/rounded_corners_red"

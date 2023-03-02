@@ -35,6 +35,8 @@
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/switch_thumb_selector_high_temperature.xml" value="0.171" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/switch_thumb_selector_low_temperature.xml" value="0.171" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/switch_thumb_selector_normal_temperature.xml" value="0.171" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/switch_thumb_selector_sound_temperature.xml" value="0.171" />
+        <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/switch_thumb_sound_on_temperature.xml" value="0.171" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/switch_track_off_high_temperature.xml" value="0.171" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/switch_track_off_low_temperature.xml" value="0.152" />
         <entry key="..\:/androidproject/bodytemperature/app/src/main/res/drawable/switch_track_off_temperature.xml" value="0.171" />

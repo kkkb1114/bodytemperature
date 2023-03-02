@@ -1,5 +1,6 @@
 package kkkb1114.sampleproject.bodytemperature;
 
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -9,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,7 +33,7 @@ import kkkb1114.sampleproject.bodytemperature.fragment.BodyTemperatureGraphFragm
 import kkkb1114.sampleproject.bodytemperature.fragment.HomeFragment;
 import kkkb1114.sampleproject.bodytemperature.fragment.SettingFragment;
 import kkkb1114.sampleproject.bodytemperature.notification.AlarmReceiver;
-import kkkb1114.sampleproject.bodytemperature.notification.TemperatureNotification;
+import kkkb1114.sampleproject.bodytemperature.notification.AlarmSoundService;
 import kkkb1114.sampleproject.bodytemperature.thermometer.Generator;
 import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
 
@@ -48,15 +50,11 @@ public class MainActivity extends AppCompatActivity {
     // 바텀 네비게이션
     NavigationBarView navigationBarView;
 
-    private SharedPreferences preferences;
-    SharedPreferences.Editor editor;
     Handler handler = new Handler();
     Stack<Double> tempStack = new Stack<>();
 
    SharedPreferences select_user;
 
-   // 노티 변수
-    TemperatureNotification temperatureNotification;
     //db
     public static Bodytemp_DBHelper bodytemp_dbHelper;
     SQLiteDatabase sqlDB;
@@ -64,8 +62,10 @@ public class MainActivity extends AppCompatActivity {
     Cursor cursor;
 
     // 알람 관련
-    AlarmManager alarmManager;
+    AlarmManager alarmManager_high_tempreture;
+    AlarmManager alarmManager_low_tempreture;
     PendingIntent pendingIntent;
+    public static PowerManager.WakeLock wakeLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +76,13 @@ public class MainActivity extends AppCompatActivity {
         // DB 생성
         bodytemp_dbHelper = Bodytemp_DBHelper.getInstance(context, "Bodytemperature.db", null, 1);
         // 알람매니저 설정
-        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager_high_tempreture = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager_low_tempreture = (AlarmManager) getSystemService(ALARM_SERVICE);
+        // MediaPlayer 객체 생성
+        //mediaPlayer = MediaPlayer.create(this, R.raw.ouu);
+        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        wakeLock = powerManager.newWakeLock(
+                PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "alarm_temperature:Tag");
 
         //날짜 측정
         setUser();
@@ -181,11 +187,11 @@ public class MainActivity extends AppCompatActivity {
                     long now =System.currentTimeMillis();
                     Date date = new Date(now);
                     SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-
+                    String tempDateTime = dateFormat1.format(date);
 
                     sqlDB = MainActivity.bodytemp_dbHelper.getWritableDatabase();
                     // todo 제한 조건이 맞지 않는다며 에러가 뜨는데 일단 PRIMARY KEY 중복을 의심해보기로 함 (테스트 필요)
-                    sqlDB.execSQL("INSERT INTO TEMPDATA VALUES ('"+username+"', '"+avg+"', '"+ dateFormat1.format(date) +"');");
+                    sqlDB.execSQL("INSERT INTO TEMPDATA VALUES ('"+username+"', '"+avg+"', '"+ tempDateTime +"');");
                 }
 
                 // 3초마다 난수 받아옴
@@ -235,34 +241,39 @@ public class MainActivity extends AppCompatActivity {
             PreferenceManager.PREFERENCES_NAME = select_user_name+"Setting";
             boolean alarm_high_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_high_temperature_boolean");
             boolean alarm_low_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_low_temperature_boolean");
+            boolean alarm_sound_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_sound_temperature_boolean");
 
             // 고온 노티 체크
-            checkNotificationTemperature(alarm_high_temperature_boolean, s, "high");
+            checkNotificationTemperature(alarm_high_temperature_boolean, alarm_sound_temperature_boolean, s, "high");
             // 저온 노티 체크
-            checkNotificationTemperature(alarm_low_temperature_boolean, s, "low");
+            checkNotificationTemperature(alarm_low_temperature_boolean, alarm_sound_temperature_boolean, s, "low");
 
         }
     }
 
     /** 체온 노티 체크 **/
-    public void checkNotificationTemperature(boolean isAlarm, String s, String high_or_low){
+    public void checkNotificationTemperature(boolean isAlarm, boolean isSoundAlarm, String s, String high_or_low){
         if (isAlarm){
-
+            Log.e("뭐지?", "1111111");
+            int requestID = (int) System.currentTimeMillis();
             if (high_or_low.equals("high")){ // 고온 알람
                 String alarm_temperature_str = PreferenceManager.getString(context, "alarm_high_temperature_value");
                 double temperature_get = Double.parseDouble(alarm_temperature_str);
                 double temperature_s = Double.parseDouble(s);
 
                 if (temperature_get <= temperature_s){
-                    Intent intent = new Intent(this, AlarmReceiver.class);
+                    Log.e("뭐지?", "2222222");
+                    Intent intent = new Intent(context, AlarmReceiver.class);
                     intent.putExtra("now_temperature", s);
                     intent.putExtra("alarm_temperature", alarm_temperature_str);
                     intent.putExtra("alarm_mode", 0); // 0: 고온, 1: 저온
+                    intent.putExtra("isSoundAlarm", isSoundAlarm);
 
-                    pendingIntent = PendingIntent.getBroadcast(context, 0, intent,
-                            PendingIntent.FLAG_UPDATE_CURRENT);
+                    pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestID, intent,
+                                PendingIntent.FLAG_UPDATE_CURRENT);
 
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
+                    alarmManager_high_tempreture.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
+                    Log.e("뭐지?", "22222221344");
                 }
             }else { // 저온 알람
                 String alarm_temperature_str = PreferenceManager.getString(context, "alarm_low_temperature_value");
@@ -270,15 +281,18 @@ public class MainActivity extends AppCompatActivity {
                 double temperature_s = Double.parseDouble(s);
 
                 if (temperature_get >= temperature_s){
-                    Intent intent = new Intent(this, AlarmReceiver.class);
+                    Log.e("뭐지?", "2222222111");
+                    Intent intent = new Intent(context, AlarmReceiver.class);
                     intent.putExtra("now_temperature", s);
                     intent.putExtra("alarm_temperature", alarm_temperature_str);
                     intent.putExtra("alarm_mode", 1); // 0: 고온, 1: 저온
+                    intent.putExtra("isSoundAlarm", isSoundAlarm);
 
-                    pendingIntent = PendingIntent.getBroadcast(context, 0, intent,
+                    pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestID, intent,
                             PendingIntent.FLAG_UPDATE_CURRENT);
 
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
+                    alarmManager_low_tempreture.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
+                    Log.e("뭐지?", "22222221333");
                 }
             }
         }
@@ -287,9 +301,28 @@ public class MainActivity extends AppCompatActivity {
     /** 알람 종료 **/
     // todo mediaPlayer, wakeLock도 꺼야함.
     public void setAlarmCancle(){
-        if (alarmManager != null && pendingIntent != null){
-            alarmManager.cancel(pendingIntent);
+        if (alarmManager_high_tempreture != null && pendingIntent != null){
+            alarmManager_high_tempreture.cancel(pendingIntent);
         }
+        if (alarmManager_low_tempreture != null && pendingIntent != null){
+            alarmManager_low_tempreture.cancel(pendingIntent);
+        }
+
+        // 알람 서비스 동작 중인지 확인 후 중지
+        Intent intent = new Intent(context, AlarmSoundService.class);
+        context.stopService(intent);
+    }
+
+    /** 알람 서비스 동작 중인지 확인 **/
+    public boolean isAlarmServiceRunning(){
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+
+        for (ActivityManager.RunningServiceInfo runningServiceInfo : activityManager.getRunningServices(Integer.MAX_VALUE)){
+            if (AlarmSoundService.class.getName().equals(runningServiceInfo.getClass().getName())){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
