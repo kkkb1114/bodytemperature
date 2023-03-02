@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     public static Bodytemp_DBHelper bodytemp_dbHelper;
     SQLiteDatabase sqlDB;
     String username;
+    Cursor cursor;
 
     // 알람 관련
     AlarmManager alarmManager;
@@ -297,4 +299,7 @@ public class MainActivity extends AppCompatActivity {
         bodytemp_dbHelper.closeDBHelper();
         setAlarmCancle();
     }
+
+
+
 }

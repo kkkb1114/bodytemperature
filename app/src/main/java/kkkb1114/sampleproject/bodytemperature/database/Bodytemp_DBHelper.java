@@ -117,4 +117,6 @@ public class Bodytemp_DBHelper extends SQLiteOpenHelper {
         writableDatabase.close();
         readableDataBase.close();
     }
+
+
 }

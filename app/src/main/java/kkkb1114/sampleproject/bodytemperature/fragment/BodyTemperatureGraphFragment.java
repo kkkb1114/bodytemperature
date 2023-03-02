@@ -7,7 +7,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +33,9 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -90,7 +94,11 @@ public class BodyTemperatureGraphFragment extends Fragment {
 
         setUser();
         View view = inflater.inflate(R.layout.fragment_body_temperature_graph, container, false);
-        initView(view);
+        try {
+            initView(view);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
         this.setListner();
 
         long now = System.currentTimeMillis();
@@ -107,7 +115,7 @@ public class BodyTemperatureGraphFragment extends Fragment {
         setUser();
     }
 
-    public void initView(View view){
+    public void initView(View view) throws ParseException {
         tv_graphdate=view.findViewById(R.id.tv_graphdate);
         tv_period=view.findViewById(R.id.tv_period);
         lineChart = view.findViewById(R.id.chart);
@@ -281,23 +289,43 @@ public class BodyTemperatureGraphFragment extends Fragment {
                     username = select_user.getString("userName","선택된 사용자 없음");
 
                     sqlDB = MainActivity.bodytemp_dbHelper.getWritableDatabase();
-                    String str = np_periodDate.getYear() + "-" +np_periodDate.getMonth() + "-"+np_periodDate.getDayOfMonth();
+
+                    Calendar calendar = Calendar.getInstance();
+
+                //---sets the time for the alarm to trigger---
+                    calendar.set( Calendar.YEAR, np_periodDate.getYear());
+                    calendar.set( Calendar.MONTH, np_periodDate.getMonth() );
+                    calendar.set( Calendar.DAY_OF_MONTH, np_periodDate.getDayOfMonth());
+                    int year = calendar.get( Calendar.YEAR )-1900;
+                    int month = calendar.get( Calendar.MONTH );
+                    int day = calendar.get( Calendar.DAY_OF_MONTH );
+                    Date d = new Date(year,month,day);
+
+
+                    SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+                    String strDate = dateFormatter.format(d);
+
+                    Log.d("year", strDate);
                     cursor = sqlDB.rawQuery("SELECT * FROM OVULDATA WHERE name = '"+username+"'; ", null);
                     String s=null;
                     while(cursor.moveToNext()) {
                         s = cursor.getString(0);
                     }
                     if(s==null)
-                        sqlDB.execSQL("INSERT INTO OVULDATA VALUES ('"+username+"', '"+np_period_integer.getValue()+"', '"+ str +"');");
+                        sqlDB.execSQL("INSERT INTO OVULDATA VALUES ('"+username+"', '"+np_period_integer.getValue()+"', '"+ strDate +"');");
                     else
                         sqlDB.execSQL(
                                 "UPDATE OVULDATA SET " +
                                         "period = '" + np_period_integer.getValue() + "'," +
-                                        "ovulDateTime = '" + str + "'" +
+                                        "ovulDateTime = '" + strDate + "'" +
                                         " WHERE name = '" + username + "'"
                         );
 
+                try {
                     showPchart(getView());
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -358,22 +386,25 @@ public class BodyTemperatureGraphFragment extends Fragment {
 
     }
 
-    public void showPchart(View view)
-    {
+    public void showPchart(View view) throws ParseException {
 
         sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
         lineChart2 = new LineChart(getActivity());
         lineChart2 = view.findViewById(R.id.Pchart);
+
+
         XAxis xAxis = lineChart2.getXAxis();
         String username = select_user.getString("userName","선택된 사용자 없음");
 
         String day = null;
         String month = null;
-        
+        String year=null;
+
         cursor = sqlDB.rawQuery("SELECT * FROM OVULDATA WHERE name = '"+username+"'; ", null);
         while(cursor.moveToNext()) {
-           day = cursor.getString(2).substring(7);
-           month=cursor.getString(2).substring(7);
+           day = cursor.getString(2).substring(8);
+           month=cursor.getString(2).substring(5);
+           year=cursor.getString(2).substring(0,10);
         }
 
         if(day==null)
@@ -384,9 +415,11 @@ public class BodyTemperatureGraphFragment extends Fragment {
         }
 
         LineData lineData = new LineData();
+        LineData lineData2 = new LineData();
 
         ArrayList<Entry> entry_chart_Y = new ArrayList<>();
         ArrayList<String> entry_chart_X = new ArrayList<>();
+        ArrayList<Entry> entry_chart_Y2 = new ArrayList<>();
 
 
         int i=0;
@@ -431,6 +464,7 @@ public class BodyTemperatureGraphFragment extends Fragment {
         }
 
 
+
         float [] temp = {36.7f,36.66f,36.6f,36.55f,36.6f,36.55f,36.55f,36.65f,36.6f,36.65f,36.6f,36.55f,36.6f,36.5f,36.7f,36.75f,36.85f,36.95f,36.95f,36.85f,36.8f,36.85f,36.95f,36.95f,36.9f,36.95f,37.0f,37.0f,36.95f,37.0f,37.05f,37.1f,37.0f,37.0f,37.05f,36.95f,36.9f,36.95f,37.0f,37.05f,36.95f,37.0f,37.05f,37.05f,37.1f};
 
         for(int j=0; j<temp.length; j++) {
@@ -438,9 +472,37 @@ public class BodyTemperatureGraphFragment extends Fragment {
         }
 
 
+        for(int j=0; j<45; j++)
+        {
+            double val=0;
+            int count=0;
+            cursor = sqlDB.rawQuery("SELECT * FROM TEMPDATA WHERE name = '"+username+"' AND tempDateTime LIKE '"+year+"%'; ", null);
+            while(cursor.moveToNext()) {
+                val+=cursor.getDouble(1);
+                count++;
+            }
+
+            if(val!=0)
+                entry_chart_Y2.add(new Entry(j,(float)val/count));
+
+            LocalDate date = null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                date = LocalDate.parse(year);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                year= String.valueOf(date.plusDays(1));
+            }
+        }
+
+
+
         LineDataSet lineDataSet = new LineDataSet(entry_chart_Y, "표준"); // 데이터가 담긴 Arraylist 를 LineDataSet 으로 변환한다.
         lineDataSet.setColor(Color.BLUE); // 해당 LineDataSet의 색 설정 :: 각 Line 과 관련된 세팅은 여기서 설정한다.
         lineDataSet.setLineWidth(3);
+
+        LineDataSet lineDataSet2 = new LineDataSet(entry_chart_Y2,"측정");
+        lineDataSet2.setColor(Color.RED);
+        lineDataSet2.setLineWidth(3);
 
 
         XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
@@ -450,13 +512,15 @@ public class BodyTemperatureGraphFragment extends Fragment {
 
 
         lineData.addDataSet(lineDataSet); // 해당 LineDataSet 을 적용될 차트에 들어갈 DataSet 에 넣는다.
+        lineData.addDataSet(lineDataSet2);
         lineChart2.setData(lineData); // 차트에 위의 DataSet을 넣는다.
         lineChart2.getDescription().setEnabled(false);
         lineChart2.invalidate(); // 차트 업데이트
         lineChart2.setTouchEnabled(false);
 
-
+        
     }
+
 
 
 }
