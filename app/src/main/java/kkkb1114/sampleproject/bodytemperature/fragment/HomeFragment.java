@@ -88,6 +88,7 @@ public class HomeFragment extends Fragment {
         pill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 final LinearLayout linear = (LinearLayout) View.inflate(getActivity(), R.layout.dialog_pill, null);
                 new AlertDialog.Builder(getActivity()).setView(linear)
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {

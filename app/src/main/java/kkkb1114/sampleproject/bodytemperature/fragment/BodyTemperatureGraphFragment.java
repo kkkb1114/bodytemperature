@@ -413,7 +413,7 @@ public class BodyTemperatureGraphFragment extends Fragment {
         }
 
         LineData lineData = new LineData();
-        LineData lineData2 = new LineData();
+
 
         ArrayList<Entry> entry_chart_Y = new ArrayList<>();
         ArrayList<String> entry_chart_X = new ArrayList<>();
@@ -498,9 +498,17 @@ public class BodyTemperatureGraphFragment extends Fragment {
         lineDataSet.setColor(Color.BLUE); // 해당 LineDataSet의 색 설정 :: 각 Line 과 관련된 세팅은 여기서 설정한다.
         lineDataSet.setLineWidth(3);
 
-        LineDataSet lineDataSet2 = new LineDataSet(entry_chart_Y2,"측정");
-        lineDataSet2.setColor(Color.RED);
-        lineDataSet2.setLineWidth(3);
+
+        if(!entry_chart_Y2.isEmpty()) {
+            LineDataSet lineDataSet2 = new LineDataSet(entry_chart_Y2, "측정");
+            lineDataSet2.setColor(Color.RED);
+            lineDataSet2.setLineWidth(3);
+            lineData.addDataSet(lineDataSet2);
+        }
+        else{
+            Toast.makeText(context.getApplicationContext(), "아직 측정된 체온이 없습니다.", Toast.LENGTH_SHORT).show();
+        }
+
 
 
         XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
@@ -510,7 +518,7 @@ public class BodyTemperatureGraphFragment extends Fragment {
 
 
         lineData.addDataSet(lineDataSet); // 해당 LineDataSet 을 적용될 차트에 들어갈 DataSet 에 넣는다.
-        lineData.addDataSet(lineDataSet2);
+
         lineChart2.setData(lineData); // 차트에 위의 DataSet을 넣는다.
         lineChart2.getDescription().setEnabled(false);
         lineChart2.invalidate(); // 차트 업데이트
