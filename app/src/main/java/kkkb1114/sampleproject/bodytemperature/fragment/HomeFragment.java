@@ -28,6 +28,7 @@ import java.util.Date;
 import kkkb1114.sampleproject.bodytemperature.MainActivity;
 import kkkb1114.sampleproject.bodytemperature.Notification.AlarmReceiver;
 import kkkb1114.sampleproject.bodytemperature.R;
+import kkkb1114.sampleproject.bodytemperature.activity.PillActivity;
 import kkkb1114.sampleproject.bodytemperature.thermometer.ThermometerView;
 
 public class HomeFragment extends Fragment {
@@ -94,30 +95,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                final LinearLayout linear = (LinearLayout) View.inflate(getActivity(), R.layout.dialog_pill, null);
-                new AlertDialog.Builder(getActivity()).setView(linear)
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                EditText edt_pill = (EditText) linear.findViewById(R.id.edt_pill);
-                                String value = edt_pill.getText().toString();
-                                long now =System.currentTimeMillis();
-                                Date date = new Date(now);
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-
-                                sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
-                                sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('"+username+"', '"+value+"', '"+ dateFormat.format(date) +"');");
-
-                                setAlarm_30minutes_after_administration();
-
-                                dialog.dismiss();
-                            }
-                        })
-                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.dismiss();
-                    }
-                }).show();
+                Intent intent = new Intent(context, PillActivity.class);
+                startActivity(intent);
             }
+
         });
 
         significant.setOnClickListener(new View.OnClickListener() {
