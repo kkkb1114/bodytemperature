@@ -1,4 +1,4 @@
-package kkkb1114.sampleproject.bodytemperature.notification;
+package kkkb1114.sampleproject.bodytemperature.Notification;
 
 import android.app.Notification;
 import android.app.NotificationChannel;

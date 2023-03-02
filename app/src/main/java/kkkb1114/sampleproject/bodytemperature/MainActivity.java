@@ -32,8 +32,8 @@ import kkkb1114.sampleproject.bodytemperature.database.Bodytemp_DBHelper;
 import kkkb1114.sampleproject.bodytemperature.fragment.BodyTemperatureGraphFragment;
 import kkkb1114.sampleproject.bodytemperature.fragment.HomeFragment;
 import kkkb1114.sampleproject.bodytemperature.fragment.SettingFragment;
-import kkkb1114.sampleproject.bodytemperature.notification.AlarmReceiver;
-import kkkb1114.sampleproject.bodytemperature.notification.AlarmSoundService;
+import kkkb1114.sampleproject.bodytemperature.Notification.AlarmReceiver;
+import kkkb1114.sampleproject.bodytemperature.Notification.AlarmSoundService;
 import kkkb1114.sampleproject.bodytemperature.thermometer.Generator;
 import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
 

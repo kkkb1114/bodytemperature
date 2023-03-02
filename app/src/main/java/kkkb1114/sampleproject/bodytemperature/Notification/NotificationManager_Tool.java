@@ -1,4 +1,4 @@
-package kkkb1114.sampleproject.bodytemperature.notification;
+package kkkb1114.sampleproject.bodytemperature.Notification;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -7,19 +7,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
 import kkkb1114.sampleproject.bodytemperature.MainActivity;
 import kkkb1114.sampleproject.bodytemperature.R;
 
-public class TemperatureNotification {
+public class NotificationManager_Tool {
 
     Context context;
     public static final String NOTIFICATION_CHANNEL_ID_TEMPERATURE_HIGH = "10001"; // 고온 알람 노티 채널 ID
     public static final String NOTIFICATION_CHANNEL_ID_TEMPERATURE_LOW = "10002"; // 고온 알람 노티 채널 ID
+    public static final String NOTIFICATION_CHANNEL_ID_TEMPERATURE_Administration = "10003"; // 투약 알람 노티 채널 ID
 
-    public TemperatureNotification(Context context){
+    public NotificationManager_Tool(Context context){
         this.context = context;
     }
 
@@ -69,7 +71,6 @@ public class TemperatureNotification {
 
     // 저온 Notification 설정
     public void setNotification_LowTemperature(String now_temperature, String low_temperature){
-
         // 채널을 생성 및 전달해 줄수 있는 NotificationManager 생성
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         // 이동하려는 액티비티를 작성해준다.
@@ -111,8 +112,46 @@ public class TemperatureNotification {
         }
     }
 
-    /** 큰알람 세팅 **/
-    public void setBigAlarm(){
+    /** 투약 알람 세팅 **/
+    public void setAdministrationAlarm(){
+        Log.e("투약간다ㅁㅁㅇㅂㅈㅇ", "111111");
+        // 채널을 생성 전달할 NotificationManager 생성x
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        // 전달할 intent 작성
+        Intent notificationIntent = new Intent(context, MainActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        // 투약 노티
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_TEMPERATURE_Administration)
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.pill))
+                .setContentTitle("투약 알림")
+                .setContentText("투약한지 30분이 경과 되었습니다.")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        // SDK OREO API 26이상부터 채널 필요
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            builder.setSmallIcon(R.drawable.pill);
+            CharSequence channelName = "channel_notification_administration";
+            String description = "오레오 이상";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID_TEMPERATURE_Administration,
+                    channelName, importance);
+            notificationChannel.setDescription(description);
+
+            // 노티피케이션 채널 시스템에 등록
+            if (notificationManager != null){
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
+        }else {
+            builder.setSmallIcon(R.mipmap.ic_launcher_round); // Oreo 이하에서 mipmap 사용하지 않으면 Couldn't create icon: StatusBarIcon 에러남
+        }
+
+        if (notificationManager != null){
+            notificationManager.notify(123456, builder.build());
+        }
     }
 }

@@ -46,8 +46,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".notification.AlarmReceiver" />
-        <service android:name=".notification.AlarmSoundService"/>
+        <receiver android:name=".Notification.AlarmReceiver" />
+        <service android:name=".Notification.AlarmSoundService"/>
     </application>
 
 </manifest>
