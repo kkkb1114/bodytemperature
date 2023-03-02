@@ -1,7 +1,9 @@
 package kkkb1114.sampleproject.bodytemperature.activity;
 
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
@@ -13,9 +15,12 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
+import kkkb1114.sampleproject.bodytemperature.tools.TimeCalculationManager;
 
 public class AlarmActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -23,6 +28,7 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
 
     TextView tv_high_temperature;
     TextView tv_low_temperature;
+    TextView tv_repeat_alarm;
     SeekBar sb_high_temperature;
     SeekBar sb_low_temperature;
     Switch sw_high_temperature;
@@ -31,6 +37,7 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
     Button bt_alarm_confirm;
     Button bt_alarm_cancle;
 
+    TimeCalculationManager timeCalculationManager;
     DecimalFormat decimalFormat = new DecimalFormat(".#");
 
     /*
@@ -51,6 +58,8 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_alarm);
         context = this;
 
+        timeCalculationManager = new TimeCalculationManager();
+
         initView();
         setSeekBar();
         setBodyTemperature();
@@ -65,6 +74,8 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
     public void initView(){
         tv_high_temperature = findViewById(R.id.tv_high_temperature);
         tv_low_temperature = findViewById(R.id.tv_low_temperature);
+        tv_repeat_alarm = findViewById(R.id.tv_repeat_alarm);
+        tv_repeat_alarm.setOnClickListener(this);
         sb_high_temperature = findViewById(R.id.sb_high_temperature);
         sb_low_temperature = findViewById(R.id.sb_low_temperature);
         sw_high_temperature = findViewById(R.id.sw_high_temperature);
@@ -244,6 +255,7 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
             PreferenceManager.setBoolean(context, "alarm_high_temperature_boolean",false);
             PreferenceManager.setString(context, "alarm_high_temperature_value", String.valueOf(min));
         }
+        PreferenceManager.setLong(context, "alarm_high_temperature_term_value", getFormatTimeNow());
 
         // 저온 알람
         if (sw_low_temperature.isChecked()){
@@ -253,6 +265,7 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
             PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean",false);
             PreferenceManager.setString(context, "alarm_low_temperature_value", String.valueOf(min));
         }
+        PreferenceManager.setLong(context, "alarm_low_temperature_term_value", getFormatTimeNow());
 
         // 사운드 추가 여부
         if (sw_alarm_add_sound.isChecked()){
@@ -262,16 +275,52 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    /** 알람 세팅 **/
+    /** 현재 시간 구하기 **/
+    public long getFormatTimeNow(){
+        long requestID = System.currentTimeMillis();
+        Date mReDate = new Date(requestID);
+        SimpleDateFormat mFormat = new SimpleDateFormat("yyyyMMddHHmm");
+        String formatDate = mFormat.format(mReDate);
+        return Long.parseLong(formatDate);
+    }
+
+    /** 알람 텀 쉐어드 set **/
+    public void setSharedAlarmTerm(String term){
+        switch (term){
+            case "10분":
+                PreferenceManager.setLong(context, "alarm_temperature_term", timeCalculationManager.ten_MinutesMillis);
+                break;
+            case "30분":
+                PreferenceManager.setLong(context, "alarm_temperature_term", timeCalculationManager.thirty_MinutesMillis);
+                break;
+            case "60분":
+                PreferenceManager.setLong(context, "alarm_temperature_term", timeCalculationManager.sixty_MinutesMillis);
+                break;
+        }
+    }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
+            case R.id.tv_repeat_alarm:
+                String[] items = new String[]{"10분", "30분", "60분"};
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("알람이 반복될 시간 간격을 선택해주세요.");
+                builder.setItems(items, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int position) {
+                        String selectedItem = items[position];
+                        tv_repeat_alarm.setText(selectedItem);
+                    }
+                });
+                builder.show();
+                break;
             case R.id.bt_alarm_cancle:
                 finish();
                 break;
             case R.id.bt_alarm_confirm:
                 saveAlarmData();
+                setSharedAlarmTerm(tv_repeat_alarm.getText().toString());
                 finish();
                 break;
         }

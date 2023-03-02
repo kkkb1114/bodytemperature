@@ -226,14 +226,13 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 || name.equals("이름을 입력하세요")|| birthDate.equals("생년월일") || weight.equals("몸무게")){
                     Toast.makeText(context, "정보를 모두 기입해 주세요.", Toast.LENGTH_SHORT).show();
                 }else {
-                    // TODO DB로 중복 확인 하나 만들어야함.
                     // 수정모드면 DB UPDATE만 하고 신규 정보면 INSERT한다.
-                    if (intentUserName == null || intentUserName.isEmpty()){
+                    if (intentUserName == null || intentUserName.isEmpty()) {
 
-                        if(myProfile_dbHelper.DBselect(name)!=null)
+                        if (myProfile_dbHelper.DBselect(name) != null){
                             Toast.makeText(context, "중복된 사용자명입니다.", Toast.LENGTH_SHORT).show();
 
-                        else {
+                    }else {
                             // 알람 설정 할때 저장할 데이터 미리 생성
                             PreferenceManager.PREFERENCES_NAME = name + "Setting";
                             PreferenceManager.setBoolean(context, "alarm_high_temperature_boolean", false);

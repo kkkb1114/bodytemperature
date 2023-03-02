@@ -36,6 +36,7 @@ import kkkb1114.sampleproject.bodytemperature.Notification.AlarmReceiver;
 import kkkb1114.sampleproject.bodytemperature.Notification.AlarmSoundService;
 import kkkb1114.sampleproject.bodytemperature.thermometer.Generator;
 import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
+import kkkb1114.sampleproject.bodytemperature.tools.TimeCalculationManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -66,6 +67,13 @@ public class MainActivity extends AppCompatActivity {
     AlarmManager alarmManager_low_tempreture;
     PendingIntent pendingIntent;
     public static PowerManager.WakeLock wakeLock;
+    // 알람 설정 쉐어드 값들
+    String alarm_high_temperature_str; // 고온 알람 기준 값
+    String alarm_low_temperature_str; // 저온 알람 기준 값
+    boolean alarm_high_temperature_boolean; // 고온 알람 on / off
+    boolean alarm_low_temperature_boolean; // 저온 알람 on / off
+    boolean alarm_sound_temperature_boolean; // 사운드 알람 on / off
+    TimeCalculationManager timeCalculationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         context = this;
 
+        timeCalculationManager = new TimeCalculationManager();
         // DB 생성
         bodytemp_dbHelper = Bodytemp_DBHelper.getInstance(context, "Bodytemperature.db", null, 1);
         // 알람매니저 설정
@@ -101,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         setUser();
+        getAlarmCriteria();
         setAlarmCancle(); // 어차피 알람은 설정된 체온이 되면 울리기에 알람이 울렸을때 메인이 켜질때마다 끌 예정 (음악 알람일때를 대비해서 설정함)
     }
 
@@ -190,7 +200,6 @@ public class MainActivity extends AppCompatActivity {
                     String tempDateTime = dateFormat1.format(date);
 
                     sqlDB = MainActivity.bodytemp_dbHelper.getWritableDatabase();
-                    // todo 제한 조건이 맞지 않는다며 에러가 뜨는데 일단 PRIMARY KEY 중복을 의심해보기로 함 (테스트 필요)
                     sqlDB.execSQL("INSERT INTO TEMPDATA VALUES ('"+username+"', '"+avg+"', '"+ tempDateTime +"');");
                 }
 
@@ -220,16 +229,20 @@ public class MainActivity extends AppCompatActivity {
         {
             Toast.makeText(getApplicationContext(), "사용자 등록을 완료해주세요.", Toast.LENGTH_SHORT).show();
         }
-        /*
-        long now =System.currentTimeMillis();
-        Date date = new Date(now);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String str = username+dateFormat.format(date)+"tempData";
+    }
 
-        preferences = context.getSharedPreferences(str, MODE_PRIVATE);
-        editor = preferences.edit();
-        */
-
+    /** 사용자가 설정한 알람 기준 가져오기 **/
+    public void getAlarmCriteria(){
+        PreferenceManager.PREFERENCES_NAME = "login_user";
+        String select_user_name = PreferenceManager.getString(context, "userName");
+        if (select_user_name != null) {
+            PreferenceManager.PREFERENCES_NAME = select_user_name + "Setting";
+            alarm_high_temperature_str = PreferenceManager.getString(context, "alarm_high_temperature_value");
+            alarm_low_temperature_str = PreferenceManager.getString(context, "alarm_low_temperature_value");
+            alarm_high_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_high_temperature_boolean");
+            alarm_low_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_low_temperature_boolean");
+            alarm_sound_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_sound_temperature_boolean");
+        }
     }
 
     /** 노티피케이션 세팅 **/
@@ -239,15 +252,14 @@ public class MainActivity extends AppCompatActivity {
 
         if (select_user_name != null){
             PreferenceManager.PREFERENCES_NAME = select_user_name+"Setting";
-            boolean alarm_high_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_high_temperature_boolean");
-            boolean alarm_low_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_low_temperature_boolean");
-            boolean alarm_sound_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_sound_temperature_boolean");
 
+            // 고온 노티 체크
             if (alarm_high_temperature_boolean){
-                // 고온 노티 체크
                 checkNotificationTemperature(alarm_sound_temperature_boolean, s, "high");
-            }else if (alarm_low_temperature_boolean){
-                // 저온 노티 체크
+            }
+
+            // 저온 노티 체크
+            if (alarm_low_temperature_boolean){
                 checkNotificationTemperature(alarm_sound_temperature_boolean, s, "low");
             }
         }
@@ -255,40 +267,69 @@ public class MainActivity extends AppCompatActivity {
 
     /** 체온 노티 체크 **/
     public void checkNotificationTemperature(boolean isSoundAlarm, String s, String high_or_low){
-        int requestID = (int) System.currentTimeMillis();
+        long requestID = System.currentTimeMillis();
+        long now = getFormatTimeNow(requestID);
+
         if (high_or_low.equals("high")){ // 고온 알람
-            String alarm_temperature_str = PreferenceManager.getString(context, "alarm_high_temperature_value");
-            double temperature_get = Double.parseDouble(alarm_temperature_str);
-            double temperature_s = Double.parseDouble(s);
 
-            if (temperature_get <= temperature_s){
-                Intent intent = new Intent(context, AlarmReceiver.class);
-                intent.putExtra("now_temperature", s);
-                intent.putExtra("alarm_temperature", alarm_temperature_str);
-                intent.putExtra("alarm_mode", 0); // 0: 고온, 1: 저온
-                intent.putExtra("isSoundAlarm", isSoundAlarm);
+            long alarm_high_temperature_term = PreferenceManager.getLong(context, "alarm_high_temperature_term_value");
 
-                pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestID, intent,
+            Log.e("checkNotificationTemperature", "111111");
+            Log.e("checkNotificationTemperature", String.valueOf(alarm_high_temperature_term));
+            Log.e("checkNotificationTemperature", String.valueOf(now));
+
+            // 현재시간이 알람 텀 시간보다 클 경우 로직 동작
+            if (now >= alarm_high_temperature_term){
+
+                long termTime = timeCalculationManager.getFormatTimeNow(PreferenceManager.getLong(context, "alarm_temperature_term"));
+                PreferenceManager.setLong(context, "alarm_high_temperature_term_value", termTime);
+
+                Log.e("checkNotificationTemperature", "222222");
+                double temperature_get = Double.parseDouble(alarm_high_temperature_str);
+                double temperature_s = Double.parseDouble(s);
+
+                if (temperature_get <= temperature_s){
+                    Log.e("checkNotificationTemperature", "333333");
+                    Intent intent = new Intent(context, AlarmReceiver.class);
+                    intent.putExtra("now_temperature", s);
+                    intent.putExtra("alarm_temperature", alarm_high_temperature_str);
+                    intent.putExtra("alarm_mode", 0); // 0: 고온, 1: 저온
+                    intent.putExtra("isSoundAlarm", isSoundAlarm);
+
+                    pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int) requestID, intent,
                             PendingIntent.FLAG_UPDATE_CURRENT);
 
-                alarmManager_high_tempreture.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
+                    alarmManager_high_tempreture.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
+                }
             }
         }else if(high_or_low.equals("low")){ // 저온 알람
-            String alarm_temperature_str = PreferenceManager.getString(context, "alarm_low_temperature_value");
-            double temperature_get = Double.parseDouble(alarm_temperature_str);
-            double temperature_s = Double.parseDouble(s);
 
-            if (temperature_get >= temperature_s){
-                Intent intent = new Intent(context, AlarmReceiver.class);
-                intent.putExtra("now_temperature", s);
-                intent.putExtra("alarm_temperature", alarm_temperature_str);
-                intent.putExtra("alarm_mode", 1); // 0: 고온, 1: 저온
-                intent.putExtra("isSoundAlarm", isSoundAlarm);
+            long alarm_low_temperature_term = PreferenceManager.getLong(context, "alarm_low_temperature_term_value");
 
-                pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestID, intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
+            Log.e("checkNotificationTemperature2222", "111111");
+            Log.e("checkNotificationTemperature2222", String.valueOf(alarm_low_temperature_term));
+            Log.e("checkNotificationTemperature2222", String.valueOf(now));
 
-                alarmManager_low_tempreture.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
+            if (now >= alarm_low_temperature_term){
+
+                long nowNext = timeCalculationManager.getFormatTimeNow(PreferenceManager.getLong(context, "alarm_temperature_term"));
+                PreferenceManager.setLong(context, "alarm_low_temperature_term_value", nowNext);
+
+                double temperature_get = Double.parseDouble(alarm_low_temperature_str);
+                double temperature_s = Double.parseDouble(s);
+
+                if (temperature_get >= temperature_s){
+                    Intent intent = new Intent(context, AlarmReceiver.class);
+                    intent.putExtra("now_temperature", s);
+                    intent.putExtra("alarm_temperature", alarm_low_temperature_str);
+                    intent.putExtra("alarm_mode", 1); // 0: 고온, 1: 저온
+                    intent.putExtra("isSoundAlarm", isSoundAlarm);
+
+                    pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int) requestID, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    alarmManager_low_tempreture.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
+                }
             }
         }
     }
@@ -320,6 +361,14 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    /** 현재 시간 구하기 **/
+    public long getFormatTimeNow(long time){
+        Date mReDate = new Date(time);
+        SimpleDateFormat mFormat = new SimpleDateFormat("yyyyMMddHHmm");
+        String formatDate = mFormat.format(mReDate);
+        return Long.parseLong(formatDate);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -327,7 +376,4 @@ public class MainActivity extends AppCompatActivity {
         bodytemp_dbHelper.closeDBHelper();
         setAlarmCancle();
     }
-
-
-
 }

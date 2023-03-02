@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
@@ -114,7 +113,6 @@ public class NotificationManager_Tool {
 
     /** 투약 알람 세팅 **/
     public void setAdministrationAlarm(){
-        Log.e("투약간다ㅁㅁㅇㅂㅈㅇ", "111111");
         // 채널을 생성 전달할 NotificationManager 생성x
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         // 전달할 intent 작성

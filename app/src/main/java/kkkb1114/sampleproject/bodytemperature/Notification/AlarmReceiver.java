@@ -5,10 +5,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
 
 import kkkb1114.sampleproject.bodytemperature.MainActivity;
 import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
+import kkkb1114.sampleproject.bodytemperature.tools.TimeCalculationManager;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
@@ -19,10 +19,13 @@ public class AlarmReceiver extends BroadcastReceiver {
     String alarm_temperature; // 알람 기준 체온
     int alarm_mode = 0; // 0: 고온, 1: 저온, 2: 투약 알람
     boolean isSoundAlarm = false; // 0: 고온, 1: 저온
+    TimeCalculationManager timeCalculationManager;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
+
+        timeCalculationManager = new TimeCalculationManager();
 
         PreferenceManager.PREFERENCES_NAME = "login_user";
         String select_user_name = PreferenceManager.getString(context, "userName");
@@ -41,7 +44,6 @@ public class AlarmReceiver extends BroadcastReceiver {
             startNotification_LowTemperature(context);
         }else if (alarm_mode == 2){ // 투약 알람은 사운드 안울림
             startNotification_Administration(context);
-            Log.e("투약간다ㅁㅁㅇㅂㅈㅇ", "333333");
         }
 
         // 알람 사운드 추가 체크를 했어야 사운드 실행
@@ -56,8 +58,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         temperatureNotification = new NotificationManager_Tool(context);
         temperatureNotification.setNotification_HighTemperature(now_temperature, alarm_temperature);
 
-        // 알람이 한번 울리면 알람 설정을 off 한다.
-        PreferenceManager.setBoolean(context, "alarm_high_temperature_boolean", false);
+        long now = timeCalculationManager.getFormatTimeNow(PreferenceManager.getLong(context, "alarm_temperature_term"));
+        PreferenceManager.setLong(context, "alarm_high_temperature_term_value", now);
     }
 
     /** 저온 Notification 설정 **/
@@ -65,15 +67,14 @@ public class AlarmReceiver extends BroadcastReceiver {
         temperatureNotification = new NotificationManager_Tool(context);
         temperatureNotification.setNotification_LowTemperature(now_temperature, alarm_temperature);
 
-        // 알람이 한번 울리면 알람 설정을 off 한다.
-        PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean", false);
+        long now = timeCalculationManager.getFormatTimeNow(PreferenceManager.getLong(context, "alarm_temperature_term"));
+        PreferenceManager.setLong(context, "alarm_low_temperature_term_value", now);
     }
 
     /** 투약 Notification 설정 **/
     public void startNotification_Administration(Context context){
         temperatureNotification = new NotificationManager_Tool(context);
         temperatureNotification.setAdministrationAlarm();
-        Log.e("투약간다ㅁㅁㅇㅂㅈㅇ", "222222");
 
         //todo 투약 알람 쉐어드 만들어야함.
         //PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean", false);
