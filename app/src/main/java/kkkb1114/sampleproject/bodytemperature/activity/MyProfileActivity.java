@@ -194,7 +194,13 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 break;
 
             case R.id.tv_purpose:
-                String[] items = {"감염", "염증", "배란"};
+                // 여성일때만 배란이 목록에 뜨도록 설정
+                String[] items;
+                if (gender == 0){
+                    items = new String[]{"감염", "염증", "배란"};
+                }else {
+                    items = new String[]{"감염", "염증"};
+                }
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("목적 선택");
                 builder.setItems(items, new DialogInterface.OnClickListener() {

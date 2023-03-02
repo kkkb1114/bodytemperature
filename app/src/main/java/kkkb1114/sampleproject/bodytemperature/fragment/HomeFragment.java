@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -181,6 +180,5 @@ public class HomeFragment extends Fragment {
 
         AlarmManager alarmManager_administratione = (AlarmManager) context.getSystemService(ALARM_SERVICE);
         alarmManager_administratione.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
-        Log.e("투약간다ㅁㅁㅇㅂㅈㅇ", "44444444");
     }
 }
