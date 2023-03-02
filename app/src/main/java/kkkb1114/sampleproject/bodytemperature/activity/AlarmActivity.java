@@ -56,6 +56,12 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         setBodyTemperature();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setBodyTemperature();
+    }
+
     public void initView(){
         tv_high_temperature = findViewById(R.id.tv_high_temperature);
         tv_low_temperature = findViewById(R.id.tv_low_temperature);
