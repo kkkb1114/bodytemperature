@@ -241,57 +241,52 @@ public class MainActivity extends AppCompatActivity {
             boolean alarm_low_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_low_temperature_boolean");
             boolean alarm_sound_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_sound_temperature_boolean");
 
-            // 고온 노티 체크
-            checkNotificationTemperature(alarm_high_temperature_boolean, alarm_sound_temperature_boolean, s, "high");
-            // 저온 노티 체크
-            checkNotificationTemperature(alarm_low_temperature_boolean, alarm_sound_temperature_boolean, s, "low");
-
+            if (alarm_high_temperature_boolean){
+                // 고온 노티 체크
+                checkNotificationTemperature(alarm_sound_temperature_boolean, s, "high");
+            }else if (alarm_low_temperature_boolean){
+                // 저온 노티 체크
+                checkNotificationTemperature(alarm_sound_temperature_boolean, s, "low");
+            }
         }
     }
 
     /** 체온 노티 체크 **/
-    public void checkNotificationTemperature(boolean isAlarm, boolean isSoundAlarm, String s, String high_or_low){
-        if (isAlarm){
-            Log.e("뭐지?", "1111111");
-            int requestID = (int) System.currentTimeMillis();
-            if (high_or_low.equals("high")){ // 고온 알람
-                String alarm_temperature_str = PreferenceManager.getString(context, "alarm_high_temperature_value");
-                double temperature_get = Double.parseDouble(alarm_temperature_str);
-                double temperature_s = Double.parseDouble(s);
+    public void checkNotificationTemperature(boolean isSoundAlarm, String s, String high_or_low){
+        int requestID = (int) System.currentTimeMillis();
+        if (high_or_low.equals("high")){ // 고온 알람
+            String alarm_temperature_str = PreferenceManager.getString(context, "alarm_high_temperature_value");
+            double temperature_get = Double.parseDouble(alarm_temperature_str);
+            double temperature_s = Double.parseDouble(s);
 
-                if (temperature_get <= temperature_s){
-                    Log.e("뭐지?", "2222222");
-                    Intent intent = new Intent(context, AlarmReceiver.class);
-                    intent.putExtra("now_temperature", s);
-                    intent.putExtra("alarm_temperature", alarm_temperature_str);
-                    intent.putExtra("alarm_mode", 0); // 0: 고온, 1: 저온
-                    intent.putExtra("isSoundAlarm", isSoundAlarm);
+            if (temperature_get <= temperature_s){
+                Intent intent = new Intent(context, AlarmReceiver.class);
+                intent.putExtra("now_temperature", s);
+                intent.putExtra("alarm_temperature", alarm_temperature_str);
+                intent.putExtra("alarm_mode", 0); // 0: 고온, 1: 저온
+                intent.putExtra("isSoundAlarm", isSoundAlarm);
 
-                    pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestID, intent,
-                                PendingIntent.FLAG_UPDATE_CURRENT);
-
-                    alarmManager_high_tempreture.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
-                    Log.e("뭐지?", "22222221344");
-                }
-            }else { // 저온 알람
-                String alarm_temperature_str = PreferenceManager.getString(context, "alarm_low_temperature_value");
-                double temperature_get = Double.parseDouble(alarm_temperature_str);
-                double temperature_s = Double.parseDouble(s);
-
-                if (temperature_get >= temperature_s){
-                    Log.e("뭐지?", "2222222111");
-                    Intent intent = new Intent(context, AlarmReceiver.class);
-                    intent.putExtra("now_temperature", s);
-                    intent.putExtra("alarm_temperature", alarm_temperature_str);
-                    intent.putExtra("alarm_mode", 1); // 0: 고온, 1: 저온
-                    intent.putExtra("isSoundAlarm", isSoundAlarm);
-
-                    pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestID, intent,
+                pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestID, intent,
                             PendingIntent.FLAG_UPDATE_CURRENT);
 
-                    alarmManager_low_tempreture.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
-                    Log.e("뭐지?", "22222221333");
-                }
+                alarmManager_high_tempreture.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
+            }
+        }else if(high_or_low.equals("low")){ // 저온 알람
+            String alarm_temperature_str = PreferenceManager.getString(context, "alarm_low_temperature_value");
+            double temperature_get = Double.parseDouble(alarm_temperature_str);
+            double temperature_s = Double.parseDouble(s);
+
+            if (temperature_get >= temperature_s){
+                Intent intent = new Intent(context, AlarmReceiver.class);
+                intent.putExtra("now_temperature", s);
+                intent.putExtra("alarm_temperature", alarm_temperature_str);
+                intent.putExtra("alarm_mode", 1); // 0: 고온, 1: 저온
+                intent.putExtra("isSoundAlarm", isSoundAlarm);
+
+                pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), requestID, intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+                alarmManager_low_tempreture.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
             }
         }
     }

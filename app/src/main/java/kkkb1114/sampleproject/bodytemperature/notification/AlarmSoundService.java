@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -70,7 +69,6 @@ public class AlarmSoundService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.e("onDestroy_sound", "onDestroy_sound");
         mediaPlayer.stop();
         stopForeground(true);
     }

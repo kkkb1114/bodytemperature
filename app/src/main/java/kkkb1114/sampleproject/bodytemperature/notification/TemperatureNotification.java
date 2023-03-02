@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
@@ -65,7 +64,6 @@ public class TemperatureNotification {
 
         if (notificationManager != null){
             notificationManager.notify(1234, builder_high_temperature.build());
-            Log.e("노티 확인", "2");
         }
     }
 
@@ -110,7 +108,6 @@ public class TemperatureNotification {
 
         if (notificationManager != null){
             notificationManager.notify(12345, builder_low_temperature.build());
-            Log.e("노티 확인", "3");
         }
     }
 
