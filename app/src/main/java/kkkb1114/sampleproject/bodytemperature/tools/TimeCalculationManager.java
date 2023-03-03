@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class TimeCalculationManager {
 
+    public long one_MinutesMillis = 1 * 60 * 1000; // 5분에 해당하는 밀리초 계산
     public long five_MinutesMillis = 5 * 60 * 1000; // 5분에 해당하는 밀리초 계산
     public long ten_MinutesMillis = 10 * 60 * 1000; // 10분에 해당하는 밀리초 계산
     public long thirty_MinutesMillis = 30 * 60 * 1000; // 30분에 해당하는 밀리초 계산

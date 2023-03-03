@@ -1,11 +1,8 @@
 package kkkb1114.sampleproject.bodytemperature.thermometer;
 
-import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import java.util.Random;
 
 public class Generator extends AppCompatActivity {
 
@@ -20,7 +17,4 @@ public class Generator extends AppCompatActivity {
         String s = String.format("%.2f",temp);
         return s;
     }
-
-
-
 }

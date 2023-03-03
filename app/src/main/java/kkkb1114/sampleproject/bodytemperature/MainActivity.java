@@ -75,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
     boolean alarm_sound_temperature_boolean; // 사운드 알람 on / off
     TimeCalculationManager timeCalculationManager;
 
+    String tempDateTime2 = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -200,7 +202,10 @@ public class MainActivity extends AppCompatActivity {
                     String tempDateTime = dateFormat1.format(date);
 
                     sqlDB = MainActivity.bodytemp_dbHelper.getWritableDatabase();
+                    Log.e("qweqweqweqweqwe", tempDateTime);
+                    Log.e("qweqweqweqweqwe", tempDateTime2);
                     sqlDB.execSQL("INSERT INTO TEMPDATA VALUES ('"+username+"', '"+avg+"', '"+ tempDateTime +"');");
+                    tempDateTime2 = tempDateTime;
                 }
 
                 // 3초마다 난수 받아옴

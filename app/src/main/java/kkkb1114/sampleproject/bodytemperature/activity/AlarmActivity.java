@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
@@ -152,6 +153,16 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
             sw_alarm_add_sound.setChecked(false);
         }
 
+        long alarm_temperature_term = PreferenceManager.getLong(context, "alarm_temperature_term");
+        Log.e("alarm_temperature_term", String.valueOf(alarm_temperature_term));
+        if (alarm_temperature_term == -1L || alarm_temperature_term == timeCalculationManager.ten_MinutesMillis){
+            tv_repeat_alarm.setText("10분");
+        }else if (alarm_temperature_term == timeCalculationManager.thirty_MinutesMillis){
+            tv_repeat_alarm.setText("30분");
+        }else if (alarm_temperature_term == timeCalculationManager.sixty_MinutesMillis){
+            tv_repeat_alarm.setText("60분");
+        }
+
 
         firstSetView = true;
     }
@@ -288,7 +299,8 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
     public void setSharedAlarmTerm(String term){
         switch (term){
             case "10분":
-                PreferenceManager.setLong(context, "alarm_temperature_term", timeCalculationManager.ten_MinutesMillis);
+                PreferenceManager.setLong(context, "alarm_temperature_term", timeCalculationManager.one_MinutesMillis);
+                //PreferenceManager.setLong(context, "alarm_temperature_term", timeCalculationManager.ten_MinutesMillis);
                 break;
             case "30분":
                 PreferenceManager.setLong(context, "alarm_temperature_term", timeCalculationManager.thirty_MinutesMillis);
