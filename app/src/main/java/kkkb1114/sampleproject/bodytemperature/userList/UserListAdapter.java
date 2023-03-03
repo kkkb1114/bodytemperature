@@ -151,9 +151,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
                             }
                         }
 
-
-
-
                         dialogInterface.dismiss();
                         // 유저 삭제했으니 새로고침
                         notifyDataSetChanged();

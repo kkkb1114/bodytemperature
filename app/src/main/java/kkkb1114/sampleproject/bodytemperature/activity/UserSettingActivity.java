@@ -3,6 +3,7 @@ package kkkb1114.sampleproject.bodytemperature.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 import kkkb1114.sampleproject.bodytemperature.R;
+import kkkb1114.sampleproject.bodytemperature.database.Bodytemp_DBHelper;
 import kkkb1114.sampleproject.bodytemperature.database.MyProfile.MyProfile;
 import kkkb1114.sampleproject.bodytemperature.database.MyProfile.MyProfile_DBHelper;
 import kkkb1114.sampleproject.bodytemperature.userList.UserListAdapter;
@@ -60,6 +62,7 @@ public class UserSettingActivity extends AppCompatActivity implements View.OnCli
 
     /** DB에서 유저 데이터 ArrayList 가져온다. **/
     public void getUserData(){
+        Log.e("getUserData", String.valueOf(Bodytemp_DBHelper.readableDataBase == null));
         userList = myProfile_dbHelper.DBselectAll();
     }
 

@@ -2,6 +2,7 @@ package kkkb1114.sampleproject.bodytemperature.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,12 +87,12 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 startActivity(userListIntent);
                 break;
             case R.id.tv_setting_alarm:
-                // 내 프로필로 이동
                 Intent alarmIntent = new Intent(view.getContext(), AlarmActivity.class);
                 startActivity(alarmIntent);
                 break;
             case R.id.tv_setting_select_user:
                 if (isSelectUser){
+                    Log.e("tv_setting_select_user", tv_setting_select_user.getText().toString());
                     // 내 프로필로 이동
                     Intent myProfileIntent = new Intent(view.getContext(), MyProfileActivity.class);
                     myProfileIntent.putExtra("userName", tv_setting_select_user.getText().toString());
