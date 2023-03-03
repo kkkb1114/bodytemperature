@@ -299,8 +299,9 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
     public void setSharedAlarmTerm(String term){
         switch (term){
             case "10분":
-                PreferenceManager.setLong(context, "alarm_temperature_term", timeCalculationManager.one_MinutesMillis);
-                //PreferenceManager.setLong(context, "alarm_temperature_term", timeCalculationManager.ten_MinutesMillis);
+                //todo 잠시 테스트용으로 1분짜리 만듬
+                //PreferenceManager.setLong(context, "alarm_temperature_term", timeCalculationManager.one_MinutesMillis);
+                PreferenceManager.setLong(context, "alarm_temperature_term", timeCalculationManager.ten_MinutesMillis);
                 break;
             case "30분":
                 PreferenceManager.setLong(context, "alarm_temperature_term", timeCalculationManager.thirty_MinutesMillis);

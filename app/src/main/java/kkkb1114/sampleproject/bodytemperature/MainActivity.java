@@ -286,14 +286,15 @@ public class MainActivity extends AppCompatActivity {
             // 현재시간이 알람 텀 시간보다 클 경우 로직 동작
             if (now >= alarm_high_temperature_term){
 
-                long termTime = timeCalculationManager.getFormatTimeNow(PreferenceManager.getLong(context, "alarm_temperature_term"));
-                PreferenceManager.setLong(context, "alarm_high_temperature_term_value", termTime);
-
                 Log.e("checkNotificationTemperature", "222222");
                 double temperature_get = Double.parseDouble(alarm_high_temperature_str);
                 double temperature_s = Double.parseDouble(s);
 
                 if (temperature_get <= temperature_s){
+
+                    long termTime = timeCalculationManager.getFormatTimeNow(PreferenceManager.getLong(context, "alarm_temperature_term"));
+                    PreferenceManager.setLong(context, "alarm_high_temperature_term_value", termTime);
+
                     Log.e("checkNotificationTemperature", "333333");
                     Intent intent = new Intent(context, AlarmReceiver.class);
                     intent.putExtra("now_temperature", s);
@@ -317,13 +318,14 @@ public class MainActivity extends AppCompatActivity {
 
             if (now >= alarm_low_temperature_term){
 
-                long nowNext = timeCalculationManager.getFormatTimeNow(PreferenceManager.getLong(context, "alarm_temperature_term"));
-                PreferenceManager.setLong(context, "alarm_low_temperature_term_value", nowNext);
-
                 double temperature_get = Double.parseDouble(alarm_low_temperature_str);
                 double temperature_s = Double.parseDouble(s);
 
                 if (temperature_get >= temperature_s){
+
+                    long nowNext = timeCalculationManager.getFormatTimeNow(PreferenceManager.getLong(context, "alarm_temperature_term"));
+                    PreferenceManager.setLong(context, "alarm_low_temperature_term_value", nowNext);
+
                     Intent intent = new Intent(context, AlarmReceiver.class);
                     intent.putExtra("now_temperature", s);
                     intent.putExtra("alarm_temperature", alarm_low_temperature_str);
@@ -369,7 +371,7 @@ public class MainActivity extends AppCompatActivity {
     /** 현재 시간 구하기 **/
     public long getFormatTimeNow(long time){
         Date mReDate = new Date(time);
-        SimpleDateFormat mFormat = new SimpleDateFormat("yyyyMMddHHmm");
+        SimpleDateFormat mFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String formatDate = mFormat.format(mReDate);
         return Long.parseLong(formatDate);
     }

@@ -18,7 +18,7 @@ public class TimeCalculationManager {
         long time = currentTimeMillis + ten_MinutesMillis; // 10분 후의 시간 계산
 
         Date mReDate = new Date(time);
-        SimpleDateFormat mFormat = new SimpleDateFormat("yyyyMMddHHmm");
+        SimpleDateFormat mFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String formatDate = mFormat.format(mReDate);
         return Long.parseLong(formatDate);
     }

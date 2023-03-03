@@ -24,7 +24,7 @@ public class PillAdapter extends RecyclerView.Adapter<PillAdapter.ViewHolder> {
     Context context;
     HashMap<Integer,String> map = new HashMap<>();
 
-    int selectedPosition;
+    int selectedPosition = 0;
 
 
     private List<ViewHolder> mViewHolderList = new ArrayList<>();
@@ -49,15 +49,15 @@ public class PillAdapter extends RecyclerView.Adapter<PillAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
+        Log.d("selected", String.valueOf(selectedPosition));
+        Log.d("position", String.valueOf(holder.getAbsoluteAdapterPosition()));
         if(String.valueOf(holder.getAbsoluteAdapterPosition()).equals(String.valueOf(selectedPosition))){
             holder.pill_layout.setBackgroundColor(context.getResources().getColor(R.color.user_list_select_user,null));
         }
         else{
-            holder.changeAllBackgroundColors(Color.WHITE);
+            holder.pill_layout.setBackgroundColor(Color.WHITE);
         }
 
-        Log.d("selected", String.valueOf(selectedPosition));
-        Log.d("position", String.valueOf(holder.getAbsoluteAdapterPosition()));
         mViewHolderList.add(holder);
 
 
