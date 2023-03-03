@@ -38,6 +38,8 @@ public class OpenApi extends AsyncTask<Void, Void, String> {
     ArrayList<String> af;
     String key = "X2YEdMzvbE3wTlxyaDcpFy8pnSAanX7AJVVnVBwtExvyfZGkS2%2B7UBgwBO9Dx131egaZE50OFpE926apkhTVWA%3D%3D";
     PillAdapter pillAdapter;
+
+    ArrayList data;
     public OpenApi(String targetName, ArrayList<String> ad,ArrayList<String> af,PillAdapter pillAdapter,Context context,RecyclerView rv_pill) {
         this.targetName = targetName;
         this.ad=ad;
@@ -49,7 +51,7 @@ public class OpenApi extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... params) {
-
+        data=new ArrayList();
         // parsing할 url 지정(API 키 포함해서)
         URL url = null;
         try {
@@ -89,8 +91,13 @@ public class OpenApi extends AsyncTask<Void, Void, String> {
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
                     Element eElement = (Element) nNode;
-                    ad.add(getTagValue("PRDUCT", eElement));
-                    af.add( getTagValue("MAIN_INGR_ENG", eElement));
+
+
+
+                    if(!ad.contains(getTagValue("PRDUCT", eElement))) {
+                        ad.add(getTagValue("PRDUCT", eElement));
+                        af.add(getTagValue("MAIN_INGR_ENG", eElement));
+                    }
 
                 }    // for end
             }

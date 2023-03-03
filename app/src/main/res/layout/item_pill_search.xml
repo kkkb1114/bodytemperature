@@ -17,7 +17,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textSize="30dp">
+                android:textSize="15dp"
+            android:textColor="@color/black">
 
             </TextView>
 
@@ -26,9 +27,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text=""
-            android:textSize="20dp">
+            android:textSize="15dp"
+            android:textColor="@color/black">
 
         </TextView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/main_bottom_line"/>
 
     </LinearLayout>
 

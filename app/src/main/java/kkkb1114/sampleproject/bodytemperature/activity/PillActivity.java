@@ -59,8 +59,10 @@ public class PillActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 if(edt_pillSearch.getText().toString().length()!=0) {
-                    searchText = edt_pillSearch.getText().toString();
+                       searchText = edt_pillSearch.getText().toString();
                        String targetName= edt_pillSearch.getText().toString();
+                       ad.clear();
+                       af.clear();
                        OpenApi pill = new OpenApi(targetName,ad,af,pillAdapter,context,rv_pill);
                        pill.execute();
 
@@ -88,7 +90,7 @@ public class PillActivity extends AppCompatActivity{
 
         rv_pill=(RecyclerView) findViewById(R.id.rv_pill_list);
         rv_pill.setVisibility(View.VISIBLE);
-        pillAdapter = new PillAdapter(ad,af);
+        pillAdapter = new PillAdapter(ad,af,context);
         rv_pill.setLayoutManager(new LinearLayoutManager(context));
         rv_pill.setAdapter(pillAdapter);
 
