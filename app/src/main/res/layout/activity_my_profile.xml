@@ -87,7 +87,7 @@
                 android:background="@drawable/rounded_corners_white"/>
 
             <TextView
-                android:id="@+id/tv_purpose"
+                android:id="@+id/tv_myProfile_purpose"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -99,7 +99,7 @@
                 android:background="@drawable/rounded_corners_white"/>
 
             <TextView
-                android:id="@+id/tv_infection"
+                android:id="@+id/tv_myProfile_infection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"

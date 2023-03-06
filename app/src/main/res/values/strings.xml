@@ -8,4 +8,7 @@
     <string name="tv_myProfile_weight">몸무게</string>
     <string name="tv_myProfile_purpose">이용 목적 선택</string>
     <string name="tv_myProfile_infection">감염 병 선택</string>
+    <string name="tv_myProfile_purpose_1">감기/독감</string>
+    <string name="tv_myProfile_purpose_2">염증</string>
+    <string name="tv_myProfile_purpose_3">배란</string>
 </resources>

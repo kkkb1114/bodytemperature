@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -20,6 +22,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import kkkb1114.sampleproject.bodytemperature.R;
+import kkkb1114.sampleproject.bodytemperature.database.MyProfile.MyProfile;
+import kkkb1114.sampleproject.bodytemperature.database.MyProfile.MyProfile_DBHelper;
 import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
 import kkkb1114.sampleproject.bodytemperature.tools.TimeCalculationManager;
 
@@ -27,6 +31,12 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
 
     Context context;
 
+    MyProfile_DBHelper myProfile_dbHelper;
+    MyProfile myProfile;
+    FrameLayout fl_alarm;
+    LinearLayout ll_infection;
+    LinearLayout ll_inflammation;
+    LinearLayout ll_ovulation;
     TextView tv_high_temperature;
     TextView tv_low_temperature;
     TextView tv_repeat_alarm;
@@ -37,6 +47,7 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
     Switch sw_alarm_add_sound;
     Button bt_alarm_confirm;
     Button bt_alarm_cancle;
+    String select_user_name;
 
     TimeCalculationManager timeCalculationManager;
     DecimalFormat decimalFormat = new DecimalFormat(".#");
@@ -57,13 +68,16 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
-        context = this;
 
+        context = this;
+        myProfile_dbHelper = new MyProfile_DBHelper();
         timeCalculationManager = new TimeCalculationManager();
 
         initView();
         setSeekBar();
         setBodyTemperature();
+        getMyProfile();
+        checkpPurpose();
     }
 
     @Override
@@ -73,10 +87,13 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void initView(){
+        fl_alarm = findViewById(R.id.fl_alarm);
         tv_high_temperature = findViewById(R.id.tv_high_temperature);
         tv_low_temperature = findViewById(R.id.tv_low_temperature);
         tv_repeat_alarm = findViewById(R.id.tv_repeat_alarm);
         tv_repeat_alarm.setOnClickListener(this);
+        ll_infection = findViewById(R.id.ll_infection);
+        //ll_inflammation = findViewById(R.id.ll_inflammation);
         sb_high_temperature = findViewById(R.id.sb_high_temperature);
         sb_low_temperature = findViewById(R.id.sb_low_temperature);
         sw_high_temperature = findViewById(R.id.sw_high_temperature);
@@ -91,9 +108,28 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
     /** Preference NAME 설정 **/
     public void setPREFERENCES_NAME(){
         PreferenceManager.PREFERENCES_NAME = "login_user";
-        String select_user_name = PreferenceManager.getString(context, "userName");
+        select_user_name = PreferenceManager.getString(context, "userName");
         // 해당 화면에서는 알람값만 컨트롤하기에 "PREFERENCES_NAME" 설정
         PreferenceManager.PREFERENCES_NAME = select_user_name+"Setting";
+    }
+
+    /** 현재 사용자 데이터 DB에서 가져오기 (사용 목적에 따라 알람 화면이 다르기 때문에 필요하다.) **/
+    public void getMyProfile(){
+        setPREFERENCES_NAME();
+        myProfile = myProfile_dbHelper.DBselect(select_user_name);
+    }
+
+    /** 알람 화면이 사용 목적에 따라 UI가 달라지기에 매번 확인해야 한다. **/
+    public void checkpPurpose (){
+        switch (myProfile.purpose){
+            case "감기/독감":
+                ll_infection.setVisibility(View.VISIBLE);
+                break;
+            case "염증":
+                break;
+            case "배란":
+                break;
+        }
     }
 
     /** 체온 처음 값 세팅 **/
@@ -176,8 +212,8 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
 
         setSeekBarAnimation(sb_high_temperature, "high_temperature_progress",max, min);
         setSeekBarAnimation(sb_low_temperature, "low_temperature_progress",max, min);
-        setSeekBarChange_high(sb_high_temperature, min, step);
-        setSeekBarChange_low(sb_low_temperature, min, step);
+        setSeekBarChange_high(min, step);
+        setSeekBarChange_low(min, step);
     }
 
     /** progress thumb 임의 위치로 배치 **/
@@ -191,7 +227,7 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
     }
 
     /** 고온 seekBar 동작시 이벤트 **/
-    public void setSeekBarChange_high(SeekBar seekBar, double min, double step){
+    public void setSeekBarChange_high(double min, double step){
         sb_high_temperature.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
@@ -215,7 +251,7 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
     }
 
     /** 저온 seekBar 동작시 이벤트 **/
-    public void setSeekBarChange_low(SeekBar seekBar, double min, double step){
+    public void setSeekBarChange_low(double min, double step){
         sb_low_temperature.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {

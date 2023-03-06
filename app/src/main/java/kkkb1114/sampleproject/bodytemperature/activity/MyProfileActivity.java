@@ -84,8 +84,8 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         tv_myProfile_woman = findViewById(R.id.tv_myProfile_woman);
         tv_myProfile_birthDate = findViewById(R.id.tv_myProfile_birthDate);
         tv_myProfile_weight = findViewById(R.id.tv_myProfile_weight);
-        tv_myProfile_purpose = findViewById(R.id.tv_purpose);
-        tv_myProfile_infection = findViewById(R.id.tv_infection);
+        tv_myProfile_purpose = findViewById(R.id.tv_myProfile_purpose);
+        tv_myProfile_infection = findViewById(R.id.tv_myProfile_infection);
         bt_myProfile_cancle = findViewById(R.id.bt_myProfile_cancle);
         bt_myProfile_confirm = findViewById(R.id.bt_myProfile_confirm);
 
@@ -153,9 +153,11 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     /** 성별 세팅 **/
     public void setGender(int gender){
         if (gender == 1){
+            this.gender = 1;
             tv_myProfile_man.setTextColor(Color.parseColor("#2B8FB6"));
             tv_myProfile_woman.setTextColor(Color.parseColor("#9E9E9E"));
         }else {
+            this.gender = 0;
             tv_myProfile_man.setTextColor(Color.parseColor("#9E9E9E"));
             tv_myProfile_woman.setTextColor(Color.parseColor("#2B8FB6"));
         }
@@ -220,11 +222,15 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
             case R.id.tv_myProfile_woman:
                 gender = 0;
                 setGender(gender);
+                // 여성을 선택후 이용 목적을 배란으로 선택 후에 다시 남성으로 돌아가면 배란이 그대로 남아있으면 안된다.
+                tv_myProfile_purpose.setText("감염");
                 break;
 
             case R.id.tv_myProfile_man:
                 gender = 1;
                 setGender(gender);
+                // 여성을 선택후 이용 목적을 배란으로 선택 후에 다시 남성으로 돌아가면 배란이 그대로 남아있으면 안된다.
+                tv_myProfile_purpose.setText("감염");
                 break;
 
             case R.id.tv_myProfile_birthDate:
@@ -237,7 +243,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 weightPickerDialog.show(getSupportFragmentManager(), "WeightPickerDialog");
                 break;
 
-            case R.id.tv_purpose:
+            case R.id.tv_myProfile_purpose:
                 // 여성일때만 배란이 목록에 뜨도록 설정
                 String[] items_purpose;
                 if (gender == 0){
@@ -258,7 +264,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 builder_purpose.show();
                 break;
 
-            case R.id.tv_infection:
+            case R.id.tv_myProfile_infection:
                 String[] items_infection;
                 items_infection = new String[]{"감기/독감", "폐렴", "홍역"};
                 AlertDialog.Builder builder_infection = new AlertDialog.Builder(this);
