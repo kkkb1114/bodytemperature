@@ -379,7 +379,7 @@ public class BodyTemperatureGraphFragment extends Fragment {
     }
 
     public void setPicker() {
-        np_period_integer.setMinValue(14);
+        np_period_integer.setMinValue(20);
         np_period_integer.setMaxValue(40);
 
     }
@@ -397,12 +397,14 @@ public class BodyTemperatureGraphFragment extends Fragment {
         String day = null;
         String month = null;
         String year=null;
+        int period = 0;
 
         cursor = sqlDB.rawQuery("SELECT * FROM OVULDATA WHERE name = '"+username+"'; ", null);
         while(cursor.moveToNext()) {
            day = cursor.getString(2).substring(8);
            month=cursor.getString(2).substring(5);
            year=cursor.getString(2).substring(0,10);
+           period = cursor.getInt(1);
         }
 
         if(day==null)
@@ -460,14 +462,73 @@ public class BodyTemperatureGraphFragment extends Fragment {
             }
 
         }
+        float[] temperatures20 = {36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.5f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f, 36.95f, 36.9f, 36.95f, 37.0f, 37.05f, 36.95f, 37.0f, 37.05f, 37.05f, 37.1f, 37.1f ,37.15f, 37.15f, 37.1f, 37.15f, 37.2f, 37.2f,37.25f};
+        float[] temperatures21 = {36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.5f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f, 36.95f, 36.9f, 36.95f, 37.0f, 37.05f, 36.95f, 37.0f, 37.05f, 37.05f, 37.1f, 37.1f , 37.15f, 37.15f, 37.1f, 37.15f, 37.2f, 37.2f};
+        float[] temperatures22 = {36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.5f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f, 36.95f, 36.9f, 36.95f, 37.0f, 37.05f, 36.95f, 37.0f, 37.05f, 37.05f, 37.1f, 37.1f, 37.15f, 37.15f, 37.1f, 37.15f, 37.2f};
+        float[] temperatures23 = {36.55f, 36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.5f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f, 36.95f, 36.9f, 36.95f, 37.0f, 37.05f, 36.95f, 37.0f, 37.05f, 37.05f, 37.1f, 37.1f, 37.15f, 37.15f, 37.1f, 37.15f};
+        float[] temperatures24 = {36.6f, 36.55f, 36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.5f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f, 36.95f, 36.9f, 36.95f, 37.0f, 37.05f, 36.95f, 37.0f, 37.05f, 37.05f, 37.1f, 37.1f, 37.15f, 37.15f, 37.1f};
+        float[] temperatures25 = {36.55f, 36.6f, 36.55f, 36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.5f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f, 36.95f, 36.9f, 36.95f, 37.0f, 37.05f, 36.95f, 37.0f, 37.05f, 37.05f, 37.1f, 37.15f, 37.15f, 37.1f};
+        float[] temperatures26 = {36.6f, 36.55f, 36.6f, 36.55f, 36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.5f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f, 36.95f, 36.9f, 36.95f, 37.0f, 37.05f, 36.95f, 37.0f, 37.05f, 37.05f, 37.1f, 37.15f, 37.15f};
+        float[] temperatures27 = {36.66f, 36.6f, 36.55f, 36.6f, 36.55f, 36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.5f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f, 36.95f, 36.9f, 36.95f, 37.0f, 37.05f, 36.95f, 37.0f, 37.05f, 37.05f, 37.1f, 37.15f};
+        float[] temperatures28 = {36.7f, 36.66f, 36.6f, 36.55f, 36.6f, 36.55f, 36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.5f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f, 36.95f, 36.9f, 36.95f, 37.0f, 37.05f, 36.95f, 37.0f, 37.05f, 37.05f, 37.1f};
+        float[] temperatures29 = {36.7f, 36.66f, 36.6f, 36.55f, 36.6f, 36.55f, 36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.55f, 36.5f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f, 36.95f, 36.9f, 36.95f, 37.0f, 37.05f, 36.95f, 37.0f, 37.05f, 37.05f};
+        float[] temperatures30 = {36.7f, 36.66f, 36.6f, 36.55f, 36.6f, 36.55f, 36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.6f, 36.55f, 36.5f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f, 36.95f, 36.9f, 36.95f, 37.0f, 37.05f, 36.95f, 37.0f, 37.05f};
+        float[] temperatures31 = {36.7f, 36.66f, 36.6f, 36.55f, 36.6f, 36.55f, 36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.7f, 36.5f, 36.55f, 36.5f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f, 36.95f, 36.9f, 36.95f, 37.0f, 37.05f, 36.95f, 37.0f};
+        float[] temperatures32 = {36.7f, 36.66f, 36.6f, 36.55f, 36.6f, 36.55f, 36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.5f, 36.6f, 36.55f, 36.6f, 36.5f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f, 36.95f, 36.9f, 36.95f, 37.0f, 37.05f, 36.95f};
+        float[] temperatures33 = {36.7f, 36.66f, 36.6f, 36.55f, 36.6f, 36.55f, 36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.5f, 36.6f, 36.55f, 36.5f, 36.5f, 36.5f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f, 36.95f, 36.9f, 36.95f, 37.0f, 37.05f};
+        float[] temperatures34 = {36.7f, 36.66f, 36.6f, 36.55f, 36.6f, 36.55f, 36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.5f, 36.5f, 36.55f, 36.6f, 36.5f, 36.55f, 36.5f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f, 36.95f, 36.9f, 36.95f, 37.0f};
+        float[] temperatures35 = {36.7f, 36.66f, 36.6f, 36.55f, 36.6f, 36.55f, 36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.5f, 36.5f, 36.66f, 36.6f, 36.5f, 36.55f, 36.55f, 36.5f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f, 36.95f, 36.9f, 36.95f};
+        float[] temperatures36 = {36.7f, 36.66f, 36.6f, 36.55f, 36.6f, 36.55f, 36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.5f, 36.5f, 36.66f, 36.6f, 36.5f, 36.55f, 36.56f, 36.55f, 36.53f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f, 36.95f, 36.9f};
+        float[] temperatures37 = {36.7f, 36.66f, 36.6f, 36.55f, 36.6f, 36.55f, 36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.5f, 36.5f, 36.55f, 36.6f, 36.5f, 36.55f, 36.56f, 36.55f, 36.53f, 36.5f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f, 36.95f};
+        float[] temperatures38 = {36.7f, 36.66f, 36.6f, 36.55f, 36.6f, 36.55f, 36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.5f, 36.5f, 36.5f, 36.55f, 36.6f, 36.5f, 36.55f, 36.55f, 36.5f , 36.53f, 36.5f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f, 37.05f};
+        float[] temperatures39 = {36.7f, 36.66f, 36.6f, 36.55f, 36.6f, 36.55f, 36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.5f, 36.5f, 36.5f, 36.55f, 36.6f, 36.5f, 36.55f, 36.55f, 36.5f , 36.53f, 36.5f, 36.3f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f, 37.0f};
+        float[] temperatures40 = {36.7f, 36.66f, 36.6f, 36.55f, 36.6f, 36.55f, 36.55f, 36.65f, 36.6f, 36.65f, 36.6f, 36.55f, 36.6f, 36.5f, 36.5f, 36.5f, 36.55f, 36.6f, 36.5f, 36.55f, 36.55f, 36.5f , 36.53f, 36.5f, 36.5f, 36.3f, 36.7f, 36.75f, 36.85f, 36.95f, 36.95f, 36.85f, 36.8f, 36.85f, 36.95f, 36.95f, 36.9f, 36.95f, 37.0f, 37.0f, 36.95f, 37.0f, 37.05f, 37.1f, 37.0f};
 
-
-
-        float [] temp = {36.7f,36.66f,36.6f,36.55f,36.6f,36.55f,36.55f,36.65f,36.6f,36.65f,36.6f,36.55f,36.6f,36.5f,36.7f,36.75f,36.85f,36.95f,36.95f,36.85f,36.8f,36.85f,36.95f,36.95f,36.9f,36.95f,37.0f,37.0f,36.95f,37.0f,37.05f,37.1f,37.0f,37.0f,37.05f,36.95f,36.9f,36.95f,37.0f,37.05f,36.95f,37.0f,37.05f,37.05f,37.1f};
-
-        for(int j=0; j<temp.length; j++) {
-            entry_chart_Y.add(new Entry(j, temp[j]));
+        for(int j=0; j<45; j++) {
+            if(period==20)
+                entry_chart_Y.add(new Entry(j, temperatures20[j]));
+            else if(period==21)
+                entry_chart_Y.add(new Entry(j, temperatures21[j]));
+            else if(period==22)
+                entry_chart_Y.add(new Entry(j, temperatures22[j]));
+            else if(period==23)
+                entry_chart_Y.add(new Entry(j, temperatures23[j]));
+            else if(period==24)
+                entry_chart_Y.add(new Entry(j, temperatures24[j]));
+            else if(period==25)
+                entry_chart_Y.add(new Entry(j, temperatures25[j]));
+            else if(period==26)
+                entry_chart_Y.add(new Entry(j, temperatures26[j]));
+            else if(period==27)
+                entry_chart_Y.add(new Entry(j, temperatures27[j]));
+            else if(period==28)
+                entry_chart_Y.add(new Entry(j, temperatures28[j]));
+            else if(period==29)
+                entry_chart_Y.add(new Entry(j, temperatures29[j]));
+            else if(period==30)
+                entry_chart_Y.add(new Entry(j, temperatures30[j]));
+            else if(period==31)
+                entry_chart_Y.add(new Entry(j, temperatures31[j]));
+            else if(period==32)
+                entry_chart_Y.add(new Entry(j, temperatures32[j]));
+            else if(period==33)
+                entry_chart_Y.add(new Entry(j, temperatures33[j]));
+            else if(period==34)
+                entry_chart_Y.add(new Entry(j, temperatures34[j]));
+            else if(period==35)
+                entry_chart_Y.add(new Entry(j, temperatures35[j]));
+            else if(period==36)
+                entry_chart_Y.add(new Entry(j, temperatures36[j]));
+            else if(period==37)
+                entry_chart_Y.add(new Entry(j, temperatures37[j]));
+            else if(period==38)
+                entry_chart_Y.add(new Entry(j, temperatures38[j]));
+            else if(period==39)
+                entry_chart_Y.add(new Entry(j, temperatures39[j]));
+            else if(period==40)
+                entry_chart_Y.add(new Entry(j, temperatures40[j]));
         }
+
 
 
         for(int j=0; j<45; j++)
