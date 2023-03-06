@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,9 +30,11 @@ import kkkb1114.sampleproject.bodytemperature.database.MyProfile.MyProfile;
 import kkkb1114.sampleproject.bodytemperature.database.MyProfile.MyProfile_DBHelper;
 import kkkb1114.sampleproject.bodytemperature.dialog.WeightPickerDialog;
 import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
+import kkkb1114.sampleproject.bodytemperature.tools.TimeCalculationManager;
 
 public class MyProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
+    TimeCalculationManager timeCalculationManager;
     MyProfile_DBHelper myProfile_dbHelper;
 
     EditText et_myProfile_name;
@@ -40,14 +43,19 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     TextView tv_myProfile_birthDate;
     TextView tv_myProfile_weight;
     TextView tv_myProfile_purpose;
+    TextView tv_myProfile_infection;
     Button bt_myProfile_cancle;
     Button bt_myProfile_confirm;
 
+    String selectedItem_purpose; // 이용 목적 선택 문자열
+    String selectedItem_infection; // 이용 목적 선택 문자열
+    
     int gender = 1; // 1: 남성, 0: 여성
-    String name;
-    String birthDate;
-    String weight;
-    String purpose;
+    String name = "";
+    String birthDate = "";
+    String weight = "";
+    String purpose = "";
+    String infection = "";
 
     String intentUserName = ""; // 내 정보 보기, 수정으로 들어올 경우 getIntent를 통해 문자열을 담는다.
 
@@ -61,6 +69,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_profile);
         context = this;
+        timeCalculationManager = new TimeCalculationManager();
         myProfile_dbHelper = new MyProfile_DBHelper();
         Intent intent = getIntent();
         intentUserName = intent.getStringExtra("userName");
@@ -76,6 +85,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         tv_myProfile_birthDate = findViewById(R.id.tv_myProfile_birthDate);
         tv_myProfile_weight = findViewById(R.id.tv_myProfile_weight);
         tv_myProfile_purpose = findViewById(R.id.tv_purpose);
+        tv_myProfile_infection = findViewById(R.id.tv_infection);
         bt_myProfile_cancle = findViewById(R.id.bt_myProfile_cancle);
         bt_myProfile_confirm = findViewById(R.id.bt_myProfile_confirm);
 
@@ -85,6 +95,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         tv_myProfile_birthDate.setOnClickListener(this);
         tv_myProfile_weight.setOnClickListener(this);
         tv_myProfile_purpose.setOnClickListener(this);
+        tv_myProfile_infection.setOnClickListener(this);
         bt_myProfile_cancle.setOnClickListener(this);
         bt_myProfile_confirm.setOnClickListener(this);
     }
@@ -150,29 +161,62 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    /** DB에서 내 정보 꺼내옵니다. **/
+    /** 수정모드면 DB에서 내 정보 꺼내옵니다. **/
     public void getMyProfile(){
-        MyProfile myProfile;
-        if (intentUserName != null && !intentUserName.isEmpty()){
-            myProfile = myProfile_dbHelper.DBselect(intentUserName);
+        if (isModify()){
+            MyProfile myProfile = myProfile_dbHelper.DBselect(intentUserName);
+            Log.e("qwewqdasdasd", myProfile.toString());
             if (myProfile != null){
+                // 수정모드면 이름은 key값이라 수정 못하게 클릭 자체를 막는다.
+                et_myProfile_name.setClickable(false);
+                et_myProfile_name.setFocusable(false);
+
                 et_myProfile_name.setText(myProfile.name);
                 setGender(myProfile.gender);
                 tv_myProfile_birthDate.setText(myProfile.birthDate);
                 tv_myProfile_weight.setText(myProfile.weight);
                 tv_myProfile_purpose.setText(myProfile.purpose);
+                tv_myProfile_infection.setText(myProfile.infection);
+                setVisibility_View(myProfile.purpose);
             }else {
                 et_myProfile_name.setText("user");
                 setGender(0);
-                tv_myProfile_birthDate.setText("2023-01-01");
+                tv_myProfile_birthDate.setText(timeCalculationManager.getToday());
                 tv_myProfile_weight.setText("0");
             }
+        }
+    }
+
+
+    /** View visible 세팅 **/
+    public void setVisibility_View(String selectedItem_purpose){
+        Log.e("setVisibility_View", selectedItem_purpose);
+        // 선택한 항목이 '감염'이면 '감염 병 선택'란을 보여준다.
+        if (selectedItem_purpose.equals("감염")){
+            tv_myProfile_infection.setVisibility(View.VISIBLE);
+        }else {
+            tv_myProfile_infection.setVisibility(View.GONE);
+        }
+    }
+
+    /** 수정모드인지 체크 **/
+    public boolean isModify(){
+        if (intentUserName != null && !intentUserName.isEmpty()){
+            return true;
+        }else {
+            return false;
         }
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
+            case R.id.et_myProfile_name:
+                if (isModify()){
+                    Toast.makeText(context, "이름은 변경 할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
             case R.id.tv_myProfile_woman:
                 gender = 0;
                 setGender(gender);
@@ -195,21 +239,37 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
             case R.id.tv_purpose:
                 // 여성일때만 배란이 목록에 뜨도록 설정
-                String[] items;
+                String[] items_purpose;
                 if (gender == 0){
-                    items = new String[]{"감염", "염증", "배란"};
+                    items_purpose = new String[]{"감염", "염증", "배란"};
                 }else {
-                    items = new String[]{"감염", "염증"};
+                    items_purpose = new String[]{"감염", "염증"};
                 }
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("목적 선택");
-                builder.setItems(items, new DialogInterface.OnClickListener() {
+                AlertDialog.Builder builder_purpose = new AlertDialog.Builder(this);
+                builder_purpose.setTitle("목적 선택");
+                builder_purpose.setItems(items_purpose, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int position) {
-                        String selectedItem = items[position];
-                        tv_myProfile_purpose.setText(selectedItem);
+                        selectedItem_purpose = items_purpose[position];
+                        tv_myProfile_purpose.setText(selectedItem_purpose);
+
+                        setVisibility_View(selectedItem_purpose);
                     }
                 });
-                builder.show();
+                builder_purpose.show();
+                break;
+
+            case R.id.tv_infection:
+                String[] items_infection;
+                items_infection = new String[]{"감기/독감", "폐렴", "홍역"};
+                AlertDialog.Builder builder_infection = new AlertDialog.Builder(this);
+                builder_infection.setTitle("감염 병 선택");
+                builder_infection.setItems(items_infection, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int position) {
+                        selectedItem_infection = items_infection[position];
+                        tv_myProfile_infection.setText(selectedItem_infection);
+                    }
+                });
+                builder_infection.show();
                 break;
 
             case R.id.bt_myProfile_cancle:
@@ -221,45 +281,61 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 birthDate = tv_myProfile_birthDate.getText().toString();
                 weight = tv_myProfile_weight.getText().toString();
                 purpose = tv_myProfile_purpose.getText().toString();
+                infection = tv_myProfile_infection.getText().toString();
+
+                Log.e("tv_myProfile_infection.getText().toString()", tv_myProfile_infection.getText().toString());
 
                 if (name.trim().length() == 0 || birthDate.trim().length() == 0 || weight.trim().length() == 0
-                || name.equals("이름을 입력하세요")|| birthDate.equals("생년월일") || weight.equals("몸무게")){
-                    Toast.makeText(context, "정보를 모두 기입해 주세요.", Toast.LENGTH_SHORT).show();
-                }else {
-                    // 수정모드면 DB UPDATE만 하고 신규 정보면 INSERT한다.
-                    if (intentUserName == null || intentUserName.isEmpty()) {
+                || name.equals(getResources().getString(R.string.et_myProfile_name))||
+                        birthDate.equals(getResources().getString(R.string.tv_myProfile_birthDate)) ||
+                        weight.equals(getResources().getString(R.string.tv_myProfile_weight)) ||
+                        purpose.equals(getResources().getString(R.string.tv_myProfile_purpose))){
 
-                        if (myProfile_dbHelper.DBselect(name) != null){
-                            Toast.makeText(context, "중복된 사용자명입니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "정보를 모두 입력해 주세요.", Toast.LENGTH_SHORT).show();
+                }else {
+                    // 이용 목적이 '감염'이고 감염병 선택을 하지 않았다면 감염 병을 선택해달라는 문구를 띄운다.
+                    if (purpose.equals("감염") &&
+                            infection.equals(context.getResources().getString(R.string.tv_myProfile_infection))){
+
+                        Toast.makeText(context, "감염 병을 선택해주세요.", Toast.LENGTH_SHORT).show();
 
                     }else {
-                            // 알람 설정 할때 저장할 데이터 미리 생성
-                            PreferenceManager.PREFERENCES_NAME = name + "Setting";
-                            PreferenceManager.setBoolean(context, "alarm_high_temperature_boolean", false);
-                            PreferenceManager.setString(context, "alarm_high_temperature_value", String.valueOf(37.3));
-                            PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean", false);
-                            PreferenceManager.setString(context, "alarm_low_temperature_value", String.valueOf(37.3));
+                        // 수정모드면 DB UPDATE만 하고 신규 정보면 INSERT한다.
+                        if (!isModify()) { // 신규
 
+                            if (myProfile_dbHelper.DBselect(name) != null){
+                                Toast.makeText(context, "중복된 사용자명입니다.", Toast.LENGTH_SHORT).show();
+
+                            }else {
+                                // 알람 설정 할때 저장할 데이터 미리 생성
+                                PreferenceManager.PREFERENCES_NAME = name + "Setting";
+                                PreferenceManager.setBoolean(context, "alarm_high_temperature_boolean", false);
+                                PreferenceManager.setString(context, "alarm_high_temperature_value", String.valueOf(37.3));
+                                PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean", false);
+                                PreferenceManager.setString(context, "alarm_low_temperature_value", String.valueOf(37.3));
+
+                                // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
+                                PreferenceManager.PREFERENCES_NAME = "login_user";
+                                PreferenceManager.setString(context, "userName", name);
+                                PreferenceManager.setString(context, "userPurpose", purpose);
+                                PreferenceManager.setString(context, "userInfection", infection);
+
+                                MyProfile myProfile = new MyProfile(name, gender, birthDate, weight, purpose, infection);
+                                myProfile_dbHelper.DBinsert(myProfile);
+                                finish();
+                            }
+                        }else { // 수정
                             // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
                             PreferenceManager.PREFERENCES_NAME = "login_user";
                             PreferenceManager.setString(context, "userName", name);
                             PreferenceManager.setString(context, "userPurpose", purpose);
+                            PreferenceManager.setString(context, "userInfection", infection);
 
-                            MyProfile myProfile = new MyProfile(name, gender, birthDate, weight, purpose);
-                            myProfile_dbHelper.DBinsert(myProfile);
+                            MyProfile myProfile = new MyProfile(name, gender, birthDate, weight, purpose, infection);
+                            myProfile_dbHelper.DBupdate(myProfile);
                             finish();
                         }
-                    }else {
-                        // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
-                        PreferenceManager.PREFERENCES_NAME = "login_user";
-                        PreferenceManager.setString(context, "userName", name);
-                        PreferenceManager.setString(context, "userPurpose", purpose);
-
-                        MyProfile myProfile = new MyProfile(name, gender, birthDate, weight, purpose);
-                        myProfile_dbHelper.DBupdate(myProfile);
-                        finish();
                     }
-
                 }
                 break;
         }

@@ -22,4 +22,14 @@ public class TimeCalculationManager {
         String formatDate = mFormat.format(mReDate);
         return Long.parseLong(formatDate);
     }
+
+    /** 오늘 날짜 구하기 **/
+    public String getToday(){
+        long currentTimeMillis = System.currentTimeMillis(); // 현재 시간을 밀리초 단위로 가져옴
+
+        Date mReDate = new Date(currentTimeMillis);
+        SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String formatDate = mFormat.format(mReDate);
+        return formatDate;
+    }
 }

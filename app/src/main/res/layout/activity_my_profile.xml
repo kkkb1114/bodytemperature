@@ -15,7 +15,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <EditText
@@ -25,7 +25,7 @@
                 android:layout_margin="30dp"
                 android:background="@drawable/rounded_corners_white"
                 android:gravity="center"
-                android:hint="이름을 입력하세요"
+                android:hint="@string/et_myProfile_name"
                 android:padding="20dp"
                 android:textColor="@color/black"
                 android:textColorHint="@color/editText_hint"
@@ -69,7 +69,7 @@
                 android:gravity="center"
                 android:layout_margin="20dp"
                 android:padding="20dp"
-                android:text="생년월일"
+                android:text="@string/tv_myProfile_birthDate"
                 android:textSize="20sp"
                 android:textColor="@color/editText_hint"
                 android:background="@drawable/rounded_corners_white"/>
@@ -81,7 +81,7 @@
                 android:gravity="center"
                 android:layout_margin="20dp"
                 android:padding="20dp"
-                android:text="몸무게"
+                android:text="@string/tv_myProfile_weight"
                 android:textSize="20sp"
                 android:textColor="@color/editText_hint"
                 android:background="@drawable/rounded_corners_white"/>
@@ -93,7 +93,20 @@
                 android:gravity="center"
                 android:layout_margin="20dp"
                 android:padding="20dp"
-                android:text="이용 목적 선택"
+                android:text="@string/tv_myProfile_purpose"
+                android:textSize="20sp"
+                android:textColor="@color/editText_hint"
+                android:background="@drawable/rounded_corners_white"/>
+
+            <TextView
+                android:id="@+id/tv_infection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_margin="20dp"
+                android:visibility="gone"
+                android:padding="20dp"
+                android:text="@string/tv_myProfile_infection"
                 android:textSize="20sp"
                 android:textColor="@color/editText_hint"
                 android:background="@drawable/rounded_corners_white"/>

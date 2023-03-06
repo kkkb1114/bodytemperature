@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.e("onResume", String.valueOf(Bodytemp_DBHelper.readableDataBase == null));
         setUser();
         getAlarmCriteria();
         setAlarmCancle(); // 어차피 알람은 설정된 체온이 되면 울리기에 알람이 울렸을때 메인이 켜질때마다 끌 예정 (음악 알람일때를 대비해서 설정함)
