@@ -87,9 +87,16 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 startActivity(userListIntent);
                 break;
             case R.id.tv_setting_alarm:
-                Intent alarmIntent = new Intent(view.getContext(), AlarmActivity.class);
-                startActivity(alarmIntent);
-                break;
+                PreferenceManager.PREFERENCES_NAME = "login_user";
+                String selectUser = PreferenceManager.getString(getContext(), "userName");
+                Log.e("5555555555555", selectUser);
+                if (selectUser == null || selectUser.trim().isEmpty()){
+                    Toast.makeText(getContext(), "사용자 등록을 먼저 진행해 주시기 바랍니다.", Toast.LENGTH_SHORT).show();
+                }else {
+                    Intent alarmIntent = new Intent(view.getContext(), AlarmActivity.class);
+                    startActivity(alarmIntent);
+                    break;
+                }
             case R.id.tv_setting_select_user:
                 if (isSelectUser){
                     Log.e("tv_setting_select_user", tv_setting_select_user.getText().toString());

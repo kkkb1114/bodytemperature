@@ -66,13 +66,19 @@ public class MainActivity extends AppCompatActivity {
     // 알람 관련
     AlarmManager alarmManager_high_tempreture;
     AlarmManager alarmManager_low_tempreture;
+    AlarmManager alarmManager_inflammation_tempreture;
     PendingIntent pendingIntent;
     public static PowerManager.WakeLock wakeLock;
     // 알람 설정 쉐어드 값들
+    // 감염
     String alarm_high_temperature_str; // 고온 알람 기준 값
     String alarm_low_temperature_str; // 저온 알람 기준 값
     boolean alarm_high_temperature_boolean; // 고온 알람 on / off
     boolean alarm_low_temperature_boolean; // 저온 알람 on / off
+    // 염증
+    String alarm_Inflammation_str;
+    boolean alarm_Inflammation_boolean;
+    // 공통
     boolean alarm_sound_temperature_boolean; // 사운드 알람 on / off
     TimeCalculationManager timeCalculationManager;
     SharedPreferences preferences;
@@ -90,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         // 알람매니저 설정
         alarmManager_high_tempreture = (AlarmManager) getSystemService(ALARM_SERVICE);
         alarmManager_low_tempreture = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager_inflammation_tempreture = (AlarmManager) getSystemService(ALARM_SERVICE);
         // MediaPlayer 객체 생성
         //mediaPlayer = MediaPlayer.create(this, R.raw.ouu);
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -163,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         setBottomNavationClick();
     }
 
-    /** 바텀 네비게이션 클릭 이벤트 **/F
+    /** 바텀 네비게이션 클릭 이벤트 **/
     public void setBottomNavationClick(){
         navigationBarView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -228,8 +235,7 @@ public class MainActivity extends AppCompatActivity {
                         flag = Float.valueOf(s);
                     else
                         s=flag.toString();
-                }
-                else
+                } else
                     s = Generator.ovulation();
 
 
@@ -265,10 +271,14 @@ public class MainActivity extends AppCompatActivity {
         String select_user_name = PreferenceManager.getString(context, "userName");
         if (select_user_name != null) {
             PreferenceManager.PREFERENCES_NAME = select_user_name + "Setting";
+            // 감염
             alarm_high_temperature_str = PreferenceManager.getString(context, "alarm_high_temperature_value");
             alarm_low_temperature_str = PreferenceManager.getString(context, "alarm_low_temperature_value");
             alarm_high_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_high_temperature_boolean");
             alarm_low_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_low_temperature_boolean");
+            // 염증
+            alarm_Inflammation_str = PreferenceManager.getString(context, "alarm_inflammation_temperature_value");
+            alarm_Inflammation_boolean = PreferenceManager.getBoolean(context, "alarm_inflammation_temperature_boolean");
             alarm_sound_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_sound_temperature_boolean");
         }
     }
@@ -277,43 +287,54 @@ public class MainActivity extends AppCompatActivity {
     public void setNotification(String s){
         PreferenceManager.PREFERENCES_NAME = "login_user";
         String select_user_name = PreferenceManager.getString(context, "userName");
+        String userPurpose = PreferenceManager.getString(context, "userPurpose");
 
         if (select_user_name != null){
             PreferenceManager.PREFERENCES_NAME = select_user_name+"Setting";
 
-            // 고온 노티 체크
-            if (alarm_high_temperature_boolean){
-                checkNotificationTemperature(alarm_sound_temperature_boolean, s, "high");
-            }
+            Log.e("MainActivity444444444", userPurpose);
 
-            // 저온 노티 체크
-            if (alarm_low_temperature_boolean){
-                checkNotificationTemperature(alarm_sound_temperature_boolean, s, "low");
+            switch (userPurpose){
+                case "감염":
+                    // 고온 노티 체크
+                    if (alarm_high_temperature_boolean){
+                        checkNotificationTemperature(alarm_sound_temperature_boolean, s, "high");
+                    }
+                    // 저온 노티 체크
+                    if (alarm_low_temperature_boolean){
+                        checkNotificationTemperature(alarm_sound_temperature_boolean, s, "low");
+                    }
+                    break;
+                case "염증":
+                    Log.e("MainActivity555555555", String.valueOf(alarm_Inflammation_boolean));
+                    if (alarm_Inflammation_boolean){
+                        checkNotificationTemperature(alarm_sound_temperature_boolean, s, "Inflammation");
+                    }
+                    break;
+                case "배란":
+
+                    break;
             }
         }
     }
 
     /** 체온 노티 체크 **/
-    public void checkNotificationTemperature(boolean isSoundAlarm, String s, String high_or_low){
+    public void checkNotificationTemperature(boolean isSoundAlarm, String s, String alarmType) {
         long requestID = System.currentTimeMillis();
         long now = getFormatTimeNow(requestID);
 
-        if (high_or_low.equals("high")){ // 고온 알람
+        if (alarmType.equals("high")) { // 고온 알람
 
             long alarm_high_temperature_term = PreferenceManager.getLong(context, "alarm_high_temperature_term_value");
 
-            Log.e("checkNotificationTemperature", "111111");
-            Log.e("checkNotificationTemperature", String.valueOf(alarm_high_temperature_term));
-            Log.e("checkNotificationTemperature", String.valueOf(now));
-
             // 현재시간이 알람 텀 시간보다 클 경우 로직 동작
-            if (now >= alarm_high_temperature_term){
+            if (now >= alarm_high_temperature_term) {
 
                 Log.e("checkNotificationTemperature", "222222");
                 double temperature_get = Double.parseDouble(alarm_high_temperature_str);
                 double temperature_s = Double.parseDouble(s);
 
-                if (temperature_get <= temperature_s){
+                if (temperature_get <= temperature_s) {
 
                     long termTime = timeCalculationManager.getFormatTimeNow(PreferenceManager.getLong(context, "alarm_temperature_term"));
                     PreferenceManager.setLong(context, "alarm_high_temperature_term_value", termTime);
@@ -331,20 +352,16 @@ public class MainActivity extends AppCompatActivity {
                     alarmManager_high_tempreture.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
                 }
             }
-        }else if(high_or_low.equals("low")){ // 저온 알람
+        } else if (alarmType.equals("low")) { // 저온 알람
 
             long alarm_low_temperature_term = PreferenceManager.getLong(context, "alarm_low_temperature_term_value");
 
-            Log.e("checkNotificationTemperature2222", "111111");
-            Log.e("checkNotificationTemperature2222", String.valueOf(alarm_low_temperature_term));
-            Log.e("checkNotificationTemperature2222", String.valueOf(now));
-
-            if (now >= alarm_low_temperature_term){
+            if (now >= alarm_low_temperature_term) {
 
                 double temperature_get = Double.parseDouble(alarm_low_temperature_str);
                 double temperature_s = Double.parseDouble(s);
 
-                if (temperature_get >= temperature_s){
+                if (temperature_get >= temperature_s) {
 
                     long nowNext = timeCalculationManager.getFormatTimeNow(PreferenceManager.getLong(context, "alarm_temperature_term"));
                     PreferenceManager.setLong(context, "alarm_low_temperature_term_value", nowNext);
@@ -361,17 +378,54 @@ public class MainActivity extends AppCompatActivity {
                     alarmManager_low_tempreture.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
                 }
             }
+        } else if (alarmType.equals("Inflammation")) { // 염증
+
+            Log.e("MainActivity1111111111", "염증");
+            long alarm_inflammation_term = PreferenceManager.getLong(context, "alarm_relieve_inflammation_term_value");
+
+            if (now >= alarm_inflammation_term) {
+
+            double temperature_get = Double.parseDouble(alarm_Inflammation_str);
+            double temperature_s = Double.parseDouble(s);
+
+            if (temperature_get >= temperature_s) {
+
+                    Log.e("MainActivity22222222", "완화");
+
+                    long nowNext = timeCalculationManager.getFormatTimeNow(PreferenceManager.getLong(context, "alarm_temperature_term"));
+                    PreferenceManager.setLong(context, "alarm_relieve_inflammation_term_value", nowNext);
+
+                    Intent intent = new Intent(context, AlarmReceiver.class);
+                    intent.putExtra("now_temperature", s);
+                    intent.putExtra("alarm_temperature", alarm_Inflammation_str);
+                    intent.putExtra("alarm_mode", 4); // 4: 염증 부위 체온 저하로 인한 완화
+                    intent.putExtra("isSoundAlarm", isSoundAlarm);
+
+                    Log.e("MainActivity22222222", alarm_Inflammation_str);
+
+                    pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), (int) requestID, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    alarmManager_inflammation_tempreture.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
+                }
+            }
         }
     }
 
     /** 알람 종료 **/
     // todo mediaPlayer, wakeLock도 꺼야함.
     public void setAlarmCancle(){
+        // 감기 (고온)
         if (alarmManager_high_tempreture != null && pendingIntent != null){
             alarmManager_high_tempreture.cancel(pendingIntent);
         }
+        // 감기 (저온)
         if (alarmManager_low_tempreture != null && pendingIntent != null){
             alarmManager_low_tempreture.cancel(pendingIntent);
+        }
+        // 염증 (완화)
+        if (alarmManager_inflammation_tempreture != null && pendingIntent != null){
+            alarmManager_inflammation_tempreture.cancel(pendingIntent);
         }
 
         // 알람 서비스 동작 중인지 확인 후 중지

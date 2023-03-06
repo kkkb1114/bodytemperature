@@ -24,7 +24,7 @@ public class NotificationManager_Tool {
         this.context = context;
     }
 
-    // 고온 Notification 설정
+    /** 고온 Notification 설정 **/
     public void setNotification_HighTemperature(String now_temperature, String high_temperature){
 
         // 채널을 생성 및 전달해 줄수 있는 NotificationManager 생성
@@ -68,7 +68,7 @@ public class NotificationManager_Tool {
         }
     }
 
-    // 저온 Notification 설정
+    /** 저온 Notification 설정 **/
     public void setNotification_LowTemperature(String now_temperature, String low_temperature){
         // 채널을 생성 및 전달해 줄수 있는 NotificationManager 생성
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -150,6 +150,72 @@ public class NotificationManager_Tool {
 
         if (notificationManager != null){
             notificationManager.notify(123456, builder.build());
+        }
+    }
+
+    /** 염증 악화, 완화 알람 세팅 **/
+    public void setInflammationAlarm(int inflammationAlarmMode){
+        // 채널을 생성 전달할 NotificationManager 생성x
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        // 전달할 intent 작성
+        Intent notificationIntent = new Intent(context, MainActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder;
+
+        /*
+         * 투약 노티 생성
+         * 1. inflammationAlarmMode = 3: 염증 부위 악화, 4: 염증 체온 저하로 인한 완화
+         */
+        if (inflammationAlarmMode == 3){
+            builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_TEMPERATURE_Administration)
+                    .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.pill))
+                    .setContentTitle("염증 부위 체온 '상승' 알림")
+                    .setContentText("염증 부위의 체온이 지속적으로 상승하고 있습니다.")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true);
+        }else if (inflammationAlarmMode == 4){
+            builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_TEMPERATURE_Administration)
+                    .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.pill))
+                    .setContentTitle("염증 부위 체온 '저하' 알림")
+                    .setContentText("염증 부위의 체온이 저하 되었습니다.")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true);
+        }else {
+            builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_TEMPERATURE_Administration)
+                    .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.pill))
+                    .setContentTitle("염증 부위 체온 '저하' 알림")
+                    .setContentText("염증 부위의 체온이 저하 되었습니다.")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true);
+        }
+
+
+        // SDK OREO API 26이상부터 채널 필요
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            builder.setSmallIcon(R.drawable.pill);
+            CharSequence channelName = "channel_notification_administration";
+            String description = "오레오 이상";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID_TEMPERATURE_Administration,
+                    channelName, importance);
+            notificationChannel.setDescription(description);
+
+            // 노티피케이션 채널 시스템에 등록
+            if (notificationManager != null){
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
+        }else {
+            builder.setSmallIcon(R.mipmap.ic_launcher_round); // Oreo 이하에서 mipmap 사용하지 않으면 Couldn't create icon: StatusBarIcon 에러남
+        }
+
+        if (notificationManager != null){
+            notificationManager.notify(1234567, builder.build());
         }
     }
 }

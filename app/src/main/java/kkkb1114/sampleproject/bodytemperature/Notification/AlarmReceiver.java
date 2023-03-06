@@ -38,12 +38,16 @@ public class AlarmReceiver extends BroadcastReceiver {
         isSoundAlarm = intent.getBooleanExtra("isSoundAlarm", false);
 
         // 어떤 알람인지 구분
-        if (alarm_mode == 0){
+        if (alarm_mode == 0){ // 감기/독감 (고온 알림)
             startNotification_HighTemperature(context);
-        }else if (alarm_mode == 1){
+        }else if (alarm_mode == 1){ // 감기/독감 (저온 알림)
             startNotification_LowTemperature(context);
-        }else if (alarm_mode == 2){ // 투약 알람은 사운드 안울림
+        }else if (alarm_mode == 2){ // 투약 알림 (투약 알람은 사운드 안울림)
             startNotification_Administration(context);
+        }else if (alarm_mode == 3){ // 염증 부위 체온 상승 알림
+            startNotification_inflammation(context, alarm_mode);
+        }else if (alarm_mode == 4){ // 염증 부위 체온 저하로 인한 완화 알림
+            startNotification_inflammation(context, alarm_mode);
         }
 
         // 알람 사운드 추가 체크를 했어야 사운드 실행
@@ -78,6 +82,18 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         //todo 투약 알람 쉐어드 만들어야함.
         //PreferenceManager.setBoolean(context, "alarm_low_temperature_boolean", false);
+    }
+
+    /** 염증 Notification 설정 **/
+    public void startNotification_inflammation(Context context, int inflammationAlarmMode){
+        temperatureNotification = new NotificationManager_Tool(context);
+        temperatureNotification.setInflammationAlarm(inflammationAlarmMode);
+
+        // 염증 부위 체온 '저하'알람일 경우만 반복 알람 설정을 추가해준다.
+        if (inflammationAlarmMode == 4){
+            long now = timeCalculationManager.getFormatTimeNow(PreferenceManager.getLong(context, "alarm_temperature_term"));
+            PreferenceManager.setLong(context, "alarm_relieve_inflammation_term_value", now);
+        }
     }
 
     /** 사운드 시작 **/
