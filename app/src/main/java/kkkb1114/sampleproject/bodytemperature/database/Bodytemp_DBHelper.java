@@ -34,8 +34,10 @@ public class Bodytemp_DBHelper extends SQLiteOpenHelper {
 
         db.execSQL("CREATE TABLE IF NOT EXISTS TIMELINEDATA (" +
                 "name TEXT, " +
-                "Value TEXT, " +
-                "TimelineDateTime DATETIME PRIMARY KEY);");
+                "Value TEXT , " +
+                "TimelineDateTime DATETIME PRIMARY KEY , " +
+                "Source TEXT, " +
+                "amount FLOAT);");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS OVULDATA (" +
                 "name TEXT PRIMARY KEY, " +

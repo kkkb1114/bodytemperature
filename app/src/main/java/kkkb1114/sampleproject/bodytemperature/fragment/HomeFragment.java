@@ -113,9 +113,10 @@ public class HomeFragment extends Fragment {
                                 long now =System.currentTimeMillis();
                                 Date date = new Date(now);
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-
+                                float amount=0f;
+                                String source = " ";
                                 sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
-                                sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('"+username+"', '"+value+"', '"+ dateFormat.format(date) +"');");
+                                sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('"+username+"', '"+value+"', '"+ dateFormat.format(date) +"', '"+source+"', '"+amount+"');");
 
                                 dialog.dismiss();
                             }
