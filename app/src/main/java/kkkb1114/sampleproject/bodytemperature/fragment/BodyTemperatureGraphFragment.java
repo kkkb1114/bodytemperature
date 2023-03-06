@@ -133,7 +133,7 @@ public class BodyTemperatureGraphFragment extends Fragment {
 
 
         String userpurpose = select_user.getString("userPurpose"," ");
-        if(userpurpose.equals("감염"))
+        if(userpurpose.equals("감염") ||userpurpose.equals("염증"))
         {
             tv_graphdate.setVisibility(View.VISIBLE);
             rv_timeline.setVisibility(View.VISIBLE);
