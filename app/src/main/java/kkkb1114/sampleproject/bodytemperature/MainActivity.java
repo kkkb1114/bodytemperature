@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     Toolbar toolbar;
     Context context;
-
+    Float flag = 0.0f;
     // 프래그먼트
     HomeFragment homeFragment;
     BodyTemperatureGraphFragment bodyTemperatureGraphFragment;
@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     public static Bodytemp_DBHelper bodytemp_dbHelper;
     SQLiteDatabase sqlDB;
     String username;
+    String purpose;
     Cursor cursor;
 
     // 알람 관련
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     boolean alarm_low_temperature_boolean; // 저온 알람 on / off
     boolean alarm_sound_temperature_boolean; // 사운드 알람 on / off
     TimeCalculationManager timeCalculationManager;
-
+    SharedPreferences preferences;
     String tempDateTime2 = "";
 
     @Override
@@ -95,6 +96,11 @@ public class MainActivity extends AppCompatActivity {
         wakeLock = powerManager.newWakeLock(
                 PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "alarm_temperature:Tag");
 
+        preferences = getSharedPreferences("DayMax", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putFloat("ibuprofen", 1200);
+        editor.putFloat("acetaminophen",4000);
+        editor.commit();
         //날짜 측정
         setUser();
         initView();
@@ -157,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
         setBottomNavationClick();
     }
 
-    /** 바텀 네비게이션 클릭 이벤트 **/
+    /** 바텀 네비게이션 클릭 이벤트 **/F
     public void setBottomNavationClick(){
         navigationBarView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
@@ -209,8 +215,24 @@ public class MainActivity extends AppCompatActivity {
                     tempDateTime2 = tempDateTime;
                 }
 
+                String s="";
+
                 // 3초마다 난수 받아옴
-                String s = Generator.generate();
+                if(purpose.equals("감염")) {
+                     s = Generator.infection();
+                }
+                else if(purpose.equals("염증")) {
+                    s = Generator.inflammation();
+
+                    if(Float.valueOf(s)>=flag)
+                        flag = Float.valueOf(s);
+                    else
+                        s=flag.toString();
+                }
+                else
+                    s = Generator.ovulation();
+
+
                 homeFragment.setTextThermometerView(Float.valueOf(s));
                 //thermometer.setValueAndStartAnim(Float.valueOf(s));
                 homeFragment.setTextTvTemperature(s);
@@ -229,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
     {
         select_user = context.getSharedPreferences("login_user",MODE_PRIVATE);
         username = select_user.getString("userName","선택된 사용자 없음");
-
+        purpose = select_user.getString("userPurpose","contaminate");
 
         if(username.equals("선택된 사용자 없음"))
         {

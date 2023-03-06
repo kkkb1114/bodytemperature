@@ -2,7 +2,6 @@ package kkkb1114.sampleproject.bodytemperature.pill;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,9 +23,12 @@ public class PillAdapter extends RecyclerView.Adapter<PillAdapter.ViewHolder> {
     Context context;
     HashMap<Integer,String> map = new HashMap<>();
 
-    int selectedPosition = 0;
+    static int selectedPosition = 0;
 
-
+    public static int getSelected()
+    {
+        return selectedPosition;
+    }
     private List<ViewHolder> mViewHolderList = new ArrayList<>();
 
 
@@ -49,8 +51,6 @@ public class PillAdapter extends RecyclerView.Adapter<PillAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Log.d("selected", String.valueOf(selectedPosition));
-        Log.d("position", String.valueOf(holder.getAbsoluteAdapterPosition()));
         if(String.valueOf(holder.getAbsoluteAdapterPosition()).equals(String.valueOf(selectedPosition))){
             holder.pill_layout.setBackgroundColor(context.getResources().getColor(R.color.user_list_select_user,null));
         }
@@ -114,5 +114,10 @@ public class PillAdapter extends RecyclerView.Adapter<PillAdapter.ViewHolder> {
             }
         }
 
+
+
+
     }
+
+
 }
