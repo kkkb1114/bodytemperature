@@ -117,71 +117,79 @@ public class PillActivity extends AppCompatActivity{
                                 EditText edt_pill = (EditText) linear.findViewById(R.id.edt_pill);
                                 TextView  pill_warning = (TextView) linear.findViewById(R.id.pill_warning);
                                 sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
-                                Float amount = Float.valueOf(edt_pill.getText().toString());
-                                String value = ad.get(PillAdapter.getSelected());
-                                String source= af.get(PillAdapter.getSelected());
+                                Float amount = 0f;
 
-
-                                long now =System.currentTimeMillis();
-                                Date date = new Date(now);
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-
-
-                                SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
-                                Float total=0f;
-                                Float total2=0f;
-                                if(source.contains("buprofen")){
-                                    String ibu="ibuprofen";
-                                    cursor = sqlDB.rawQuery("SELECT * FROM TIMELINEDATA WHERE name = '"+username+"' AND TimelineDateTime LIKE '"+dateFormat2.format(date)+"%' AND Source LIKE '%"+ibu+"%'; ", null);
-                                    while(cursor.moveToNext()) {
-                                        Log.d("name ",cursor.getString(1));
-                                        total+=cursor.getFloat(4);
-                                    }
-
-
-                                    if(total+amount>imax){
-                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                        imm.hideSoftInputFromWindow(edt_pill.getWindowToken(), 0);
-                                        Toast toast = Toast. makeText(context, "이부프로펜 1일 최대량을 넘었습니다. 현재("+total+")", Toast.LENGTH_LONG);
-                                        toast.show();
-
-                                    }
-
-                                    else {
-                                        sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('"+username+"', '"+value+"', '"+ dateFormat.format(date) +"', '"+ source +"', '"+amount+"');");
-                                        Log.d("pass ","pass");
-                                        pill_warning.setVisibility(View.INVISIBLE);
-                                        dialog.dismiss();
-                                        finish();
-                                    }
-
+                                try{
+                                    amount = Float.valueOf(edt_pill.getText().toString());
                                 }
-                                else if(source.contains("Acetaminophen")){
-                                    String ibu="acetaminophen";
-                                    cursor = sqlDB.rawQuery("SELECT * FROM TIMELINEDATA WHERE name = '"+username+"' AND TimelineDateTime LIKE '"+dateFormat2.format(date)+"%' AND Source LIKE '%"+ibu+"%'; ", null);
-                                    while(cursor.moveToNext()) {
-                                        Log.d("name ",cursor.getString(1));
-                                        total2+=cursor.getFloat(4);
-                                    }
-
-                                    if(total2+amount>amax){
-                                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                        imm.hideSoftInputFromWindow(edt_pill.getWindowToken(), 0);
-                                        Toast toast = Toast. makeText(context, "아세트아미노펜 1일 최대량을 넘었습니다. 현재("+total2+")", Toast.LENGTH_LONG);
-                                        toast.show();
-
-                                    }
-
-                                    else {
-                                        sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('"+username+"', '"+value+"', '"+ dateFormat.format(date) +"', '"+ source +"', '"+amount+"');");
-                                        Log.d("pass ","pass");
-                                        pill_warning.setVisibility(View.INVISIBLE);
-                                        dialog.dismiss();
-                                        finish();
-                                    }
+                                catch (NumberFormatException e){
+                                    Toast toast = Toast. makeText(context, "숫자로만 표기하여 주십시오.", Toast.LENGTH_LONG);
+                                    toast.show();
                                 }
 
 
+
+                                if(amount != 0) {
+                                    String value = ad.get(PillAdapter.getSelected());
+                                    String source = af.get(PillAdapter.getSelected());
+
+
+                                    long now = System.currentTimeMillis();
+                                    Date date = new Date(now);
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+
+                                    SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+                                    Float total = 0f;
+                                    Float total2 = 0f;
+
+                                    if (source.contains("buprofen")) {
+                                        String ibu = "ibuprofen";
+                                        cursor = sqlDB.rawQuery("SELECT * FROM TIMELINEDATA WHERE name = '" + username + "' AND TimelineDateTime LIKE '" + dateFormat2.format(date) + "%' AND Source LIKE '%" + ibu + "%'; ", null);
+                                        while (cursor.moveToNext()) {
+                                            Log.d("name ", cursor.getString(1));
+                                            total += cursor.getFloat(4);
+                                        }
+
+
+                                        if (total + amount > imax) {
+                                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            imm.hideSoftInputFromWindow(edt_pill.getWindowToken(), 0);
+                                            Toast toast = Toast.makeText(context, "이부프로펜 1일 최대량을 넘었습니다. 현재(" + total + ")", Toast.LENGTH_LONG);
+                                            toast.show();
+
+                                        } else {
+                                            sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('" + username + "', '" + value + "', '" + dateFormat.format(date) + "', '" + source + "', '" + amount + "');");
+                                            Log.d("pass ", "pass");
+                                            pill_warning.setVisibility(View.INVISIBLE);
+                                            dialog.dismiss();
+                                            finish();
+                                        }
+
+                                    } else if (source.contains("Acetaminophen")) {
+                                        String ibu = "acetaminophen";
+                                        cursor = sqlDB.rawQuery("SELECT * FROM TIMELINEDATA WHERE name = '" + username + "' AND TimelineDateTime LIKE '" + dateFormat2.format(date) + "%' AND Source LIKE '%" + ibu + "%'; ", null);
+                                        while (cursor.moveToNext()) {
+                                            Log.d("name ", cursor.getString(1));
+                                            total2 += cursor.getFloat(4);
+                                        }
+
+                                        if (total2 + amount > amax) {
+                                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                            imm.hideSoftInputFromWindow(edt_pill.getWindowToken(), 0);
+                                            Toast toast = Toast.makeText(context, "아세트아미노펜 1일 최대량을 넘었습니다. 현재(" + total2 + ")", Toast.LENGTH_LONG);
+                                            toast.show();
+
+                                        } else {
+                                            sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('" + username + "', '" + value + "', '" + dateFormat.format(date) + "', '" + source + "', '" + amount + "');");
+                                            Log.d("pass ", "pass");
+                                            pill_warning.setVisibility(View.INVISIBLE);
+                                            dialog.dismiss();
+                                            finish();
+                                        }
+                                    }
+
+                                }
                             }
                         })
                         .setNegativeButton("취소", new DialogInterface.OnClickListener() {
