@@ -11,6 +11,7 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
+import kkkb1114.sampleproject.bodytemperature.MainActivity;
 import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.SplashActivity;
 
@@ -122,13 +123,26 @@ public class NotificationManager_Tool {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // 투약 노티
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_TEMPERATURE_Administration)
-                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.pill))
-                .setContentTitle("투약 알림")
-                .setContentText("투약한지 30분이 경과 되었습니다.")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true);
+        String tempData = MainActivity.getTempData(); // MainActivity에서 현재 체온을 받아온다.
+        NotificationCompat.Builder builder;
+        if (tempData.trim().isEmpty()){
+            builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_TEMPERATURE_Administration)
+                    .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.pill))
+                    .setContentTitle("투약 알림")
+                    .setContentText("투약한지 30분이 경과 되었습니다.")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true);
+        }else {
+            builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_TEMPERATURE_Administration)
+                    .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.pill))
+                    .setContentTitle("투약 알림 (현재 체온: "+tempData+"°C)")
+                    .setContentText("투약한지 30분이 경과 되었습니다.")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true);
+        }
+
 
         // SDK OREO API 26이상부터 채널 필요
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
@@ -155,7 +169,7 @@ public class NotificationManager_Tool {
     }
 
     /** 염증 악화, 완화 알람 세팅 **/
-    public void setInflammationAlarm(int inflammationAlarmMode, String now_temperature, String low_temperature){
+    public void setInflammationAlarm(int inflammationAlarmMode, String now_temperature, String before_temperature, String low_temperature){
         Log.e("알람333333333", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         // 채널을 생성 전달할 NotificationManager 생성x
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -171,10 +185,11 @@ public class NotificationManager_Tool {
          * 1. inflammationAlarmMode = 3: 염증 부위 악화, 4: 염증 체온 저하로 인한 완화
          */
         if (inflammationAlarmMode == 3){
+            String calculatedTemp = String.format("%.2f",(Float.parseFloat(now_temperature) - Float.parseFloat(before_temperature)));
             builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_TEMPERATURE_Administration)
                     .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.pill))
                     .setContentTitle("염증 알림 (현재 체온: "+now_temperature+"°C)")
-                    .setContentText("염증 부위의 체온이 지속적으로 상승하고 있습니다.")
+                    .setContentText("30분간 체온이 "+ calculatedTemp +"°C 상승 하였습니다.")
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true);

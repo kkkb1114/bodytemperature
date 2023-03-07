@@ -16,6 +16,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     // 노티 변수
     NotificationManager_Tool temperatureNotification;
     String now_temperature; // 현제 체온
+    String before_temperature; // 전 체온 (현재 전 체온은 염증에서만 측정이 된다)
     String alarm_temperature; // 알람 기준 체온
     int alarm_mode = 0; // 0: 고온, 1: 저온, 2: 투약 알람
     boolean isSoundAlarm = false; // 0: 고온, 1: 저온
@@ -34,6 +35,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         alarm_mode = intent.getIntExtra("alarm_mode", 0);
         now_temperature = intent.getStringExtra("now_temperature");
+        before_temperature = intent.getStringExtra("before_temperature");
         alarm_temperature = intent.getStringExtra("alarm_temperature");
         isSoundAlarm = intent.getBooleanExtra("isSoundAlarm", false);
 
@@ -87,7 +89,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     /** 염증 Notification 설정 **/
     public void startNotification_inflammation(Context context, int inflammationAlarmMode){
         temperatureNotification = new NotificationManager_Tool(context);
-        temperatureNotification.setInflammationAlarm(inflammationAlarmMode, now_temperature, alarm_temperature);
+        temperatureNotification.setInflammationAlarm(inflammationAlarmMode, now_temperature, before_temperature, alarm_temperature);
 
         // 염증 부위 체온 '저하'알람일 경우만 반복 알람 설정을 추가해준다.
         if (inflammationAlarmMode == 4){

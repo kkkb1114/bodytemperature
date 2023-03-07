@@ -86,8 +86,7 @@ public class MainActivity extends AppCompatActivity {
     String tempDateTime2 = "";
     String temp1;
     String temp2;
-
-
+    private static String tempData = ""; // 다른 클래스에서 사용되는 현재 체온은 static으로 선언한다.
 
     int cnt=0;
 
@@ -246,8 +245,9 @@ public class MainActivity extends AppCompatActivity {
                             if (Float.valueOf(temp2) - Float.valueOf(temp1) >= 0)
                                 // temp2: 현재 찍힌 체온, temp1: 5분 전에 찍힌 체온
                                 try {
-                                    Float data = Float.valueOf(temp2);
-                                    setAlarm_inflammation_elevated_bodyTemperature(String.format("%.2f",data));
+                                    Float nowTemp = Float.valueOf(temp2);
+                                    Float beforeTemp = Float.valueOf(temp1);
+                                    setAlarm_inflammation_elevated_bodyTemperature(String.format("%.2f",nowTemp), String.format("%.2f",beforeTemp));
                                     Log.e("알람", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                                     cnt = 0;
                                 } catch (Exception e) {
@@ -288,6 +288,7 @@ public class MainActivity extends AppCompatActivity {
                 tempStack.add(Double.valueOf(s));
 
                 //todo 여기서 알람 체크 하기
+                tempData = s; // 이건 static으로 현재 체온을 받아 다른 클래스에서 사용하기 위함이고 아래 tempData()메소드로 값을 받을 수 있다.
                 setNotification(s);
                 Log.d("------------", String.valueOf(tempStack.size()));
 
@@ -509,20 +510,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /** 염증 체온 상승 알람 추가 **/
-    public void setAlarm_inflammation_elevated_bodyTemperature(String s){
+    public void setAlarm_inflammation_elevated_bodyTemperature(String nowTemp, String beforeTemp){
         Log.e("알람2222222222222", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         // 체온 상승에 대한 체크는 스레드에서 하기에 그냥 바로 울리면 된다.
         int requestID = (int) System.currentTimeMillis();
 
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("alarm_mode", 3); // 0: 고온, 1: 저온
-        intent.putExtra("now_temperature", s);
+        intent.putExtra("now_temperature", nowTemp);
+        intent.putExtra("before_temperature", beforeTemp);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestID, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager alarmManager_administratione = (AlarmManager) context.getSystemService(ALARM_SERVICE);
         alarmManager_administratione.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
+    }
+
+    public static String getTempData(){
+        return tempData;
     }
 
     @Override
