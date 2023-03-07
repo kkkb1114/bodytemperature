@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
                     tempStack.clear();
                     long now =System.currentTimeMillis();
                     Date date = new Date(now);
-                    SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                    SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                     String tempDateTime = dateFormat1.format(date);
 
                     sqlDB = MainActivity.bodytemp_dbHelper.getWritableDatabase();

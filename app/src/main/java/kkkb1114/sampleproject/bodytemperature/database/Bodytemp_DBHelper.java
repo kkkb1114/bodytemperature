@@ -121,9 +121,9 @@ public class Bodytemp_DBHelper extends SQLiteOpenHelper {
 
     public void closeDBHelper(){
         Log.e("Bodytemp_DBHelper_closeDBHelper", "11111111111");
-        mInstance.close();
+        /*mInstance.close();
         writableDatabase.close();
-        readableDataBase.close();
+        readableDataBase.close();*/
         mInstance = null;
         writableDatabase = null;
         readableDataBase = null;

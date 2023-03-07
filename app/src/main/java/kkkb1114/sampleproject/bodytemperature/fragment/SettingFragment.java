@@ -25,6 +25,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     TextView tv_setting_alarm;
     TextView tv_setting_select_user;
 
+    String userPurpose = "";
     boolean isSelectUser = false;
 
     public SettingFragment() {
@@ -68,6 +69,13 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
             isSelectUser = false;
         }else {
             isSelectUser = true;
+            userPurpose = PreferenceManager.getString(getContext(), "userPurpose");
+            // 사용 목적이 '배란'이면 알람 클릭 막는다.
+            if (userPurpose.equals("배란")){
+                tv_setting_alarm.setEnabled(false);
+            }else {
+                tv_setting_alarm.setEnabled(true);
+            }
             tv_setting_select_user.setText(selectUser);
         }
     }
@@ -92,7 +100,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 Log.e("5555555555555", selectUser);
                 if (selectUser == null || selectUser.trim().isEmpty()){
                     Toast.makeText(getContext(), "사용자 등록을 먼저 진행해 주시기 바랍니다.", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     Intent alarmIntent = new Intent(view.getContext(), AlarmActivity.class);
                     startActivity(alarmIntent);
                     break;

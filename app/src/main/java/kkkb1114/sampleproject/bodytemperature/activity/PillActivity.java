@@ -32,9 +32,11 @@ import kkkb1114.sampleproject.bodytemperature.MainActivity;
 import kkkb1114.sampleproject.bodytemperature.Notification.AlarmReceiver;
 import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.pill.PillAdapter;
+import kkkb1114.sampleproject.bodytemperature.tools.TimeCalculationManager;
 
 public class PillActivity extends AppCompatActivity{
 
+    TimeCalculationManager timeCalculationManager;
     Context context;
     Button bt_pill_cancel, bt_pill_confirm, bt_pillSearch;
     EditText edt_pillSearch;
@@ -61,6 +63,7 @@ public class PillActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pill);
         context = this;
+        timeCalculationManager = new TimeCalculationManager();
 
         SharedPreferences select_user;
         select_user = context.getSharedPreferences("login_user",MODE_PRIVATE);
@@ -233,8 +236,12 @@ public class PillActivity extends AppCompatActivity{
 
     /** 투약 30분후 알람 추가 **/
     public void setAlarm_30minutes_after_administration(){
-        // 투약은 30분 후 알람이기에 1800000 더함.
-        int requestID = (int) System.currentTimeMillis()+1800000;
+        /*
+         * 투약은 30분 후 알람이기에 1800000 더함.
+         *  - 잠시 테스트를 위해 1분으로 함
+         */
+        //todo 투약 관리용 쉐어드 만들어야함.
+        int requestID = (int) (System.currentTimeMillis()+timeCalculationManager.one_MinutesMillis);
 
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("alarm_mode", 2); // 0: 고온, 1: 저온

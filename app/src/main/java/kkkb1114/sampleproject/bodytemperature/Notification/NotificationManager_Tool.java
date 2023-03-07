@@ -11,8 +11,8 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
-import kkkb1114.sampleproject.bodytemperature.MainActivity;
 import kkkb1114.sampleproject.bodytemperature.R;
+import kkkb1114.sampleproject.bodytemperature.SplashActivity;
 
 public class NotificationManager_Tool {
 
@@ -31,7 +31,7 @@ public class NotificationManager_Tool {
         // 채널을 생성 및 전달해 줄수 있는 NotificationManager 생성
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         // 이동하려는 액티비티를 작성해준다.
-        Intent notificationIntent = new Intent(context, MainActivity.class);
+        Intent notificationIntent = new Intent(context, SplashActivity.class);
         // 노티에 전달 값을 담는다.
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -74,7 +74,7 @@ public class NotificationManager_Tool {
         // 채널을 생성 및 전달해 줄수 있는 NotificationManager 생성
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         // 이동하려는 액티비티를 작성해준다.
-        Intent notificationIntent = new Intent(context, MainActivity.class);
+        Intent notificationIntent = new Intent(context, SplashActivity.class);
         // 노티에 전달 값을 담는다.
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -117,7 +117,7 @@ public class NotificationManager_Tool {
         // 채널을 생성 전달할 NotificationManager 생성x
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         // 전달할 intent 작성
-        Intent notificationIntent = new Intent(context, MainActivity.class);
+        Intent notificationIntent = new Intent(context, SplashActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -160,7 +160,7 @@ public class NotificationManager_Tool {
         // 채널을 생성 전달할 NotificationManager 생성x
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         // 전달할 intent 작성
-        Intent notificationIntent = new Intent(context, MainActivity.class);
+        Intent notificationIntent = new Intent(context, SplashActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
