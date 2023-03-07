@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="투여량(g) 입력"
+        android:text="투여량(mg) 입력"
         android:textColor="#2498F4"
         android:textSize="23dp" />
 
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="15"
-        android:hint="ex) 50g"
+        android:hint="ex) 50"
         android:inputType="textPersonName" />
 
     <TextView

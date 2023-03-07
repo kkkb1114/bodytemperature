@@ -25,7 +25,6 @@ public class Generator extends AppCompatActivity {
 
 
         double temp =  Math.random() * (max-min+1)+min-1;
-        Log.d("temp",String.valueOf(temp));
         String s = String.format("%.2f",temp);
         return s;
     }

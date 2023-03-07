@@ -83,6 +83,12 @@ public class MainActivity extends AppCompatActivity {
     TimeCalculationManager timeCalculationManager;
     SharedPreferences preferences;
     String tempDateTime2 = "";
+    String temp1;
+    String temp2;
+
+
+
+    int cnt=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -209,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
                     avg=cmp/20;
                     cmp=0.0;
                     tempStack.clear();
-
+                    cnt++;
                     long now =System.currentTimeMillis();
                     Date date = new Date(now);
                     SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd hh:mm");
@@ -228,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
                 if(purpose.equals("감염")) {
                      s = Generator.infection();
                 }
+
                 else if(purpose.equals("염증")) {
                     s = Generator.inflammation();
 
@@ -235,10 +242,12 @@ public class MainActivity extends AppCompatActivity {
                         flag = Float.valueOf(s);
                     else
                         s=flag.toString();
-                } else
+                }
+
+                else
                     s = Generator.ovulation();
 
-
+                Log.d("temp: " , s);
                 homeFragment.setTextThermometerView(Float.valueOf(s));
                 //thermometer.setValueAndStartAnim(Float.valueOf(s));
                 homeFragment.setTextTvTemperature(s);
@@ -249,6 +258,20 @@ public class MainActivity extends AppCompatActivity {
                 setNotification(s);
                 Log.d("------------", String.valueOf(tempStack.size()));
 
+                if(purpose.equals("염증")) {
+                    if(cnt == 0){
+                        temp1=s;
+                    }
+
+                    if (cnt == 5) {
+                        temp2=s;
+
+                        if(Float.valueOf(temp2)-Float.valueOf(temp1)>=0)
+                            Log.e("알람", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+                        cnt = 0;
+                    }
+                }
             }
         }).start();
     }
