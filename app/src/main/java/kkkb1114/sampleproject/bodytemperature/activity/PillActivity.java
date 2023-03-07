@@ -170,6 +170,9 @@ public class PillActivity extends AppCompatActivity{
                                             Log.d("pass ", "pass");
                                             setAlarm_30minutes_after_administration();
                                             pill_warning.setVisibility(View.INVISIBLE);
+
+                                            Toast toast = Toast.makeText(context, "투약기록이 저장되었습니다.", Toast.LENGTH_LONG);
+                                            toast.show();
                                             dialog.dismiss();
                                             finish();
                                         }
@@ -193,6 +196,8 @@ public class PillActivity extends AppCompatActivity{
                                             Log.d("pass ", "pass");
                                             setAlarm_30minutes_after_administration();
                                             pill_warning.setVisibility(View.INVISIBLE);
+                                            Toast toast = Toast.makeText(context, "투약기록이 저장되었습니다.", Toast.LENGTH_LONG);
+                                            toast.show();
                                             dialog.dismiss();
                                             finish();
                                         }
