@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -49,7 +50,9 @@ public class Bodytemp_DBHelper extends SQLiteOpenHelper {
     }
 
     public static Bodytemp_DBHelper getInstance(Context context, String name, SQLiteDatabase.CursorFactory factory, int version){
+        Log.e("Bodytemp_DBHelper_getInstance11111111", "11111111111");
         if (mInstance == null){
+            Log.e("Bodytemp_DBHelper_getInstance2222222", "22222222");
             mInstance = new Bodytemp_DBHelper(context, name, factory, version);
             writableDatabase = mInstance.getWritableDatabase();
             readableDataBase = mInstance.getReadableDatabase();
@@ -117,10 +120,12 @@ public class Bodytemp_DBHelper extends SQLiteOpenHelper {
 
 
     public void closeDBHelper(){
+        Log.e("Bodytemp_DBHelper_closeDBHelper", "11111111111");
         mInstance.close();
         writableDatabase.close();
         readableDataBase.close();
+        mInstance = null;
+        writableDatabase = null;
+        readableDataBase = null;
     }
-
-
 }

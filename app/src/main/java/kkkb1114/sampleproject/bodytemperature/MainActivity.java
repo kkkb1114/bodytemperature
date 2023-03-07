@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     Handler handler = new Handler();
     Stack<Double> tempStack = new Stack<>();
 
-   SharedPreferences select_user;
+    SharedPreferences select_user;
 
     //db
     public static Bodytemp_DBHelper bodytemp_dbHelper;
@@ -75,11 +75,12 @@ public class MainActivity extends AppCompatActivity {
     String alarm_low_temperature_str; // 저온 알람 기준 값
     boolean alarm_high_temperature_boolean; // 고온 알람 on / off
     boolean alarm_low_temperature_boolean; // 저온 알람 on / off
+    boolean alarm_sound_temperature_boolean; // 사운드 알람 on / off
     // 염증
     String alarm_Inflammation_str;
     boolean alarm_Inflammation_boolean;
-    // 공통
-    boolean alarm_sound_temperature_boolean; // 사운드 알람 on / off
+    boolean alarm_sound_inflammation_boolean; // 사운드 알람 on / off
+
     TimeCalculationManager timeCalculationManager;
     SharedPreferences preferences;
     String tempDateTime2 = "";
@@ -95,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = this;
+
+        Log.e("MainActivity_onCreate", "11111111111");
 
         timeCalculationManager = new TimeCalculationManager();
         // DB 생성
@@ -130,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        // DB 생성
+        bodytemp_dbHelper = Bodytemp_DBHelper.getInstance(context, "Bodytemperature.db", null, 1);
         Log.e("onResume", String.valueOf(Bodytemp_DBHelper.readableDataBase == null));
         setUser();
         getAlarmCriteria();
@@ -230,14 +235,26 @@ public class MainActivity extends AppCompatActivity {
                         if (cnt == 0) {
                             temp1 = String.valueOf(avg);
                             cnt++;
+                            Log.e("알람_염증111111", temp1);
                         }
-                        if (cnt == 5) {
+                        else if (cnt == 1) {
                             temp2 = String.valueOf(avg);
-                            Log.e("알람", temp2 + " " + temp1);
+                            Log.e("알람_염증222222", temp1);
+                            Log.e("알람_염증222222", temp2);
+                            Log.e("알람_염증222222", temp2 + " " + temp1);
                             if (Float.valueOf(temp2) - Float.valueOf(temp1) >= 0)
-                                Log.e("알람", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
-                            cnt = 0;
+                                // temp2: 현재 찍힌 체온, temp1: 5분 전에 찍힌 체온
+                                try {
+                                    Float data = Float.valueOf(temp2);
+                                    setAlarm_inflammation_elevated_bodyTemperature(String.format("%.2f",data));
+                                    Log.e("알람", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                                    cnt = 0;
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                        }else {
+                            Log.e("알람_염증33333", temp1);
+                            cnt++;
                         }
                     }
                 }
@@ -300,10 +317,11 @@ public class MainActivity extends AppCompatActivity {
             alarm_low_temperature_str = PreferenceManager.getString(context, "alarm_low_temperature_value");
             alarm_high_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_high_temperature_boolean");
             alarm_low_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_low_temperature_boolean");
+            alarm_sound_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_sound_temperature_boolean");
             // 염증
             alarm_Inflammation_str = PreferenceManager.getString(context, "alarm_inflammation_temperature_value");
             alarm_Inflammation_boolean = PreferenceManager.getBoolean(context, "alarm_inflammation_temperature_boolean");
-            alarm_sound_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_sound_temperature_boolean");
+            alarm_sound_inflammation_boolean = PreferenceManager.getBoolean(context, "alarm_sound_inflammation_boolean");
         }
     }
 
@@ -317,6 +335,7 @@ public class MainActivity extends AppCompatActivity {
             PreferenceManager.PREFERENCES_NAME = select_user_name+"Setting";
 
             Log.e("MainActivity444444444", userPurpose);
+            Log.e("MainActivity444444444", s);
 
             switch (userPurpose){
                 case "감염":
@@ -332,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
                 case "염증":
                     Log.e("MainActivity555555555", String.valueOf(alarm_Inflammation_boolean));
                     if (alarm_Inflammation_boolean){
-                        checkNotificationTemperature(alarm_sound_temperature_boolean, s, "Inflammation");
+                        checkNotificationTemperature(alarm_sound_inflammation_boolean, s, "Inflammation");
                     }
                     break;
                 case "배란":
@@ -407,10 +426,16 @@ public class MainActivity extends AppCompatActivity {
             Log.e("MainActivity1111111111", "염증");
             long alarm_inflammation_term = PreferenceManager.getLong(context, "alarm_relieve_inflammation_term_value");
 
+            Log.e("MainActivity_now11111", String.valueOf(now));
+            Log.e("MainActivity_alarm_inflammation_term11111", String.valueOf(alarm_inflammation_term));
+
             if (now >= alarm_inflammation_term) {
 
-            double temperature_get = Double.parseDouble(alarm_Inflammation_str);
-            double temperature_s = Double.parseDouble(s);
+                Log.e("MainActivity_now222222", String.valueOf(now));
+                Log.e("MainActivity_alarm_inflammation_term2222222", String.valueOf(alarm_inflammation_term));
+
+                double temperature_get = Double.parseDouble(alarm_Inflammation_str);
+                double temperature_s = Double.parseDouble(s);
 
             if (temperature_get >= temperature_s) {
 
@@ -475,6 +500,23 @@ public class MainActivity extends AppCompatActivity {
         SimpleDateFormat mFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String formatDate = mFormat.format(mReDate);
         return Long.parseLong(formatDate);
+    }
+
+    /** 염증 체온 상승 알람 추가 **/
+    public void setAlarm_inflammation_elevated_bodyTemperature(String s){
+        Log.e("알람2222222222222", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        // 체온 상승에 대한 체크는 스레드에서 하기에 그냥 바로 울리면 된다.
+        int requestID = (int) System.currentTimeMillis();
+
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.putExtra("alarm_mode", 3); // 0: 고온, 1: 저온
+        intent.putExtra("now_temperature", s);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestID, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager_administratione = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+        alarmManager_administratione.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
     }
 
     @Override

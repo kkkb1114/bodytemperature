@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
@@ -154,7 +155,8 @@ public class NotificationManager_Tool {
     }
 
     /** 염증 악화, 완화 알람 세팅 **/
-    public void setInflammationAlarm(int inflammationAlarmMode){
+    public void setInflammationAlarm(int inflammationAlarmMode, String now_temperature, String low_temperature){
+        Log.e("알람333333333", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         // 채널을 생성 전달할 NotificationManager 생성x
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         // 전달할 intent 작성
@@ -171,7 +173,7 @@ public class NotificationManager_Tool {
         if (inflammationAlarmMode == 3){
             builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_TEMPERATURE_Administration)
                     .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.pill))
-                    .setContentTitle("염증 부위 체온 '상승' 알림")
+                    .setContentTitle("염증 알림 (현재 체온: "+now_temperature+"°C)")
                     .setContentText("염증 부위의 체온이 지속적으로 상승하고 있습니다.")
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setContentIntent(pendingIntent)
@@ -179,8 +181,8 @@ public class NotificationManager_Tool {
         }else if (inflammationAlarmMode == 4){
             builder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_TEMPERATURE_Administration)
                     .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.pill))
-                    .setContentTitle("염증 부위 체온 '저하' 알림")
-                    .setContentText("염증 부위의 체온이 저하 되었습니다.")
+                    .setContentTitle("염증 알림 (현재 체온: "+now_temperature+"°C)")
+                    .setContentText("현재 체온이 "+ low_temperature +"°C 이하로 떨어졌습니다.")
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setContentIntent(pendingIntent)
                     .setAutoCancel(true);

@@ -87,7 +87,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     /** 염증 Notification 설정 **/
     public void startNotification_inflammation(Context context, int inflammationAlarmMode){
         temperatureNotification = new NotificationManager_Tool(context);
-        temperatureNotification.setInflammationAlarm(inflammationAlarmMode);
+        temperatureNotification.setInflammationAlarm(inflammationAlarmMode, now_temperature, alarm_temperature);
 
         // 염증 부위 체온 '저하'알람일 경우만 반복 알람 설정을 추가해준다.
         if (inflammationAlarmMode == 4){
@@ -103,24 +103,34 @@ public class AlarmReceiver extends BroadcastReceiver {
             stopSound();
         }
 
-        // 사운드 알람 체크 했는지 확인
-        if (PreferenceManager.getBoolean(context, "alarm_sound_temperature_boolean")){
-            Intent intent = new Intent(context, AlarmSoundService.class);
-            // 오레오 이상은 startForegroundService() / 이하는 startService()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(intent);
-            }else {
-                context.startService(intent);
+        // 감기
+        if (alarm_mode <= 1){
+            // 사운드 알람 체크 했는지 확인
+            if (PreferenceManager.getBoolean(context, "alarm_sound_temperature_boolean")){
+                Intent intent = new Intent(context, AlarmSoundService.class);
+                // 오레오 이상은 startForegroundService() / 이하는 startService()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(intent);
+                }else {
+                    context.startService(intent);
+                }
+                // 알람이 한번 울리면 알람 설정을 off 한다.
+                //PreferenceManager.setBoolean(context, "alarm_sound_temperature_boolean", false);
             }
-            // 알람이 한번 울리면 알람 설정을 off 한다.
-            //PreferenceManager.setBoolean(context, "alarm_sound_temperature_boolean", false);
-            // 고온, 저온 알람 둘중 하나라도 true면 사운드 알람을 끄지 않는다.
-            if (!PreferenceManager.getBoolean(context, "alarm_high_temperature_boolean") &&
-                    !PreferenceManager.getBoolean(context, "alarm_low_temperature_boolean")){
-                PreferenceManager.setBoolean(context, "alarm_sound_temperature_boolean", false);
+        }else if (alarm_mode <= 4){// 염증
+            // 사운드 알람 체크 했는지 확인
+            if (PreferenceManager.getBoolean(context, "alarm_sound_inflammation_boolean")){
+                Intent intent = new Intent(context, AlarmSoundService.class);
+                // 오레오 이상은 startForegroundService() / 이하는 startService()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(intent);
+                }else {
+                    context.startService(intent);
+                }
+                // 알람이 한번 울리면 알람 설정을 off 한다.
+                //PreferenceManager.setBoolean(context, "alarm_sound_inflammation_boolean", false);
             }
         }
-
     }
 
     /** 사운드 정지 **/

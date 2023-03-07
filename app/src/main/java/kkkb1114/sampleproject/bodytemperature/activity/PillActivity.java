@@ -1,8 +1,11 @@
 package kkkb1114.sampleproject.bodytemperature.activity;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -26,6 +29,7 @@ import java.util.Date;
 
 import kkkb1114.sampleproject.bodytemperature.API.OpenApi;
 import kkkb1114.sampleproject.bodytemperature.MainActivity;
+import kkkb1114.sampleproject.bodytemperature.Notification.AlarmReceiver;
 import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.pill.PillAdapter;
 
@@ -161,6 +165,7 @@ public class PillActivity extends AppCompatActivity{
                                         } else {
                                             sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('" + username + "', '" + value + "', '" + dateFormat.format(date) + "', '" + source + "', '" + amount + "');");
                                             Log.d("pass ", "pass");
+                                            setAlarm_30minutes_after_administration();
                                             pill_warning.setVisibility(View.INVISIBLE);
                                             dialog.dismiss();
                                             finish();
@@ -183,6 +188,7 @@ public class PillActivity extends AppCompatActivity{
                                         } else {
                                             sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('" + username + "', '" + value + "', '" + dateFormat.format(date) + "', '" + source + "', '" + amount + "');");
                                             Log.d("pass ", "pass");
+                                            setAlarm_30minutes_after_administration();
                                             pill_warning.setVisibility(View.INVISIBLE);
                                             dialog.dismiss();
                                             finish();
@@ -225,4 +231,18 @@ public class PillActivity extends AppCompatActivity{
 
     }
 
+    /** 투약 30분후 알람 추가 **/
+    public void setAlarm_30minutes_after_administration(){
+        // 투약은 30분 후 알람이기에 1800000 더함.
+        int requestID = (int) System.currentTimeMillis()+1800000;
+
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.putExtra("alarm_mode", 2); // 0: 고온, 1: 저온
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestID, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager_administratione = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+        alarmManager_administratione.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
+    }
 }

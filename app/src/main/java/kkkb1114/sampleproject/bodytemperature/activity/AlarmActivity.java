@@ -169,8 +169,8 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         Log.e("444444444", String.valueOf(alarm_inflammation_value));
         setPREFERENCES_NAME();
 
-        if (userPurpose.equals("감기")){
-            // 감기 (고체온)
+        if (userPurpose.equals("감염")){
+            // 감염 (고체온)
             boolean alarm_high_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_high_temperature_boolean");
             String alarm_high_temperature_str = PreferenceManager.getString(context, "alarm_high_temperature_value");
             int high_temperature_progress = 0;
@@ -243,11 +243,20 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
         }
 
         // 사운드
+        // 감기
         boolean alarm_sound_temperature_boolean = PreferenceManager.getBoolean(context, "alarm_sound_temperature_boolean");
         if (alarm_sound_temperature_boolean){
             sw_alarm_add_sound_infection4.setChecked(true);
         }else {
             sw_alarm_add_sound_infection4.setChecked(false);
+        }
+
+        // 염증
+        boolean alarm_sound_inflammation_boolean = PreferenceManager.getBoolean(context, "alarm_sound_inflammation_boolean");
+        if (alarm_sound_inflammation_boolean){
+            sw_alarm_add_sound_inflammation.setChecked(true);
+        }else {
+            sw_alarm_add_sound_inflammation.setChecked(false);
         }
 
         long alarm_temperature_term = PreferenceManager.getLong(context, "alarm_temperature_term");
@@ -414,13 +423,21 @@ public class AlarmActivity extends AppCompatActivity implements View.OnClickList
             PreferenceManager.setBoolean(context, "alarm_inflammation_temperature_boolean",false);
             PreferenceManager.setString(context, "alarm_inflammation_temperature_value", String.valueOf(min));
         }
-        PreferenceManager.setLong(context, "alarm_inflammation_temperature_term_value", getFormatTimeNow());
+        PreferenceManager.setLong(context, "alarm_relieve_inflammation_term_value", getFormatTimeNow());
 
         // 사운드 추가 여부
+        // 감기
         if (sw_alarm_add_sound_infection4.isChecked()){
             PreferenceManager.setBoolean(context, "alarm_sound_temperature_boolean",true);
         }else {
             PreferenceManager.setBoolean(context, "alarm_sound_temperature_boolean",false);
+        }
+
+        // 염증
+        if (sw_alarm_add_sound_inflammation.isChecked()){
+            PreferenceManager.setBoolean(context, "alarm_sound_inflammation_boolean",true);
+        }else {
+            PreferenceManager.setBoolean(context, "alarm_sound_inflammation_boolean",false);
         }
     }
 
