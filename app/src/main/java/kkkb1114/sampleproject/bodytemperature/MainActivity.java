@@ -208,7 +208,6 @@ public class MainActivity extends AppCompatActivity {
                     avg=cmp/20;
                     cmp=0.0;
                     tempStack.clear();
-                    cnt++;
                     long now =System.currentTimeMillis();
                     Date date = new Date(now);
                     SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd hh:mm");
@@ -219,6 +218,21 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("qweqweqweqweqwe", tempDateTime2);
                     sqlDB.execSQL("INSERT INTO TEMPDATA VALUES ('"+username+"', '"+avg+"', '"+ tempDateTime +"');");
                     tempDateTime2 = tempDateTime;
+
+                    if(purpose.equals("염증")) {
+                        if (cnt == 0) {
+                            temp1 = String.valueOf(avg);
+                            cnt++;
+                        }
+                        if (cnt == 5) {
+                            temp2 = String.valueOf(avg);
+                            Log.e("알람", temp2 + " " + temp1);
+                            if (Float.valueOf(temp2) - Float.valueOf(temp1) >= 0)
+                                Log.e("알람", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+                            cnt = 0;
+                        }
+                    }
                 }
 
                 String s="";
@@ -251,20 +265,7 @@ public class MainActivity extends AppCompatActivity {
                 setNotification(s);
                 Log.d("------------", String.valueOf(tempStack.size()));
 
-                if(purpose.equals("염증")) {
-                    if(cnt == 0){
-                        temp1=s;
-                    }
 
-                    if (cnt == 5) {
-                        temp2=s;
-
-                        if(Float.valueOf(temp2)-Float.valueOf(temp1)>=0)
-                            Log.e("알람", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-
-                        cnt = 0;
-                    }
-                }
             }
         }).start();
     }
