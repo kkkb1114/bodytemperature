@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "248269619102",
+    "project_id": "smartthermometer-771dd",
+    "storage_bucket": "smartthermometer-771dd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:248269619102:android:1584332ad71d8c9b06a08f",
+        "android_client_info": {
+          "package_name": "kkkb1114.sampleproject.bodytemperature"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "248269619102-tephnaildog8iagdoson2epuq78v9ste.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kkkb1114.sampleproject.bodytemperature",
+            "certificate_hash": "958e8e3b457628e5624d6dcfd1a8d277e211dc92"
+          }
+        },
+        {
+          "client_id": "248269619102-us5ajhcbf4of16g1lokhj6gg4d5q6dan.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCs4C9q7kwWKVU6F2YtMcYQSk5IIcYYCr4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "248269619102-us5ajhcbf4of16g1lokhj6gg4d5q6dan.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
