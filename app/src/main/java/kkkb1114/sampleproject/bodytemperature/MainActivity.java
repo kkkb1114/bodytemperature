@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         context = this;
 
+
         Log.e("MainActivity_onCreate", "11111111111");
 
         timeCalculationManager = new TimeCalculationManager();
@@ -237,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                             cnt++;
                             Log.e("알람_염증111111", temp1);
                         }
-                        else if (cnt == 1) {
+                        else if (cnt == 4) {
                             temp2 = String.valueOf(avg);
                             Log.e("알람_염증222222", temp1);
                             Log.e("알람_염증222222", temp2);
@@ -256,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.e("알람_염증33333", temp1);
                             cnt++;
                         }
+
                     }
                 }
 
@@ -369,6 +371,10 @@ public class MainActivity extends AppCompatActivity {
         if (alarmType.equals("high")) { // 고온 알람
 
             long alarm_high_temperature_term = PreferenceManager.getLong(context, "alarm_high_temperature_term_value");
+
+            Log.e("checkNotificationTemperature", "111111");
+            Log.e("checkNotificationTemperature", String.valueOf(alarm_high_temperature_term));
+            Log.e("checkNotificationTemperature", String.valueOf(now));
 
             // 현재시간이 알람 텀 시간보다 클 경우 로직 동작
             if (now >= alarm_high_temperature_term) {
