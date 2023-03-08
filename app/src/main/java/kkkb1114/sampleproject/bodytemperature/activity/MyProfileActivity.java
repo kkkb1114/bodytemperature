@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
@@ -178,8 +180,8 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 tv_myProfile_birthDate.setText(myProfile.birthDate);
                 tv_myProfile_weight.setText(myProfile.weight);
                 tv_myProfile_purpose.setText(myProfile.purpose);
-                tv_myProfile_infection.setText(myProfile.infection);
                 setVisibility_View(myProfile.purpose);
+                tv_myProfile_infection.setText(myProfile.infection);
             }else {
                 et_myProfile_name.setText("user");
                 setGender(0);
@@ -192,9 +194,13 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
     /** View visible 세팅 **/
     public void setVisibility_View(String selectedItem_purpose){
-        Log.e("setVisibility_View", selectedItem_purpose);
         // 선택한 항목이 '감염'이면 '감염 병 선택'란을 보여준다.
-        if (selectedItem_purpose.equals("감염")){
+        if (selectedItem_purpose.equals("감염") || selectedItem_purpose.equals("염증")){
+            if (selectedItem_purpose.equals("감염")){
+                tv_myProfile_infection.setText(context.getResources().getString(R.string.tv_myProfile_infection));
+            }else {
+                tv_myProfile_infection.setText(context.getResources().getString(R.string.tv_myProfile_inflammation));
+            }
             tv_myProfile_infection.setVisibility(View.VISIBLE);
         }else {
             tv_myProfile_infection.setVisibility(View.GONE);
@@ -257,7 +263,6 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                     public void onClick(DialogInterface dialog, int position) {
                         selectedItem_purpose = items_purpose[position];
                         tv_myProfile_purpose.setText(selectedItem_purpose);
-
                         setVisibility_View(selectedItem_purpose);
                     }
                 });
@@ -265,17 +270,96 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 break;
 
             case R.id.tv_myProfile_infection:
-                String[] items_infection;
-                items_infection = new String[]{"감기/독감", "폐렴", "홍역"};
-                AlertDialog.Builder builder_infection = new AlertDialog.Builder(this);
-                builder_infection.setTitle("감염 병 선택");
-                builder_infection.setItems(items_infection, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int position) {
-                        selectedItem_infection = items_infection[position];
-                        tv_myProfile_infection.setText(selectedItem_infection);
-                    }
-                });
-                builder_infection.show();
+                purpose = tv_myProfile_purpose.getText().toString();
+                if (purpose.equals("감염")){
+
+                    String[] items_infection;
+                    items_infection = new String[]{"감기/독감", "폐렴", "홍역"};
+                    AlertDialog.Builder builder_infection = new AlertDialog.Builder(this);
+                    builder_infection.setTitle("감염 병 선택");
+                    builder_infection.setItems(items_infection, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int position) {
+                            selectedItem_infection = items_infection[position];
+                            tv_myProfile_infection.setText(selectedItem_infection);
+                        }
+                    });
+                    builder_infection.show();
+                }else if (purpose.equals("염증")){
+
+                    // LayoutInflater 객체를 사용하여 custom view를 inflate합니다.
+                    LayoutInflater inflater = getLayoutInflater();
+                    View dialogView = inflater.inflate(R.layout.inflammation_selection_dialog, null);
+
+                    // AlertDialog.Builder 객체를 생성합니다.
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("염증을 선택해 주세요.");
+                    builder.setView(dialogView);
+
+                    // AlertDialog 객체를 생성하고 보여줍니다.
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+
+                    TextView tv_surgical_site_infection = dialogView.findViewById(R.id.tv_surgical_site_infection);
+                    TextView tv_blood_clot = dialogView.findViewById(R.id.tv_blood_clot);
+                    TextView tv_abscess = dialogView.findViewById(R.id.tv_abscess);
+                    EditText et_surgeryDate = dialogView.findViewById(R.id.et_surgeryDate);
+                    Button bt_inflammation_negative = dialogView.findViewById(R.id.bt_inflammation_negative);
+                    Button bt_inflammation_positive = dialogView.findViewById(R.id.bt_inflammation_positive);
+
+                    // 아이템 선택
+                    String[] selectItem = {tv_surgical_site_infection.getText().toString()};
+                    tv_surgical_site_infection.setBackgroundColor(ContextCompat.getColor(context, R.color.button_confirm_color));
+                    tv_surgical_site_infection.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            tv_surgical_site_infection.setBackgroundColor(ContextCompat.getColor(context, R.color.button_confirm_color));
+                            tv_blood_clot.setBackgroundColor(ContextCompat.getColor(context, R.color.transparency_100));
+                            tv_abscess.setBackgroundColor(ContextCompat.getColor(context, R.color.transparency_100));
+                            selectItem[0] = tv_surgical_site_infection.getText().toString();
+                        }
+                    });
+
+                    tv_blood_clot.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            tv_blood_clot.setBackgroundColor(ContextCompat.getColor(context, R.color.button_confirm_color));
+                            tv_surgical_site_infection.setBackgroundColor(ContextCompat.getColor(context, R.color.transparency_100));
+                            tv_abscess.setBackgroundColor(ContextCompat.getColor(context, R.color.transparency_100));
+                            selectItem[0] = tv_blood_clot.getText().toString();
+                        }
+                    });
+
+                    tv_abscess.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            tv_abscess.setBackgroundColor(ContextCompat.getColor(context, R.color.button_confirm_color));
+                            tv_surgical_site_infection.setBackgroundColor(ContextCompat.getColor(context, R.color.transparency_100));
+                            tv_blood_clot.setBackgroundColor(ContextCompat.getColor(context, R.color.transparency_100));
+                            selectItem[0] = tv_abscess.getText().toString();
+                        }
+                    });
+                    // 버튼 선택
+                    bt_inflammation_negative.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                        }
+                    });
+                    bt_inflammation_positive.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String surgeryDate = et_surgeryDate.getText().toString();
+                            if (surgeryDate.equals(getResources().getString(R.string.et_surgeryDate))
+                            || surgeryDate.trim().isEmpty()){
+
+                                Toast.makeText(context, getResources().getString(R.string.et_surgeryDate), Toast.LENGTH_SHORT).show();
+                            }else {
+                                tv_myProfile_infection.setText(selectItem[0] + "/" +surgeryDate);
+                                dialog.dismiss();
+                            }
+                        }
+                    });
+                }
                 break;
 
             case R.id.bt_myProfile_cancle:
@@ -288,8 +372,6 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 weight = tv_myProfile_weight.getText().toString();
                 purpose = tv_myProfile_purpose.getText().toString();
                 infection = tv_myProfile_infection.getText().toString();
-
-                Log.e("tv_myProfile_infection.getText().toString()", tv_myProfile_infection.getText().toString());
 
                 if (name.trim().length() == 0 || birthDate.trim().length() == 0 || weight.trim().length() == 0
                 || name.equals(getResources().getString(R.string.et_myProfile_name))||
@@ -304,6 +386,11 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                             infection.equals(context.getResources().getString(R.string.tv_myProfile_infection))){
 
                         Toast.makeText(context, "감염 병을 선택해주세요.", Toast.LENGTH_SHORT).show();
+
+                    }else if (purpose.equals("염증") &&
+                            infection.equals(context.getResources().getString(R.string.tv_myProfile_inflammation))){
+
+                        Toast.makeText(context, "염증을 선택해주세요.", Toast.LENGTH_SHORT).show();
 
                     }else {
                         // 수정모드면 DB UPDATE만 하고 신규 정보면 INSERT한다.

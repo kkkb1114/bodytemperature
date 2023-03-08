@@ -13,9 +13,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -223,8 +225,25 @@ public class PillActivity extends AppCompatActivity{
                 finish();
             }
         });
+    }
 
+    /** dialog 스피너 시간 세팅 **/
+    public void setDateTimeSpinner(LinearLayout linear){
+        ArrayList<String> dateList = new ArrayList<>();
+        ArrayList<String> timeList = new ArrayList<>();
+        dateList.add("20231213");
+        dateList.add("1112");
+        Spinner sp_date = (Spinner) linear.findViewById(R.id.sp_date);
+        Spinner sp_time = (Spinner) linear.findViewById(R.id.sp_time);
 
+        // ArrayList 객체 생성
+        ArrayAdapter<String> dateAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, dateList);
+        ArrayAdapter<String> timeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, timeList);
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
+        SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm");
+
+        // 현재 날짜와 시간 값 가져오기
     }
 
     public void setRecyclerView(View view){
@@ -234,8 +253,6 @@ public class PillActivity extends AppCompatActivity{
         pillAdapter = new PillAdapter(ad,af,context);
         rv_pill.setLayoutManager(new LinearLayoutManager(context));
         rv_pill.setAdapter(pillAdapter);
-
-
 
     }
 

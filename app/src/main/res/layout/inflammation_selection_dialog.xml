@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tv_surgical_site_infection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/tv_surgical_site_infection" />
+
+    <TextView
+        android:id="@+id/tv_blood_clot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/tv_blood_clot" />
+
+    <TextView
+        android:id="@+id/tv_abscess"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/tv_abscess" />
+
+    <EditText
+        android:id="@+id/et_surgeryDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="수술 날짜를 적어주세요." />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/bt_inflammation_negative"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="취소"
+            android:textColor="@color/white"
+            android:background="@drawable/rounded_corners_sky"
+            app:backgroundTint="@null"/>
+
+        <Button
+            android:id="@+id/bt_inflammation_positive"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:layout_marginStart="10dp"
+            android:text="확인"
+            android:textColor="@color/white"
+            android:background="@drawable/rounded_corners_red"
+            app:backgroundTint="@null" />
+
+    </LinearLayout>
+
+</LinearLayout>

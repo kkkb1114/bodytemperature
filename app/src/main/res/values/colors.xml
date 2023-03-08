@@ -23,4 +23,5 @@
     <color name="alarm_low_temperature_text">#2B8FB6</color>
     <color name="user_list_select_user">#BDD5D5</color>
     <color name="ble_connect_state_text">#86D628</color>
+    <color name="transparency_100">#00FFFFFF</color>
 </resources>
