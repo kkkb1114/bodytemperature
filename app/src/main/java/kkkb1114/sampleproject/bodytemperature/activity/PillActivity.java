@@ -321,7 +321,7 @@ public class PillActivity extends AppCompatActivity {
             Log.e("timeCalculationManager_getDateTime", String.valueOf(getDateTime));
             /*
              * 투약은 30분 후 알람이기에 1800000 더함.
-             *  - 잠시 테스트를 위해 1분으로 함
+             *  - 잠시 테스트를 위해 1분으로 함.
              */
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             Date getDate = dateFormat.parse(getDateTime);
