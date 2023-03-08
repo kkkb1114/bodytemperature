@@ -183,7 +183,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 tv_myProfile_weight.setText(myProfile.weight);
                 tv_myProfile_purpose.setText(myProfile.purpose);
                 setVisibility_View(myProfile.purpose);
-                tv_myProfile_infection.setText(myProfile.infection);
+                tv_myProfile_infection.setText(myProfile.infection.split("/")[0]);
             }else {
                 et_myProfile_name.setText("user");
                 setGender(0);
