@@ -15,12 +15,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import kkkb1114.sampleproject.bodytemperature.MainActivity;
 import kkkb1114.sampleproject.bodytemperature.R;
@@ -41,6 +39,7 @@ public class HomeFragment extends Fragment {
     SQLiteDatabase sqlDB;
 
     String username;
+
     public HomeFragment() {
 
     }
@@ -101,28 +100,88 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 final LinearLayout linear = (LinearLayout) View.inflate(getActivity(), R.layout.dialog_significant, null);
-                new AlertDialog.Builder(getActivity()).setView(linear)
-                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                EditText edt_significant = (EditText) linear.findViewById(R.id.edt_significant);
-                                String value = edt_significant.getText().toString();
-                                long now =System.currentTimeMillis();
-                                Date date = new Date(now);
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                                float amount=0f;
-                                String source = " ";
-                                sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
-                                sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('"+username+"', '"+value+"', '"+ dateFormat.format(date) +"', '"+source+"', '"+amount+"');");
+                final SeekBar seekBar = (SeekBar) linear.findViewById(R.id.seekBar_significant);
+                final TextView textView = (TextView) linear.findViewById(R.id.text_seek);
 
-                                dialog.dismiss();
-                            }
-                        })
-                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                dialog.dismiss();
-                            }
-                        }).show();
+                AlertDialog.Builder dialog =new AlertDialog.Builder(getActivity()).setView(linear);
+
+                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        if(progress==0)
+                            textView.setText(String.valueOf(progress)+" 아무런 통증 없음");
+                        switch(progress){
+                            case 0:
+                                textView.setText(String.valueOf(progress)+" 매우 약한 통증");
+                                break;
+                            case 1:
+                                textView.setText(String.valueOf(progress)+" 약한 통증");
+                                break;
+                            case 2:
+                                textView.setText(String.valueOf(progress)+" 약간의 통증");
+                                break;
+                            case 3:
+                                textView.setText(String.valueOf(progress)+" 중간 정도의 통증");
+                                break;
+                            case 4:
+                                textView.setText(String.valueOf(progress)+" 상당한 통증");
+                                break;
+                            case 5:
+                                textView.setText(String.valueOf(progress)+" 강한 통증");
+                                break;
+                            case 6:
+                                textView.setText(String.valueOf(progress)+" 매우 강한 통증");
+                                break;
+                            case 7:
+                                textView.setText(String.valueOf(progress)+" 아무런 통증 없음");
+                                break;
+                            case 8:
+                                textView.setText(String.valueOf(progress)+" 극심한 통증");
+                                break;
+                            default:
+                                textView.setText(String.valueOf(progress)+" 의식을 잃을 정도의 통증");
+                                break;
+
+                        }
+
+
+
+
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {}
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {}
+                });
+
+                dialog.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        EditText edt_significant = (EditText) linear.findViewById(R.id.edt_significant);
+                        EditText edt_significantTime = (EditText) linear.findViewById(R.id.edt_significantTime);
+
+                        String value = edt_significant.getText().toString() + "/" +textView.getText().toString();
+                        String time = edt_significantTime.getText().toString();
+
+                        float amount=0f;
+                        String source = " ";
+                        sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
+                        sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('"+username+"', '"+value+"', '"+ time +"', '"+source+"', '"+amount+"');");
+
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
             }
+
         });
     }
 
