@@ -46,7 +46,7 @@ public class HomeFragment extends Fragment {
     String significant_date_DateTime = "";
 
     public HomeFragment() {
-
+//
     }
 
     @Override
