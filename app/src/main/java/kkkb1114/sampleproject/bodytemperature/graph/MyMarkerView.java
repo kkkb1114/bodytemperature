@@ -3,6 +3,7 @@
     import android.app.AlertDialog;
     import android.content.Context;
     import android.content.DialogInterface;
+    import android.util.Log;
     import android.view.View;
     import android.widget.LinearLayout;
     import android.widget.TextView;
@@ -44,7 +45,7 @@
 
 
                     if (highlight != null) {
-
+                        Log.d("x", String.valueOf(e.getX()));
                         if(e.getX()<Dday)
                         { final LinearLayout linear = (LinearLayout) View.inflate(getContext(), R.layout.markerview, null);
                             AlertDialog.Builder dlgBuilder = new AlertDialog.Builder(getContext()).setView(linear);
