@@ -430,7 +430,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                                 PreferenceManager.PREFERENCES_NAME = "login_user";
                                 PreferenceManager.setString(context, "userName", name);
                                 PreferenceManager.setString(context, "userPurpose", purpose);
-                                PreferenceManager.setString(context, "userInfection", infection);
+                                PreferenceManager.setString(context, "userInfection", infection.split("/")[0]);
                                 if (purpose.equals("염증")){
                                     PreferenceManager.setString(context, "surgeryDate", infection.split("/")[1]);
                                 }
