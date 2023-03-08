@@ -10,6 +10,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.Selection;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -56,6 +59,7 @@ public class PillActivity extends AppCompatActivity{
 
     Cursor cursor;
     String Pdate;
+    String pill_date_DateTime = "";
 
     ArrayList<String> ad = new ArrayList<>();
     ArrayList<String> af = new ArrayList<>();
@@ -79,7 +83,6 @@ public class PillActivity extends AppCompatActivity{
         initView();
         setRecyclerView(view);
         setListner();
-
     }
 
     private void initView() {
@@ -89,6 +92,60 @@ public class PillActivity extends AppCompatActivity{
         edt_pillSearch=(EditText) findViewById(R.id.edt_pillSearch);
         pill_date = (EditText) findViewById(R.id.pill_date);
 
+    }
+
+    /** 투약 창 날짜 기입 **/
+    public void setPill_dateTextWatcher(EditText et_pill_date){
+        et_pill_date.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                String pill_date_get = et_pill_date.getText().toString();
+                Log.e("setPill_dateTextWatcher_onTextChanged", pill_date_get);
+
+                if (!pill_date_get.equals(pill_date_DateTime)){
+                    // 문자 replace
+                    pill_date_get = pill_date_get.replaceAll("[^0-9]", "");
+                               /*pill_date_get = et_surgeryDate_get.replaceAll("-", "");
+                                pill_date_get = et_surgeryDate_get.replaceAll(" ", "");
+                                pill_date_get = et_surgeryDate_get.replaceAll(":", "");*/
+
+                    pill_date_DateTime = dateTimeFormat(pill_date_get);
+                    et_pill_date.setText(pill_date_DateTime);
+                    Selection.setSelection(et_pill_date.getText(), pill_date_DateTime.length());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+    /** 날짜 문자열 변환 **/
+    public String dateTimeFormat(String dateTime){
+        if (dateTime.length() >= 5 && dateTime.length() <= 6){
+            dateTime = dateTime.substring(0, 4) + "-" + dateTime.substring(4, dateTime.length());
+            return dateTime;
+        }else if (dateTime.length() >= 7 && dateTime.length() <= 8){
+            dateTime = dateTime.substring(0, 4) + "-" + dateTime.substring(4, 6) + "-" + dateTime.substring(6, dateTime.length());
+            return dateTime;
+        }else if (dateTime.length() >= 9 && dateTime.length() <= 10){
+            dateTime = dateTime.substring(0, 4) + "-" + dateTime.substring(4, 6) + "-" + dateTime.substring(6, 8) + " " + dateTime.substring(8, dateTime.length());
+            return dateTime;
+        }else if (dateTime.length() >= 11 && dateTime.length() <= 12){
+            dateTime = dateTime.substring(0, 4) + "-" + dateTime.substring(4, 6) + "-" + dateTime.substring(6, 8) +
+                    " " + dateTime.substring(8, 10) + ":" + dateTime.substring(10, dateTime.length());
+            return dateTime;
+        }else {
+            return dateTime;
+        }
     }
 
     public void setListner() {
@@ -120,14 +177,18 @@ public class PillActivity extends AppCompatActivity{
             public void onClick(View view) {
 
                 final LinearLayout linear = (LinearLayout) View.inflate(context, R.layout.dialog_pill, null);
+                EditText edt_pill = (EditText) linear.findViewById(R.id.edt_pill);
+                EditText pill_date = (EditText) linear.findViewById(R.id.pill_date);
+                // TextWatcher 세팅
+                setPill_dateTextWatcher(pill_date);
+
                 AlertDialog dialog = new AlertDialog.Builder(context).setView(linear)
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                EditText edt_pill = (EditText) linear.findViewById(R.id.edt_pill);
-                                EditText pill_date = (EditText) linear.findViewById(R.id.pill_date);
+
                                 sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
 
-                                Pdate = String.valueOf(pill_date.getText());
+                                Pdate = pill_date.getText().toString();
                                 Float amount = 0f;
 
                                 try{

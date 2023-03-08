@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Selection;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -60,6 +61,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     String weight = "";
     String purpose = "";
     String infection = "";
+    String et_surgeryDate_DateTime = "";
 
     String intentUserName = ""; // 내 정보 보기, 수정으로 들어올 경우 getIntent를 통해 문자열을 담는다.
 
@@ -218,6 +220,26 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
+    /** 날짜 문자열 변환 **/
+    public String dateTimeFormat(String dateTime){
+        if (dateTime.length() >= 5 && dateTime.length() <= 6){
+            dateTime = dateTime.substring(0, 4) + "-" + dateTime.substring(4, dateTime.length());
+            return dateTime;
+        }else if (dateTime.length() >= 7 && dateTime.length() <= 8){
+            dateTime = dateTime.substring(0, 4) + "-" + dateTime.substring(4, 6) + "-" + dateTime.substring(6, dateTime.length());
+            return dateTime;
+        }else if (dateTime.length() >= 9 && dateTime.length() <= 10){
+            dateTime = dateTime.substring(0, 4) + "-" + dateTime.substring(4, 6) + "-" + dateTime.substring(6, 8) + " " + dateTime.substring(8, dateTime.length());
+            return dateTime;
+        }else if (dateTime.length() >= 11 && dateTime.length() <= 12){
+            dateTime = dateTime.substring(0, 4) + "-" + dateTime.substring(4, 6) + "-" + dateTime.substring(6, 8) +
+                    " " + dateTime.substring(8, 10) + ":" + dateTime.substring(10, dateTime.length());
+            return dateTime;
+        }else {
+            return dateTime;
+        }
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -340,6 +362,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                             selectItem[0] = tv_abscess.getText().toString();
                         }
                     });
+
                     // 수술 날짜 기입
                     et_surgeryDate.addTextChangedListener(new TextWatcher() {
                         @Override
@@ -349,7 +372,19 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
                         @Override
                         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                            String et_surgeryDate_get = et_surgeryDate.getText().toString();
 
+                            if (!et_surgeryDate_get.equals(et_surgeryDate_DateTime)){
+                                // 문자 replace
+                                et_surgeryDate_get = et_surgeryDate_get.replaceAll("[^0-9]", "");
+                               /*et_surgeryDate_get = et_surgeryDate_get.replaceAll("-", "");
+                                et_surgeryDate_get = et_surgeryDate_get.replaceAll(" ", "");
+                                et_surgeryDate_get = et_surgeryDate_get.replaceAll(":", "");*/
+
+                                et_surgeryDate_DateTime = dateTimeFormat(et_surgeryDate_get);
+                                et_surgeryDate.setText(et_surgeryDate_DateTime);
+                                Selection.setSelection(et_surgeryDate.getText(), et_surgeryDate_DateTime.length());
+                            }
                         }
 
                         @Override
@@ -369,7 +404,8 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                         public void onClick(View view) {
                             String surgeryDate = et_surgeryDate.getText().toString();
                             if (surgeryDate.equals(getResources().getString(R.string.et_surgeryDate))
-                            || surgeryDate.trim().isEmpty()){
+                            || surgeryDate.trim().isEmpty()
+                            || surgeryDate.length() < 16){
 
                                 Toast.makeText(context, getResources().getString(R.string.et_surgeryDate), Toast.LENGTH_SHORT).show();
                             }else {

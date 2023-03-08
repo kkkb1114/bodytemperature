@@ -15,5 +15,5 @@
     <string name="tv_surgical_site_infection">수술부위 감염</string>
     <string name="tv_blood_clot">혈전</string>
     <string name="tv_abscess">농양</string>
-    <string name="et_surgeryDate">수술 날짜를 적어주세요.</string>
+    <string name="et_surgeryDate">수술 날짜를 끝까지 적어주세요.</string>
 </resources>

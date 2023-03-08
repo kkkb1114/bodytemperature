@@ -9,6 +9,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.Selection;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +43,7 @@ public class HomeFragment extends Fragment {
     SQLiteDatabase sqlDB;
 
     String username;
+    String significant_date_DateTime = "";
 
     public HomeFragment() {
 
@@ -156,11 +161,13 @@ public class HomeFragment extends Fragment {
                     public void onStopTrackingTouch(SeekBar seekBar) {}
                 });
 
-                dialog.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                EditText edt_significant = (EditText) linear.findViewById(R.id.edt_significant);
+                EditText edt_significantTime = (EditText) linear.findViewById(R.id.edt_significantTime);
+                // TextWatcher 세팅
+                setSignificant_dateTextWatcher(edt_significantTime);
 
+                dialog.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        EditText edt_significant = (EditText) linear.findViewById(R.id.edt_significant);
-                        EditText edt_significantTime = (EditText) linear.findViewById(R.id.edt_significantTime);
 
                         String value = edt_significant.getText().toString() + "/" +textView.getText().toString();
                         String time = edt_significantTime.getText().toString();
@@ -202,5 +209,60 @@ public class HomeFragment extends Fragment {
         */
 
 
+    }
+
+
+    /** 투약 창 날짜 기입 **/
+    public void setSignificant_dateTextWatcher(EditText et_significant_date){
+        et_significant_date.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                String significant_date_get = et_significant_date.getText().toString();
+                Log.e("setPill_dateTextWatcher_onTextChanged", significant_date_get);
+
+                if (!significant_date_get.equals(significant_date_DateTime)){
+                    // 문자 replace
+                    significant_date_get = significant_date_get.replaceAll("[^0-9]", "");
+                               /*pill_date_get = et_surgeryDate_get.replaceAll("-", "");
+                                pill_date_get = et_surgeryDate_get.replaceAll(" ", "");
+                                pill_date_get = et_surgeryDate_get.replaceAll(":", "");*/
+
+                    significant_date_DateTime = dateTimeFormat(significant_date_get);
+                    et_significant_date.setText(significant_date_DateTime);
+                    Selection.setSelection(et_significant_date.getText(), significant_date_DateTime.length());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+    /** 날짜 문자열 변환 **/
+    public String dateTimeFormat(String dateTime){
+        if (dateTime.length() >= 5 && dateTime.length() <= 6){
+            dateTime = dateTime.substring(0, 4) + "-" + dateTime.substring(4, dateTime.length());
+            return dateTime;
+        }else if (dateTime.length() >= 7 && dateTime.length() <= 8){
+            dateTime = dateTime.substring(0, 4) + "-" + dateTime.substring(4, 6) + "-" + dateTime.substring(6, dateTime.length());
+            return dateTime;
+        }else if (dateTime.length() >= 9 && dateTime.length() <= 10){
+            dateTime = dateTime.substring(0, 4) + "-" + dateTime.substring(4, 6) + "-" + dateTime.substring(6, 8) + " " + dateTime.substring(8, dateTime.length());
+            return dateTime;
+        }else if (dateTime.length() >= 11 && dateTime.length() <= 12){
+            dateTime = dateTime.substring(0, 4) + "-" + dateTime.substring(4, 6) + "-" + dateTime.substring(6, 8) +
+                    " " + dateTime.substring(8, 10) + ":" + dateTime.substring(10, dateTime.length());
+            return dateTime;
+        }else {
+            return dateTime;
+        }
     }
 }
