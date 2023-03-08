@@ -13,20 +13,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import kkkb1114.sampleproject.bodytemperature.API.OpenApi;
@@ -41,7 +40,7 @@ public class PillActivity extends AppCompatActivity{
     TimeCalculationManager timeCalculationManager;
     Context context;
     Button bt_pill_cancel, bt_pill_confirm, bt_pillSearch;
-    EditText edt_pillSearch;
+    EditText edt_pillSearch,pill_date;
     SQLiteDatabase sqlDB;
     View view;
     RecyclerView rv_pill;
@@ -56,7 +55,7 @@ public class PillActivity extends AppCompatActivity{
     float amax;
 
     Cursor cursor;
-
+    String Pdate;
 
     ArrayList<String> ad = new ArrayList<>();
     ArrayList<String> af = new ArrayList<>();
@@ -88,6 +87,7 @@ public class PillActivity extends AppCompatActivity{
         bt_pill_confirm= (Button)findViewById(R.id.bt_pill_confirm);
         bt_pillSearch= (Button)findViewById(R.id.bt_pillSearch);
         edt_pillSearch=(EditText) findViewById(R.id.edt_pillSearch);
+        pill_date = (EditText) findViewById(R.id.pill_date);
 
     }
 
@@ -124,8 +124,10 @@ public class PillActivity extends AppCompatActivity{
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 EditText edt_pill = (EditText) linear.findViewById(R.id.edt_pill);
-                                TextView  pill_warning = (TextView) linear.findViewById(R.id.pill_warning);
+                                EditText pill_date = (EditText) linear.findViewById(R.id.pill_date);
                                 sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
+
+                                Pdate = String.valueOf(pill_date.getText());
                                 Float amount = 0f;
 
                                 try{
@@ -142,19 +144,26 @@ public class PillActivity extends AppCompatActivity{
                                     String value = ad.get(PillAdapter.getSelected());
                                     String source = af.get(PillAdapter.getSelected());
 
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                                    Date date = null;
+                                    try {
+                                        date = dateFormat.parse(Pdate);
+                                    } catch (ParseException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.setTime(date);
 
-                                    long now = System.currentTimeMillis();
-                                    Date date = new Date(now);
-                                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                                    cal.add(Calendar.DATE, -1);
 
+                                    String start = dateFormat.format(cal.getTime());
 
-                                    SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
                                     Float total = 0f;
                                     Float total2 = 0f;
 
                                     if (source.contains("buprofen")) {
                                         String ibu = "ibuprofen";
-                                        cursor = sqlDB.rawQuery("SELECT * FROM TIMELINEDATA WHERE name = '" + username + "' AND TimelineDateTime LIKE '" + dateFormat2.format(date) + "%' AND Source LIKE '%" + ibu + "%'; ", null);
+                                        cursor = sqlDB.rawQuery("SELECT * FROM TIMELINEDATA WHERE name = '" + username + "' AND TimelineDateTime BETWEEN '" + start + "' AND '"+Pdate+"' AND Source LIKE '%" + ibu + "%'; ", null);
                                         while (cursor.moveToNext()) {
                                             Log.d("name ", cursor.getString(1));
                                             total += cursor.getFloat(4);
@@ -168,10 +177,10 @@ public class PillActivity extends AppCompatActivity{
                                             toast.show();
 
                                         } else {
-                                            sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('" + username + "', '" + value + "', '" + dateFormat.format(date) + "', '" + source + "', '" + amount + "');");
+
+                                            sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('" + username + "', '" + value + "', '" + Pdate + "', '" + source + "', '" + amount + "');");
                                             Log.d("pass ", "pass");
                                             setAlarm_30minutes_after_administration();
-                                            pill_warning.setVisibility(View.INVISIBLE);
 
                                             Toast toast = Toast.makeText(context, "투약기록이 저장되었습니다.", Toast.LENGTH_LONG);
                                             toast.show();
@@ -181,7 +190,8 @@ public class PillActivity extends AppCompatActivity{
 
                                     } else if (source.contains("Acetaminophen")) {
                                         String ibu = "acetaminophen";
-                                        cursor = sqlDB.rawQuery("SELECT * FROM TIMELINEDATA WHERE name = '" + username + "' AND TimelineDateTime LIKE '" + dateFormat2.format(date) + "%' AND Source LIKE '%" + ibu + "%'; ", null);
+                                        cursor = sqlDB.rawQuery("SELECT * FROM TIMELINEDATA WHERE name = '" + username + "' AND TimelineDateTime BETWEEN '" + start + "' AND '"+Pdate+"' AND Source LIKE '%" + ibu + "%'; ", null);
+
                                         while (cursor.moveToNext()) {
                                             Log.d("name ", cursor.getString(1));
                                             total2 += cursor.getFloat(4);
@@ -194,10 +204,10 @@ public class PillActivity extends AppCompatActivity{
                                             toast.show();
 
                                         } else {
-                                            sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('" + username + "', '" + value + "', '" + dateFormat.format(date) + "', '" + source + "', '" + amount + "');");
+
+                                            sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('" + username + "', '" + value + "', '" + Pdate + "', '" + source + "', '" + amount + "');");
                                             Log.d("pass ", "pass");
                                             setAlarm_30minutes_after_administration();
-                                            pill_warning.setVisibility(View.INVISIBLE);
                                             Toast toast = Toast.makeText(context, "투약기록이 저장되었습니다.", Toast.LENGTH_LONG);
                                             toast.show();
                                             dialog.dismiss();
@@ -228,23 +238,7 @@ public class PillActivity extends AppCompatActivity{
     }
 
     /** dialog 스피너 시간 세팅 **/
-    public void setDateTimeSpinner(LinearLayout linear){
-        ArrayList<String> dateList = new ArrayList<>();
-        ArrayList<String> timeList = new ArrayList<>();
-        dateList.add("20231213");
-        dateList.add("1112");
-        Spinner sp_date = (Spinner) linear.findViewById(R.id.sp_date);
-        Spinner sp_time = (Spinner) linear.findViewById(R.id.sp_time);
 
-        // ArrayList 객체 생성
-        ArrayAdapter<String> dateAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, dateList);
-        ArrayAdapter<String> timeAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, timeList);
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
-        SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm");
-
-        // 현재 날짜와 시간 값 가져오기
-    }
 
     public void setRecyclerView(View view){
 

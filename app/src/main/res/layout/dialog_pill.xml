@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
+    android:layout_width="360dp"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="5dp">
@@ -19,32 +19,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="15"
-        android:hint="ex) 50"
+        android:hint="투여량: ex) 50"
         android:inputType="textPersonName" />
 
-    <TextView
-        android:id="@+id/pill_warning"
+    <EditText
+        android:id="@+id/pill_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=""
+        android:hint="투여 일시: ex) 2023-03-08 13:08"
         android:textColor="#E80303"
-        android:visibility="invisible" />
+        android:inputType="text"
+       />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 
-        <Spinner
-            android:id="@+id/sp_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
 
-        <Spinner
-            android:id="@+id/sp_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-    </LinearLayout>
 
 </LinearLayout>
