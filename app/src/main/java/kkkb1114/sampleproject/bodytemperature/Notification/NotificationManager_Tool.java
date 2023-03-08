@@ -115,6 +115,7 @@ public class NotificationManager_Tool {
 
     /** 투약 알람 세팅 **/
     public void setAdministrationAlarm(){
+        Log.e("setAdministrationAlarm1111", "setAdministrationAlarm");
         // 채널을 생성 전달할 NotificationManager 생성x
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         // 전달할 intent 작성

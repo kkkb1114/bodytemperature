@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.util.Log;
 
 import kkkb1114.sampleproject.bodytemperature.MainActivity;
 import kkkb1114.sampleproject.bodytemperature.tools.PreferenceManager;
@@ -45,6 +46,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         }else if (alarm_mode == 1){ // 감기/독감 (저온 알림)
             startNotification_LowTemperature(context);
         }else if (alarm_mode == 2){ // 투약 알림 (투약 알람은 사운드 안울림)
+            Log.e("setAdministrationAlarm333333", "setAdministrationAlarm");
             startNotification_Administration(context);
         }else if (alarm_mode == 3){ // 염증 부위 체온 상승 알림
             startNotification_inflammation(context, alarm_mode);
@@ -79,6 +81,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     /** 투약 Notification 설정 **/
     public void startNotification_Administration(Context context){
+        Log.e("setAdministrationAlarm22222", "setAdministrationAlarm");
         temperatureNotification = new NotificationManager_Tool(context);
         temperatureNotification.setAdministrationAlarm();
 

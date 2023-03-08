@@ -38,12 +38,12 @@ import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.pill.PillAdapter;
 import kkkb1114.sampleproject.bodytemperature.tools.TimeCalculationManager;
 
-public class PillActivity extends AppCompatActivity{
+public class PillActivity extends AppCompatActivity {
 
     TimeCalculationManager timeCalculationManager;
     Context context;
     Button bt_pill_cancel, bt_pill_confirm, bt_pillSearch;
-    EditText edt_pillSearch,pill_date;
+    EditText edt_pillSearch, pill_date;
     SQLiteDatabase sqlDB;
     View view;
     RecyclerView rv_pill;
@@ -71,13 +71,13 @@ public class PillActivity extends AppCompatActivity{
         timeCalculationManager = new TimeCalculationManager();
 
         SharedPreferences select_user;
-        select_user = context.getSharedPreferences("login_user",MODE_PRIVATE);
-        username = select_user.getString("userName","선택된 사용자 없음");
+        select_user = context.getSharedPreferences("login_user", MODE_PRIVATE);
+        username = select_user.getString("userName", "선택된 사용자 없음");
 
         SharedPreferences daymax;
-        daymax=context.getSharedPreferences("DayMax",MODE_PRIVATE);
-        imax=daymax.getFloat("ibuprofen",1);
-        amax=daymax.getFloat("acetaminophen",1);
+        daymax = context.getSharedPreferences("DayMax", MODE_PRIVATE);
+        imax = daymax.getFloat("ibuprofen", 1);
+        amax = daymax.getFloat("acetaminophen", 1);
 
 
         initView();
@@ -86,16 +86,18 @@ public class PillActivity extends AppCompatActivity{
     }
 
     private void initView() {
-        bt_pill_cancel= (Button)findViewById(R.id.bt_pill_cancle);
-        bt_pill_confirm= (Button)findViewById(R.id.bt_pill_confirm);
-        bt_pillSearch= (Button)findViewById(R.id.bt_pillSearch);
-        edt_pillSearch=(EditText) findViewById(R.id.edt_pillSearch);
+        bt_pill_cancel = (Button) findViewById(R.id.bt_pill_cancle);
+        bt_pill_confirm = (Button) findViewById(R.id.bt_pill_confirm);
+        bt_pillSearch = (Button) findViewById(R.id.bt_pillSearch);
+        edt_pillSearch = (EditText) findViewById(R.id.edt_pillSearch);
         pill_date = (EditText) findViewById(R.id.pill_date);
 
     }
 
-    /** 투약 창 날짜 기입 **/
-    public void setPill_dateTextWatcher(EditText et_pill_date){
+    /**
+     * 투약 창 날짜 기입
+     **/
+    public void setPill_dateTextWatcher(EditText et_pill_date) {
         et_pill_date.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -108,12 +110,9 @@ public class PillActivity extends AppCompatActivity{
                 String pill_date_get = et_pill_date.getText().toString();
                 Log.e("setPill_dateTextWatcher_onTextChanged", pill_date_get);
 
-                if (!pill_date_get.equals(pill_date_DateTime)){
+                if (!pill_date_get.equals(pill_date_DateTime)) {
                     // 문자 replace
                     pill_date_get = pill_date_get.replaceAll("[^0-9]", "");
-                               /*pill_date_get = et_surgeryDate_get.replaceAll("-", "");
-                                pill_date_get = et_surgeryDate_get.replaceAll(" ", "");
-                                pill_date_get = et_surgeryDate_get.replaceAll(":", "");*/
 
                     pill_date_DateTime = dateTimeFormat(pill_date_get);
                     et_pill_date.setText(pill_date_DateTime);
@@ -128,22 +127,24 @@ public class PillActivity extends AppCompatActivity{
         });
     }
 
-    /** 날짜 문자열 변환 **/
-    public String dateTimeFormat(String dateTime){
-        if (dateTime.length() >= 5 && dateTime.length() <= 6){
+    /**
+     * 날짜 문자열 변환
+     **/
+    public String dateTimeFormat(String dateTime) {
+        if (dateTime.length() >= 5 && dateTime.length() <= 6) {
             dateTime = dateTime.substring(0, 4) + "-" + dateTime.substring(4, dateTime.length());
             return dateTime;
-        }else if (dateTime.length() >= 7 && dateTime.length() <= 8){
+        } else if (dateTime.length() >= 7 && dateTime.length() <= 8) {
             dateTime = dateTime.substring(0, 4) + "-" + dateTime.substring(4, 6) + "-" + dateTime.substring(6, dateTime.length());
             return dateTime;
-        }else if (dateTime.length() >= 9 && dateTime.length() <= 10){
+        } else if (dateTime.length() >= 9 && dateTime.length() <= 10) {
             dateTime = dateTime.substring(0, 4) + "-" + dateTime.substring(4, 6) + "-" + dateTime.substring(6, 8) + " " + dateTime.substring(8, dateTime.length());
             return dateTime;
-        }else if (dateTime.length() >= 11 && dateTime.length() <= 12){
+        } else if (dateTime.length() >= 11 && dateTime.length() <= 12) {
             dateTime = dateTime.substring(0, 4) + "-" + dateTime.substring(4, 6) + "-" + dateTime.substring(6, 8) +
                     " " + dateTime.substring(8, 10) + ":" + dateTime.substring(10, dateTime.length());
             return dateTime;
-        }else {
+        } else {
             return dateTime;
         }
     }
@@ -153,17 +154,16 @@ public class PillActivity extends AppCompatActivity{
         bt_pillSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(edt_pillSearch.getText().toString().length()!=0) {
-                       searchText = edt_pillSearch.getText().toString();
-                       String targetName= edt_pillSearch.getText().toString();
-                       ad.clear();
-                       af.clear();
-                       OpenApi pill = new OpenApi(targetName,ad,af,pillAdapter,context,rv_pill);
-                       pill.execute();
+                if (edt_pillSearch.getText().toString().length() != 0) {
+                    searchText = edt_pillSearch.getText().toString();
+                    String targetName = edt_pillSearch.getText().toString();
+                    ad.clear();
+                    af.clear();
+                    OpenApi pill = new OpenApi(targetName, ad, af, pillAdapter, context, rv_pill);
+                    pill.execute();
 
 
-                }
-                else{
+                } else {
 
                 }
 
@@ -191,17 +191,15 @@ public class PillActivity extends AppCompatActivity{
                                 Pdate = pill_date.getText().toString();
                                 Float amount = 0f;
 
-                                try{
+                                try {
                                     amount = Float.valueOf(edt_pill.getText().toString());
-                                }
-                                catch (NumberFormatException e){
-                                    Toast toast = Toast. makeText(context, "숫자로만 표기하여 주십시오.", Toast.LENGTH_LONG);
+                                } catch (NumberFormatException e) {
+                                    Toast toast = Toast.makeText(context, "숫자로만 표기하여 주십시오.", Toast.LENGTH_LONG);
                                     toast.show();
                                 }
 
 
-
-                                if(amount != 0) {
+                                if (amount != 0) {
                                     String value = ad.get(PillAdapter.getSelected());
                                     String source = af.get(PillAdapter.getSelected());
 
@@ -224,7 +222,7 @@ public class PillActivity extends AppCompatActivity{
 
                                     if (source.contains("buprofen")) {
                                         String ibu = "ibuprofen";
-                                        cursor = sqlDB.rawQuery("SELECT * FROM TIMELINEDATA WHERE name = '" + username + "' AND TimelineDateTime BETWEEN '" + start + "' AND '"+Pdate+"' AND Source LIKE '%" + ibu + "%'; ", null);
+                                        cursor = sqlDB.rawQuery("SELECT * FROM TIMELINEDATA WHERE name = '" + username + "' AND TimelineDateTime BETWEEN '" + start + "' AND '" + Pdate + "' AND Source LIKE '%" + ibu + "%'; ", null);
                                         while (cursor.moveToNext()) {
                                             Log.d("name ", cursor.getString(1));
                                             total += cursor.getFloat(4);
@@ -239,9 +237,10 @@ public class PillActivity extends AppCompatActivity{
 
                                         } else {
 
+                                            Log.e("timeCalculationManager_getDateTime111", "111");
                                             sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('" + username + "', '" + value + "', '" + Pdate + "', '" + source + "', '" + amount + "');");
                                             Log.d("pass ", "pass");
-                                            setAlarm_30minutes_after_administration();
+                                            setAlarm_30minutes_after_administration(Pdate);
 
                                             Toast toast = Toast.makeText(context, "투약기록이 저장되었습니다.", Toast.LENGTH_LONG);
                                             toast.show();
@@ -251,7 +250,7 @@ public class PillActivity extends AppCompatActivity{
 
                                     } else if (source.contains("Acetaminophen")) {
                                         String ibu = "acetaminophen";
-                                        cursor = sqlDB.rawQuery("SELECT * FROM TIMELINEDATA WHERE name = '" + username + "' AND TimelineDateTime BETWEEN '" + start + "' AND '"+Pdate+"' AND Source LIKE '%" + ibu + "%'; ", null);
+                                        cursor = sqlDB.rawQuery("SELECT * FROM TIMELINEDATA WHERE name = '" + username + "' AND TimelineDateTime BETWEEN '" + start + "' AND '" + Pdate + "' AND Source LIKE '%" + ibu + "%'; ", null);
 
                                         while (cursor.moveToNext()) {
                                             Log.d("name ", cursor.getString(1));
@@ -266,9 +265,10 @@ public class PillActivity extends AppCompatActivity{
 
                                         } else {
 
+                                            Log.e("timeCalculationManager_getDateTime222", "222");
                                             sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('" + username + "', '" + value + "', '" + Pdate + "', '" + source + "', '" + amount + "');");
                                             Log.d("pass ", "pass");
-                                            setAlarm_30minutes_after_administration();
+                                            setAlarm_30minutes_after_administration(Pdate);
                                             Toast toast = Toast.makeText(context, "투약기록이 저장되었습니다.", Toast.LENGTH_LONG);
                                             toast.show();
                                             dialog.dismiss();
@@ -285,7 +285,7 @@ public class PillActivity extends AppCompatActivity{
                             }
                         }).create();
 
-                        dialog.show();
+                dialog.show();
 
             }
         });
@@ -298,35 +298,59 @@ public class PillActivity extends AppCompatActivity{
         });
     }
 
-    /** dialog 스피너 시간 세팅 **/
+    /**
+     * dialog 스피너 시간 세팅
+     **/
 
 
-    public void setRecyclerView(View view){
+    public void setRecyclerView(View view) {
 
-        rv_pill=(RecyclerView) findViewById(R.id.rv_pill_list);
+        rv_pill = (RecyclerView) findViewById(R.id.rv_pill_list);
         rv_pill.setVisibility(View.VISIBLE);
-        pillAdapter = new PillAdapter(ad,af,context);
+        pillAdapter = new PillAdapter(ad, af, context);
         rv_pill.setLayoutManager(new LinearLayoutManager(context));
         rv_pill.setAdapter(pillAdapter);
 
     }
 
-    /** 투약 30분후 알람 추가 **/
-    public void setAlarm_30minutes_after_administration(){
-        /*
-         * 투약은 30분 후 알람이기에 1800000 더함.
-         *  - 잠시 테스트를 위해 1분으로 함
-         */
-        //todo 투약 관리용 쉐어드 만들어야함.
-        int requestID = (int) (System.currentTimeMillis()+timeCalculationManager.one_MinutesMillis);
+    /**
+     * 투약 30분후 알람 추가
+     **/
+    public void setAlarm_30minutes_after_administration(String getDateTime) {
+        try {
+            Log.e("timeCalculationManager_getDateTime", String.valueOf(getDateTime));
+            /*
+             * 투약은 30분 후 알람이기에 1800000 더함.
+             *  - 잠시 테스트를 위해 1분으로 함
+             */
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            Date getDate = dateFormat.parse(getDateTime);
+            Log.e("timeCalculationManager_getDate", String.valueOf(getDate.getTime()));
+            long getDateTime_toLong = getDate.getTime();
+            long calculationTime = getDateTime_toLong + timeCalculationManager.thirty_MinutesMillis;
 
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.putExtra("alarm_mode", 2); // 0: 고온, 1: 저온
+            if (timeCalculationManager.check_Within_30minutes_from_the_current_time(calculationTime)) {
+                long requestID = timeCalculationManager.pill_30minutes_from_the_current_calculation_time(getDateTime_toLong + timeCalculationManager.thirty_MinutesMillis);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, requestID, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+                Date mReDate = new Date(timeCalculationManager.pill_30minutes_from_the_current_calculation_time(getDateTime_toLong + timeCalculationManager.thirty_MinutesMillis));
+                SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                String formatDate = mFormat.format(mReDate);
 
-        AlarmManager alarmManager_administratione = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-        alarmManager_administratione.set(AlarmManager.RTC_WAKEUP, 0, pendingIntent);
+                Log.e("timeCalculationManager_formatDate", String.valueOf(formatDate));
+                Log.e("timeCalculationManager_requestID", String.valueOf(requestID));
+
+                if (requestID > 0) {
+                    Intent intent = new Intent(context, AlarmReceiver.class);
+                    intent.putExtra("alarm_mode", 2); // 0: 고온, 1: 저온
+
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
+                    AlarmManager alarmManager_administratione = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+                    alarmManager_administratione.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, requestID, pendingIntent);
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }
