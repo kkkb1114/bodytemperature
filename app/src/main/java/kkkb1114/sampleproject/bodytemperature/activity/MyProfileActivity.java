@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -338,6 +340,23 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                             selectItem[0] = tv_abscess.getText().toString();
                         }
                     });
+                    // 수술 날짜 기입
+                    et_surgeryDate.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+
+                        }
+                    });
                     // 버튼 선택
                     bt_inflammation_negative.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -412,6 +431,9 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                                 PreferenceManager.setString(context, "userName", name);
                                 PreferenceManager.setString(context, "userPurpose", purpose);
                                 PreferenceManager.setString(context, "userInfection", infection);
+                                if (purpose.equals("염증")){
+                                    PreferenceManager.setString(context, "surgeryDate", infection.split("/")[1]);
+                                }
 
                                 MyProfile myProfile = new MyProfile(name, gender, birthDate, weight, purpose, infection);
                                 myProfile_dbHelper.DBinsert(myProfile);
@@ -423,6 +445,9 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                             PreferenceManager.setString(context, "userName", name);
                             PreferenceManager.setString(context, "userPurpose", purpose);
                             PreferenceManager.setString(context, "userInfection", infection);
+                            if (purpose.equals("염증")){
+                                PreferenceManager.setString(context, "surgeryDate", infection.split("/")[1]);
+                            }
 
                             MyProfile myProfile = new MyProfile(name, gender, birthDate, weight, purpose, infection);
                             myProfile_dbHelper.DBupdate(myProfile);
