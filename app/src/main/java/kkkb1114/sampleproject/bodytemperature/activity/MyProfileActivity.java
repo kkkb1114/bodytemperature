@@ -362,6 +362,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                                 myProfile_dbHelper.DBinsert(myProfile);
                                 finish();
                             }
+                            //
                         }else { // 수정
                             // 다른 화면에서 현재 선택된 사용자 구분이 되어야 하기에 현재 사용자 구분 쉐어드 파일 생성
                             PreferenceManager.PREFERENCES_NAME = "login_user";
