@@ -12,10 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/regular"
-        android:text="아이의 고열은 \n빠른 대처가 중요하다"
+        android:text="몸이 먼저 알려주는 감염 적신호 열\n숨어 있는 열을 잡자"
         android:gravity="center"
         android:textColor="#2196F3"
-        android:textSize="40dp"
+        android:textSize="25dp"
         android:layout_marginTop="80dp"
 
         >
