@@ -4,39 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     tools:context=".SplashActivity">
 
-    <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/white"
-        tools:context=".SplashActivity">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:gravity="center"
+        android:text="따뜻한 우리 몸\n아기 천사와 만나는 시작입니다."
+        android:textColor="#2196F3"
+        android:textSize="30dp"
+        >
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            android:gravity="center"
-            android:text="따뜻한 우리 몸\n아기 천사와 만나는 시작입니다."
-            android:textColor="#2196F3"
-            android:textSize="30dp"
+    </TextView>
 
-            >
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="491dp"
+        android:layout_marginTop="80dp"
+        android:layout_weight="1"
+        app:srcCompat="@drawable/splash_ovul"/>
 
-        </TextView>
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="491dp"
-            android:layout_marginTop="80dp"
-            android:layout_weight="1"
-            app:srcCompat="@drawable/splash_ovul" />
-    </LinearLayout>
 
 </LinearLayout>
