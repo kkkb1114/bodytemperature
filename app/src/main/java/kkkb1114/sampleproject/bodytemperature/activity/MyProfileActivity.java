@@ -43,7 +43,6 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     MyProfile_DBHelper myProfile_dbHelper;
 
     EditText et_myProfile_name;
-    TextView tv_myProfile_man;
     TextView tv_myProfile_woman;
     TextView tv_myProfile_birthDate;
     TextView tv_myProfile_weight;
@@ -86,7 +85,6 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
     public void initView(){
         et_myProfile_name = findViewById(R.id.et_myProfile_name);
-        tv_myProfile_man = findViewById(R.id.tv_myProfile_man);
         tv_myProfile_woman = findViewById(R.id.tv_myProfile_woman);
         tv_myProfile_birthDate = findViewById(R.id.tv_myProfile_birthDate);
         tv_myProfile_weight = findViewById(R.id.tv_myProfile_weight);
@@ -96,7 +94,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         bt_myProfile_confirm = findViewById(R.id.bt_myProfile_confirm);
 
         et_myProfile_name.setOnClickListener(this);
-        tv_myProfile_man.setOnClickListener(this);
+
         tv_myProfile_woman.setOnClickListener(this);
         tv_myProfile_birthDate.setOnClickListener(this);
         tv_myProfile_weight.setOnClickListener(this);
@@ -158,15 +156,11 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
     /** 성별 세팅 **/
     public void setGender(int gender){
-        if (gender == 1){
-            this.gender = 1;
-            tv_myProfile_man.setTextColor(Color.parseColor("#2B8FB6"));
-            tv_myProfile_woman.setTextColor(Color.parseColor("#9E9E9E"));
-        }else {
+
             this.gender = 0;
-            tv_myProfile_man.setTextColor(Color.parseColor("#9E9E9E"));
+
             tv_myProfile_woman.setTextColor(Color.parseColor("#2B8FB6"));
-        }
+
     }
 
     /** 수정모드면 DB에서 내 정보 꺼내옵니다. **/
@@ -251,13 +245,6 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
             case R.id.tv_myProfile_woman:
                 gender = 0;
-                setGender(gender);
-                // 여성을 선택후 이용 목적을 배란으로 선택 후에 다시 남성으로 돌아가면 배란이 그대로 남아있으면 안된다.
-                tv_myProfile_purpose.setText("감염");
-                break;
-
-            case R.id.tv_myProfile_man:
-                gender = 1;
                 setGender(gender);
                 // 여성을 선택후 이용 목적을 배란으로 선택 후에 다시 남성으로 돌아가면 배란이 그대로 남아있으면 안된다.
                 tv_myProfile_purpose.setText("감염");

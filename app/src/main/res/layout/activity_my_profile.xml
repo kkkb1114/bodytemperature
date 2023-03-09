@@ -38,16 +38,7 @@
                 android:background="@drawable/rounded_corners_white"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tv_myProfile_man"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:paddingVertical="20dp"
-                    android:text="남성"
-                    android:textSize="20sp"
-                    android:textColor="@color/button_confirm_color"/>
+
 
                 <TextView
                     android:id="@+id/tv_myProfile_woman"
@@ -58,7 +49,7 @@
                     android:paddingVertical="20dp"
                     android:text="여성"
                     android:textSize="20sp"
-                    android:textColor="@color/editText_hint"/>
+                    android:textColor="@color/button_confirm_color"/>
 
             </LinearLayout>
 
