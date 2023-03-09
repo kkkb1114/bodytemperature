@@ -25,12 +25,13 @@
         android:text="원인부터 찾아야 하는 질병의 결과 입니다. "
         android:gravity="center"
         android:textColor="#2196F3"
-        android:textSize="20dp"/>
+        android:textSize="23dp"/>
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="491dp"
         android:layout_weight="1"
-        app:srcCompat="@drawable/inflammation" />
+        android:layout_marginTop="20dp"
+        app:srcCompat="@drawable/splash_inflammation" />
 </LinearLayout>
