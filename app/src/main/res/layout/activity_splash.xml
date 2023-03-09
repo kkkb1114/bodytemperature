@@ -26,6 +26,7 @@
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="491dp"
+        android:layout_marginTop="80dp"
         android:layout_weight="1"
-        app:srcCompat="@drawable/inflammation" />
+        app:srcCompat="@drawable/splash_ovul" />
 </LinearLayout>
