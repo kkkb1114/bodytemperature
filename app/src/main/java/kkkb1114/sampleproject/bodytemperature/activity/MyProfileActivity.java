@@ -277,9 +277,9 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 // 여성일때만 배란이 목록에 뜨도록 설정
                 String[] items_purpose;
                 if (gender == 0){
-                    items_purpose = new String[]{"감염", "염증", "배란"};
+                    items_purpose = new String[]{"염증"};
                 }else {
-                    items_purpose = new String[]{"감염", "염증"};
+                    items_purpose = new String[]{"염증"};
                 }
                 AlertDialog.Builder builder_purpose = new AlertDialog.Builder(this);
                 builder_purpose.setTitle("목적 선택");
@@ -295,20 +295,8 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
             case R.id.tv_myProfile_infection:
                 purpose = tv_myProfile_purpose.getText().toString();
-                if (purpose.equals("감염")){
 
-                    String[] items_infection;
-                    items_infection = new String[]{"감기/독감", "폐렴", "홍역"};
-                    AlertDialog.Builder builder_infection = new AlertDialog.Builder(this);
-                    builder_infection.setTitle("감염 병 선택");
-                    builder_infection.setItems(items_infection, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int position) {
-                            selectedItem_infection = items_infection[position];
-                            tv_myProfile_infection.setText(selectedItem_infection);
-                        }
-                    });
-                    builder_infection.show();
-                }else if (purpose.equals("염증")){
+                    if (purpose.equals("염증")){
 
                     // LayoutInflater 객체를 사용하여 custom view를 inflate합니다.
                     LayoutInflater inflater = getLayoutInflater();
