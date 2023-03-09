@@ -6,11 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.Selection;
-import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
@@ -276,11 +271,9 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
             case R.id.tv_myProfile_purpose:
                 // 여성일때만 배란이 목록에 뜨도록 설정
                 String[] items_purpose;
-                if (gender == 0){
-                    items_purpose = new String[]{"감염", "염증", "배란"};
-                }else {
-                    items_purpose = new String[]{"감염", "염증"};
-                }
+
+                    items_purpose = new String[]{"감염"};
+
                 AlertDialog.Builder builder_purpose = new AlertDialog.Builder(this);
                 builder_purpose.setTitle("목적 선택");
                 builder_purpose.setItems(items_purpose, new DialogInterface.OnClickListener() {
@@ -308,112 +301,6 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                         }
                     });
                     builder_infection.show();
-                }else if (purpose.equals("염증")){
-
-                    // LayoutInflater 객체를 사용하여 custom view를 inflate합니다.
-                    LayoutInflater inflater = getLayoutInflater();
-                    View dialogView = inflater.inflate(R.layout.inflammation_selection_dialog, null);
-
-                    // AlertDialog.Builder 객체를 생성합니다.
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle("염증을 선택해 주세요.");
-                    builder.setView(dialogView);
-
-                    // AlertDialog 객체를 생성하고 보여줍니다.
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-
-                    TextView tv_surgical_site_infection = dialogView.findViewById(R.id.tv_surgical_site_infection);
-                    TextView tv_blood_clot = dialogView.findViewById(R.id.tv_blood_clot);
-                    TextView tv_abscess = dialogView.findViewById(R.id.tv_abscess);
-                    EditText et_surgeryDate = dialogView.findViewById(R.id.et_surgeryDate);
-                    Button bt_inflammation_negative = dialogView.findViewById(R.id.bt_inflammation_negative);
-                    Button bt_inflammation_positive = dialogView.findViewById(R.id.bt_inflammation_positive);
-
-                    // 아이템 선택
-                    String[] selectItem = {tv_surgical_site_infection.getText().toString()};
-                    tv_surgical_site_infection.setBackgroundColor(ContextCompat.getColor(context, R.color.button_confirm_color));
-                    tv_surgical_site_infection.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            tv_surgical_site_infection.setBackgroundColor(ContextCompat.getColor(context, R.color.button_confirm_color));
-                            tv_blood_clot.setBackgroundColor(ContextCompat.getColor(context, R.color.transparency_100));
-                            tv_abscess.setBackgroundColor(ContextCompat.getColor(context, R.color.transparency_100));
-                            selectItem[0] = tv_surgical_site_infection.getText().toString();
-                        }
-                    });
-
-                    tv_blood_clot.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            tv_blood_clot.setBackgroundColor(ContextCompat.getColor(context, R.color.button_confirm_color));
-                            tv_surgical_site_infection.setBackgroundColor(ContextCompat.getColor(context, R.color.transparency_100));
-                            tv_abscess.setBackgroundColor(ContextCompat.getColor(context, R.color.transparency_100));
-                            selectItem[0] = tv_blood_clot.getText().toString();
-                        }
-                    });
-
-                    tv_abscess.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            tv_abscess.setBackgroundColor(ContextCompat.getColor(context, R.color.button_confirm_color));
-                            tv_surgical_site_infection.setBackgroundColor(ContextCompat.getColor(context, R.color.transparency_100));
-                            tv_blood_clot.setBackgroundColor(ContextCompat.getColor(context, R.color.transparency_100));
-                            selectItem[0] = tv_abscess.getText().toString();
-                        }
-                    });
-
-                    // 수술 날짜 기입
-                    et_surgeryDate.addTextChangedListener(new TextWatcher() {
-                        @Override
-                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                        }
-
-                        @Override
-                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                            String et_surgeryDate_get = et_surgeryDate.getText().toString();
-
-                            if (!et_surgeryDate_get.equals(et_surgeryDate_DateTime)){
-                                // 문자 replace
-                                et_surgeryDate_get = et_surgeryDate_get.replaceAll("[^0-9]", "");
-                               /*et_surgeryDate_get = et_surgeryDate_get.replaceAll("-", "");
-                                et_surgeryDate_get = et_surgeryDate_get.replaceAll(" ", "");
-                                et_surgeryDate_get = et_surgeryDate_get.replaceAll(":", "");*/
-
-                                et_surgeryDate_DateTime = dateTimeFormat(et_surgeryDate_get);
-                                et_surgeryDate.setText(et_surgeryDate_DateTime);
-                                Selection.setSelection(et_surgeryDate.getText(), et_surgeryDate_DateTime.length());
-                            }
-                        }
-
-                        @Override
-                        public void afterTextChanged(Editable editable) {
-
-                        }
-                    });
-                    // 버튼 선택
-                    bt_inflammation_negative.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            dialog.dismiss();
-                        }
-                    });
-                    bt_inflammation_positive.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            String surgeryDate = et_surgeryDate.getText().toString();
-                            if (surgeryDate.equals(getResources().getString(R.string.et_surgeryDate))
-                            || surgeryDate.trim().isEmpty()
-                            || surgeryDate.length() < 16){
-
-                                Toast.makeText(context, getResources().getString(R.string.et_surgeryDate), Toast.LENGTH_SHORT).show();
-                            }else {
-                                tv_myProfile_infection.setText(selectItem[0] + "/" +surgeryDate);
-                                dialog.dismiss();
-                            }
-                        }
-                    });
                 }
                 break;
 
