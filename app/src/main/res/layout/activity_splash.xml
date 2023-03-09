@@ -11,12 +11,12 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/regular"
-        android:text="몸이 먼저 알려주는 감염 적신호 열\n숨어 있는 열을 잡자"
-        android:gravity="center"
-        android:textColor="#2196F3"
-        android:textSize="25dp"
         android:layout_marginTop="80dp"
+        android:fontFamily="@font/regular"
+        android:gravity="center"
+        android:text="몸이 먼저 알려주는 감염 적신호 열\n숨어 있는 열을 잡자"
+        android:textColor="#2196F3"
+        android:textSize="27dp"
 
         >
 
@@ -26,6 +26,7 @@
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="491dp"
+        android:layout_marginTop="90dp"
         android:layout_weight="1"
-        app:srcCompat="@drawable/child" />
+        app:srcCompat="@drawable/baby2" />
 </LinearLayout>
