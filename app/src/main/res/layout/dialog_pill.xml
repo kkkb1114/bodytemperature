@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="투여 일시: ex) 2023-03-08 13:08"
-        android:textColor="#E80303"
+        android:textColor="@color/white"
         android:inputType="number"
         android:maxLength="16"/>
 

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".SplashActivity">
 
     <TextView
@@ -13,9 +14,9 @@
         android:layout_marginTop="80dp"
         android:fontFamily="@font/regular"
         android:gravity="center"
-        android:text="아이의 고열은 \n빠른 대처가 중요하다"
+        android:text="따뜻한 우리 몸\n아기 천사와 만나는 시작입니다."
         android:textColor="#2196F3"
-        android:textSize="40dp"
+        android:textSize="30dp"
 
         >
 
