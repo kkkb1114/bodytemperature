@@ -5,21 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".SplashActivity">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
         android:fontFamily="@font/regular"
+        android:text="염증수치가 높고 열이 지속되나요?"
         android:gravity="center"
-        android:text="아이의 고열은 \n빠른 대처가 중요하다"
         android:textColor="#2196F3"
-        android:textSize="40dp"
+        android:textSize="27dp"
+        android:layout_marginTop="80dp"/>
 
-        >
-
-    </TextView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/regular"
+        android:text="원인부터 찾아야 하는 질병의 결과 입니다. "
+        android:gravity="center"
+        android:textColor="#2196F3"
+        android:textSize="20dp"/>
 
     <ImageView
         android:id="@+id/imageView"
