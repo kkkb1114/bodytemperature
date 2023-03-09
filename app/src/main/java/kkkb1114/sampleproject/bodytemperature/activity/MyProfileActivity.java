@@ -425,12 +425,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                     Toast.makeText(context, "정보를 모두 입력해 주세요.", Toast.LENGTH_SHORT).show();
                 }else {
                     // 이용 목적이 '감염'이고 감염병 선택을 하지 않았다면 감염 병을 선택해달라는 문구를 띄운다.
-                    if (purpose.equals("감염") &&
-                            infection.equals(context.getResources().getString(R.string.tv_myProfile_infection))){
-
-                        Toast.makeText(context, "감염 병을 선택해주세요.", Toast.LENGTH_SHORT).show();
-
-                    }else if (purpose.equals("염증") &&
+                   if (purpose.equals("염증") &&
                             infection.equals(context.getResources().getString(R.string.tv_myProfile_inflammation))){
 
                         Toast.makeText(context, "염증을 선택해주세요.", Toast.LENGTH_SHORT).show();

@@ -4,9 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     tools:context=".SplashActivity">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:fontFamily="@font/regular"
+        android:gravity="center"
+        android:text="아이의 고열은 \n빠른 대처가 중요하다"
+        android:textColor="#2196F3"
+        android:textSize="40dp"
 
+        >
 
+    </TextView>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="491dp"
+        android:layout_weight="1"
+        app:srcCompat="@drawable/inflammation" />
 </LinearLayout>
