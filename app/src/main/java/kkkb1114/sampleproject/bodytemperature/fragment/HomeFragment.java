@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -172,12 +173,19 @@ public class HomeFragment extends Fragment {
                         String value = edt_significant.getText().toString() + "/" +textView.getText().toString();
                         String time = edt_significantTime.getText().toString();
 
-                        float amount=0f;
-                        String source = " ";
-                        sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
-                        sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('"+username+"', '"+value+"', '"+ time +"', '"+source+"', '"+amount+"');");
+                        if (time.equals(getResources().getString(R.string.et_surgeryDate))
+                                || time.trim().isEmpty()
+                                || time.length() < 16){
 
-                        dialog.dismiss();
+                            Toast.makeText(context, getResources().getString(R.string.et_surgeryDate), Toast.LENGTH_SHORT).show();
+                        }else {
+                            float amount=0f;
+                            String source = " ";
+                            sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
+                            sqlDB.execSQL("INSERT INTO TIMELINEDATA VALUES ('"+username+"', '"+value+"', '"+ time +"', '"+source+"', '"+amount+"');");
+
+                            dialog.dismiss();
+                        }
                     }
                 });
                 dialog.setNegativeButton("취소", new DialogInterface.OnClickListener() {
