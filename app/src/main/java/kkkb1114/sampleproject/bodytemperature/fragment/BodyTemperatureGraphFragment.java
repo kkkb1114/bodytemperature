@@ -20,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -30,24 +29,18 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.android.material.datepicker.MaterialDatePicker;
-import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.TimeZone;
-import java.util.TreeMap;
 
 import kkkb1114.sampleproject.bodytemperature.MainActivity;
 import kkkb1114.sampleproject.bodytemperature.R;
 import kkkb1114.sampleproject.bodytemperature.graph.MyMarkerView;
-import kkkb1114.sampleproject.bodytemperature.graph.MyMarkerView2;
 import kkkb1114.sampleproject.bodytemperature.timeline.TimelineAdapter;
 
 
@@ -147,20 +140,6 @@ public class BodyTemperatureGraphFragment extends Fragment {
         String Sdate = select_user.getString("surgeryDate"," ");
         InflaType = select_user.getString("userInfection"," ");
 
-        if(userpurpose.equals("감염"))
-        {
-            tv_graphdate.setVisibility(View.VISIBLE);
-            rv_timeline.setVisibility(View.VISIBLE);
-            lineChart.setVisibility(View.VISIBLE);
-            lineChart2.setVisibility(View.INVISIBLE);
-            tv_period.setVisibility(View.INVISIBLE);
-            period_layout.setVisibility(View.INVISIBLE);
-            showChart(view,str);
-            setRecyclerView(view,str);
-
-        }
-        else if(userpurpose.equals("배란"))
-        {
             tv_graphdate.setVisibility(View.INVISIBLE);
             rv_timeline.setVisibility(View.INVISIBLE);
             lineChart.setVisibility(View.INVISIBLE);
@@ -169,141 +148,14 @@ public class BodyTemperatureGraphFragment extends Fragment {
             period_layout.setVisibility(View.VISIBLE);
             showPchart(view);
 
-        }
-        else {
-            tv_graphdate.setVisibility(View.VISIBLE);
-            rv_timeline.setVisibility(View.VISIBLE);
-            lineChart.setVisibility(View.VISIBLE);
-            lineChart2.setVisibility(View.INVISIBLE);
-            tv_period.setVisibility(View.INVISIBLE);
-            period_layout.setVisibility(View.INVISIBLE);
-            showIChart(view,str,Sdate);
-            setRecyclerView(view,str);
-        }
-
-    }
-
-    public void showChart(View view , String date) {
-
-        sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
-        HashMap<String,Double> keys = new HashMap<String, Double>();
-        lineChart = new LineChart(getActivity());
-        lineChart = view.findViewById(R.id.chart);
-        XAxis xAxis = lineChart.getXAxis();
-        String username = select_user.getString("userName","선택된 사용자 없음");
-
-        cursor = sqlDB.rawQuery("SELECT * FROM TEMPDATA WHERE tempDateTime LIKE '"+date+"%' AND name = '"+username+"'; ", null);
-
-        while(cursor.moveToNext()) {
-            keys.put(cursor.getString(2).substring(11), cursor.getDouble(1));
-        }
-
-        if(keys.size()==0) {
-            lineChart.setData(null);
-            lineChart.invalidate();
-            return;
-        }
-
-        LineData lineData = new LineData();
-
-        ArrayList<Entry> entry_chart_Y = new ArrayList<>();
-        ArrayList<String> entry_chart_X = new ArrayList<>();
-        Comparator<String> comparator = (s1, s2) -> s1.compareTo(s2);
-        Map<String, String> map = new TreeMap<>(comparator);
-
-        for(Map.Entry<String,?> entry : keys.entrySet()){
-            String key = String.valueOf(entry.getKey());
-            String value = String.valueOf(entry.getValue());
-
-            map.put(key,value);
-        }
-
-
-        int i=0;
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            String key=entry.getKey();
-            float value=Float.valueOf(entry.getValue());
-            entry_chart_Y.add(new Entry(i,value));
-            entry_chart_X.add(key);
-            i++;
-        }
-
-
-
-        LineDataSet lineDataSet = new LineDataSet(entry_chart_Y, "체온"); // 데이터가 담긴 Arraylist 를 LineDataSet 으로 변환한다.
-        lineDataSet.setColor(Color.RED); // 해당 LineDataSet의 색 설정 :: 각 Line 과 관련된 세팅은 여기서 설정한다.
-        lineDataSet.setLineWidth(3);
-
-
-        XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
-        xAxis.setPosition(position);// x 축 설정
-        xAxis.setGranularity(1f);
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(entry_chart_X));
-        lineData.addDataSet(lineDataSet); // 해당 LineDataSet 을 적용될 차트에 들어갈 DataSet 에 넣는다.
-        lineChart.setData(lineData); // 차트에 위의 DataSet을 넣는다.
-        lineChart.getDescription().setEnabled(false);
-        lineChart.invalidate(); // 차트 업데이트
-        lineChart.setTouchEnabled(false);
 
 
     }
 
-    public void setRecyclerView(View view,String date){
-        sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
-        ArrayList<String> ad = new ArrayList<>();
-        HashMap<String,String> keys = new HashMap<String, String>();
-        ArrayList<Entry> entry_arr = new ArrayList<>();
-        rv_timeline=view.findViewById(R.id.rv_timeline_list);
-        rv_timeline.setVisibility(View.VISIBLE);
 
-        String username = select_user.getString("userName","선택된 사용자 없음");
-        cursor = sqlDB.rawQuery("SELECT * FROM TIMELINEDATA WHERE TimelineDateTime LIKE '"+date+"%' AND name = '"+username+"'; ", null);
-
-        while(cursor.moveToNext()) {
-            keys.put(cursor.getString(2).substring(11), cursor.getString(1));
-        }
-
-        if(keys.size()==0) {
-            rv_timeline.setVisibility(View.INVISIBLE);
-            return;
-        }
-
-
-
-        timelineAdapter = new TimelineAdapter(ad);
-        rv_timeline.setLayoutManager(new LinearLayoutManager(context));
-        rv_timeline.setAdapter(new TimelineAdapter(ad));
-        timelineAdapter.notifyDataSetChanged();
-
-        Comparator<String> comparator = (s1, s2) -> s1.compareTo(s2);
-        Map<String, String> map = new TreeMap<>(comparator);
-
-        for(Map.Entry<String,?> entry : keys.entrySet()){
-            String key = String.valueOf(entry.getKey());
-            String value = String.valueOf(entry.getValue());
-
-            map.put(key,value);
-        }
-
-
-        int i=0;
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            String key = entry.getKey();
-            String value=entry.getValue();
-            ad.add(key+" "+value);
-            i++;
-        }
-
-    }
 
     public void setListner(){
-        tv_graphdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showMaterialDatePicker();
-                MaterialDatePickerClick();
-            }
-        });
+
 
         bt_periodCal.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -365,26 +217,7 @@ public class BodyTemperatureGraphFragment extends Fragment {
         materialDatePicker.show(getActivity().getSupportFragmentManager(), "DatePicker");
     }
 
-    public void MaterialDatePickerClick(){
-        materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Long>() {
-            @Override
-            public void onPositiveButtonClick(Long selection) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                Date date = new Date();
-                date.setTime(selection);
 
-                String dateStr = simpleDateFormat.format(date);
-                tv_graphdate.setText(dateStr);
-
-                select_user = context.getSharedPreferences("login_user",MODE_PRIVATE);
-                String username = select_user.getString("userName","선택된 사용자 없음");
-
-
-                showChart(getView(),dateStr);
-                setRecyclerView(getView(),dateStr);
-            }
-        });
-    }
 
     public void setUser()
     {
@@ -617,78 +450,6 @@ public class BodyTemperatureGraphFragment extends Fragment {
         MyMarkerView marker = new MyMarkerView(context,R.layout.markerview,Dday);
         marker.setChartView(lineChart2);
         lineChart2.setMarker(marker);
-    }
-
-    public void showIChart(View view , String date, String Sdate) {
-
-        sqlDB = MainActivity.bodytemp_dbHelper.getReadableDatabase();
-        HashMap<String,Double> keys = new HashMap<String, Double>();
-        lineChart = new LineChart(getActivity());
-        lineChart = view.findViewById(R.id.chart);
-        XAxis xAxis = lineChart.getXAxis();
-        String username = select_user.getString("userName","선택된 사용자 없음");
-        ArrayList<String> compare_X = new ArrayList<>();
-
-        cursor = sqlDB.rawQuery("SELECT * FROM TEMPDATA WHERE tempDateTime LIKE '"+date+"%' AND name = '"+username+"'; ", null);
-
-        while(cursor.moveToNext()) {
-            keys.put(cursor.getString(2).substring(11), cursor.getDouble(1));
-            compare_X.add(cursor.getString(2));
-        }
-
-        if(keys.size()==0) {
-            lineChart.setData(null);
-            lineChart.invalidate();
-            return;
-        }
-
-        LineData lineData = new LineData();
-
-        ArrayList<Entry> entry_chart_Y = new ArrayList<>();
-        ArrayList<String> entry_chart_X = new ArrayList<>();
-        Comparator<String> comparator = (s1, s2) -> s1.compareTo(s2);
-        Map<String, String> map = new TreeMap<>(comparator);
-
-        for(Map.Entry<String,?> entry : keys.entrySet()){
-            String key = String.valueOf(entry.getKey());
-            String value = String.valueOf(entry.getValue());
-
-            map.put(key,value);
-        }
-
-
-        int i=0;
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            String key=entry.getKey();
-            float value=Float.valueOf(entry.getValue());
-            entry_chart_Y.add(new Entry(i,value));
-            entry_chart_X.add(key);
-            i++;
-        }
-
-
-
-        LineDataSet lineDataSet = new LineDataSet(entry_chart_Y, "체온"); // 데이터가 담긴 Arraylist 를 LineDataSet 으로 변환한다.
-        lineDataSet.setColor(Color.RED); // 해당 LineDataSet의 색 설정 :: 각 Line 과 관련된 세팅은 여기서 설정한다.
-        lineDataSet.setLineWidth(3);
-
-
-        XAxis.XAxisPosition position = XAxis.XAxisPosition.BOTTOM;
-        xAxis.setPosition(position);// x 축 설정
-        xAxis.setGranularity(1f);
-        xAxis.setValueFormatter(new IndexAxisValueFormatter(entry_chart_X));
-        lineData.addDataSet(lineDataSet); // 해당 LineDataSet 을 적용될 차트에 들어갈 DataSet 에 넣는다.
-
-        lineChart.setData(lineData); // 차트에 위의 DataSet을 넣는다.
-        lineChart.getDescription().setEnabled(false);
-        lineChart.invalidate(); // 차트 업데이트
-        lineChart.setTouchEnabled(true);
-        lineChart.setScaleEnabled(true);
-        lineChart.setPinchZoom(true);
-        MyMarkerView2 marker = new MyMarkerView2(context,R.layout.markerview, Sdate , compare_X, InflaType);
-        marker.setChartView(lineChart);
-        lineChart.setMarker(marker);
-
     }
 
 
